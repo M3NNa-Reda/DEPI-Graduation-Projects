@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/EasyShop.API/EasyShop.API.csproj" />
+    <Project Path="src/EasyShop.Application/EasyShop.Application.csproj" />
+    <Project Path="src/EasyShop.Domain/EasyShop.Domain.csproj" />
+    <Project Path="src/EasyShop.Infrastructure/EasyShop.Infrastructure.csproj" />
+  </Folder>
+</Solution>
