@@ -4,7 +4,11 @@ using System.Text;
 
 namespace EasyShop.Domain.Enums
 {
-    internal class Class1
+    public enum TransactionType
     {
+        StockIn,
+        Sale,
+        Return,
+        Adjustment
     }
 }
