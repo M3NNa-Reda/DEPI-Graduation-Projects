@@ -12,7 +12,7 @@ namespace EasyShop.Domain.Entities
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public int UserId { get; set; } //FK
-        //user nav
+        public ApplicationUser ApplicationUser { get; set; }
         public int OrderItemId { get; set; } //FK
         public OrderItem OrderItem { get; set; }
     }
