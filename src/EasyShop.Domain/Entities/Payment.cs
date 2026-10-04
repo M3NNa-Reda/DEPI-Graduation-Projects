@@ -1,23 +1,10 @@
-﻿using System;
+﻿using EasyShop.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace EasyShop.Domain.Entities
 {
-    public enum PaymentMethod
-    {
-        CashOnDelivery,
-        Card,
-        Wallet
-    }
-    public enum PaymentStatus
-    {
-        Pending,
-        Paid,
-        Failed,
-        Refunded
-    }
-
     public class Payment
     {
         public int Id { get; set; }

@@ -1,12 +1,7 @@
-﻿namespace EasyShop.Domain.Entities
+﻿using EasyShop.Domain.Enums;
+
+namespace EasyShop.Domain.Entities
 {
-    public enum PaymentTransactionStatus
-    {
-        Pending,
-        Succeeded,
-        Failed,
-        Refunded
-    }
     public class PaymentTransaction
     {
         public int Id { get; set; }

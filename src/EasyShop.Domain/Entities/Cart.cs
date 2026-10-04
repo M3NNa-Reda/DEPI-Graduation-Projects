@@ -6,6 +6,6 @@ public class Cart
     public int UserId { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
-    //public ApplicationUser User { get; set; }
-    public ICollection<CartItem> Items { get; set; }
+    public ApplicationUser ApplicationUser { get; set; }
+    public ICollection<CartItem> CartItems { get; set; }
 }

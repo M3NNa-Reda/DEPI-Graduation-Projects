@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using EasyShop.Domain.Enums;
 namespace EasyShop.Domain.Entities
 {
-    public enum DiscountType
-    {
-        Percentage,
-        FixedAmount
-    }
     public class Coupon
     {
         public int Id { get; set; }

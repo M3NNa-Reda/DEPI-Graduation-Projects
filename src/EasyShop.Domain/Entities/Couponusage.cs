@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-namespace EasyShop.Domain.Entities
+﻿namespace EasyShop.Domain.Entities
 {
     public class CouponUsage
     {

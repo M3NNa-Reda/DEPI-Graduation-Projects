@@ -1,16 +1,9 @@
-﻿using System;
+﻿using EasyShop.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Text;
 namespace EasyShop.Domain.Entities
 {
-    public enum ShipmentStatus
-    {
-        Pending,
-        Shipped,
-        InTransit,
-        Delivered,
-        Cancelled
-    }
     public class Shipment
     {
         public int Id { get; set; }
