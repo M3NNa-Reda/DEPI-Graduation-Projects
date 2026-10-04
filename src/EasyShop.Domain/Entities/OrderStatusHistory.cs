@@ -1,8 +1,4 @@
 ﻿using EasyShop.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace EasyShop.Domain.Entities
 {
     public class OrderStatusHistory
@@ -15,5 +11,6 @@ namespace EasyShop.Domain.Entities
         public int OrderId { get; set; } //FK
         public Order Order { get; set; }
         public int? ChangedByUserId { get; set; } //FK
+        public ApplicationUser? ApplicationUser { get; set; }
     }
 }
