@@ -1,9 +1,4 @@
-﻿using EasyShop.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EasyShop.Domain.Entities
+﻿namespace EasyShop.Domain.Entities
 {
     public class OrderItem
     {
@@ -16,7 +11,7 @@ namespace EasyShop.Domain.Entities
         public int OrderId { get; set; } //FK
         public Order Order { get; set; }
         public int ProductVariantId { get; set; } //FK
-        //ProductVariant nav
+        public ProductVariant ProductVariant { get; set; }
         public Review? Review { get; set; }
     }
 }
