@@ -1,8 +1,4 @@
 ﻿using EasyShop.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace EasyShop.Domain.Entities
 {
     public class Order
@@ -16,7 +12,9 @@ namespace EasyShop.Domain.Entities
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public int UserId { get; set; } //FK
+        public ApplicationUser ApplicationUser { get; set; }
         public int? CouponId { get; set; } //FK
+        public Coupon Coupon { get; set; }
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public ICollection<OrderStatusHistory> OrderStatusHistories { get; set; } = new List<OrderStatusHistory>();
         public OrderShippingAddress OrderShippingAddress { get; set; }
