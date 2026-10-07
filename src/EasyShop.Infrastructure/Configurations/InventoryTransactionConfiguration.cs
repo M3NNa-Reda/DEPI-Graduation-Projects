@@ -19,6 +19,10 @@ namespace EasyShop.Infrastructure.Configurations
 
             builder.Property(i => i.CreatedAt)
                .HasDefaultValueSql("GETUTCDATE()");
+
+            builder.Property(i => i.ReferenceType)
+                .HasMaxLength(200)
+                .IsRequired(false);
         }
     }
 }

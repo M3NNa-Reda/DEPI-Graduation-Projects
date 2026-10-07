@@ -19,6 +19,10 @@ namespace EasyShop.Infrastructure.Configurations
             builder.HasOne(o => o.Order)
                 .WithMany(o => o.OrderItems)
                 .OnDelete(DeleteBehavior.Cascade);
+            
+            builder.Property(x=>x.ProductName)
+                .IsRequired()
+                .HasMaxLength(300);
 
             builder.Property(o => o.Quantity)
                 .IsRequired();
