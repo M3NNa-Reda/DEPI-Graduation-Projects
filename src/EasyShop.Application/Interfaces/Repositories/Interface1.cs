@@ -4,7 +4,8 @@ using System.Text;
 
 namespace EasyShop.Application.Interfaces.Repositories
 {
-    internal interface Interface1
+    internal interface ProductRepository
     {
+
     }
 }

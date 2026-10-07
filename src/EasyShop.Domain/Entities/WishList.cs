@@ -6,6 +6,6 @@ public class Wishlist
     public int UserId { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
-    public ApplicationUser User { get; set; }
-    public ICollection<WishlistItem> Items { get; set; }
+    public ApplicationUser ApplicationUser { get; set; }
+    public ICollection<WishlistItem> WishlistItems { get; set; } = new List<WishlistItem>();
 }

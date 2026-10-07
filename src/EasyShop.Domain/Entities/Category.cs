@@ -13,5 +13,7 @@ namespace EasyShop.Domain.Entities
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public ICollection<Category> Categories { get; set; } = new List<Category>();
+        public ICollection<Product> products { get; set; } = new List<Product>();
     }
 }
