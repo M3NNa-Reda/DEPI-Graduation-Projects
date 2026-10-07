@@ -8,5 +8,6 @@ namespace EasyShop.Domain.Entities
     {
         public int ProductVariantId { get; set; }
         public int ProductOptionValueId { get; set; }
+        public ProductVariant  ProductVariant { get; set; }
     }
 }

@@ -15,5 +15,6 @@ namespace EasyShop.Domain.Entities
         public DateTime CreatedAt { get; set; }
         public int ProductVariantId { get; set; } //FK
         public ProductVariant ProductVariant { get; set; }
+        public ProductVariant  productVariant { get; set; }
     }
 }
