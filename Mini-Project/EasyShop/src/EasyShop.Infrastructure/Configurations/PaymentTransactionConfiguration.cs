@@ -25,7 +25,7 @@ namespace EasyShop.Infrastructure.Configurations
                 .HasMaxLength(2000);
 
             builder.HasOne(pt => pt.Payment)
-                .WithMany(p => p.Transactions)
+                .WithMany(p => p.PaymentTransactions)
                 .HasForeignKey(pt => pt.PaymentId)
                 .OnDelete(DeleteBehavior.Cascade);
         }

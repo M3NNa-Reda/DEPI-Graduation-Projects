@@ -7,7 +7,7 @@ namespace EasyShop.Domain.Entities
     public class ProductVariant
     {
         public int Id { get; set; }
-        public int ProductId { get; set; }
+        public int ProductId { get; set; } // fk
         public string SKU { get; set; }
         public decimal Price { get; set; }
         public decimal CompareAtPrice { get; set; }
@@ -19,7 +19,7 @@ namespace EasyShop.Domain.Entities
         public ICollection<InventoryTransaction> InventoryTransactions { get; set; } = new List<InventoryTransaction>();
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public Product Product { get; set; }
-        public ICollection<ProductVariantOptionValue> productVariantOptionValues { get; set; } = new List<ProductVariantOptionValue>();
+        public ICollection<ProductVariantOptionValue> ProductVariantOptionValues { get; set; } = new List<ProductVariantOptionValue>();
         public ICollection<CartItem> CartItems  { get; set; } = new List<CartItem>();
     }
 }

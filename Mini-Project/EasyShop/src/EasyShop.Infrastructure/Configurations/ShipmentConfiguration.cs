@@ -25,12 +25,11 @@ namespace EasyShop.Infrastructure.Configurations
                 .HasConversion<string>()
                 .HasMaxLength(30);
 
-            builder.HasIndex(s => s.OrderId);
 
             builder.HasIndex(s => s.TrackingNumber);
 
             builder.HasOne(s => s.Order)
-                .WithMany()
+                .WithMany(x=>x.Shipments)
                 .HasForeignKey(s => s.OrderId)
                 .OnDelete(DeleteBehavior.Restrict);
         }

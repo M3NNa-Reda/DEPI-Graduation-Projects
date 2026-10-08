@@ -18,6 +18,7 @@ namespace EasyShop.Infrastructure.Configurations
 
             builder.HasOne(o => o.Order)
                 .WithMany(o => o.OrderItems)
+                .HasForeignKey(o => o.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
             
             builder.Property(x=>x.ProductName)

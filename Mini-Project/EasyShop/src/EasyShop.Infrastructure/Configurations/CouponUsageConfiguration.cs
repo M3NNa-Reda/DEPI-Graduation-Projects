@@ -12,21 +12,20 @@ namespace EasyShop.Infrastructure.Configurations
             builder.HasKey(cu => cu.Id);
 
             builder.HasOne(cu => cu.Coupon)
-                .WithMany(c => c.Usages)
+                .WithMany(c => c.CouponUsages)
                 .HasForeignKey(cu => cu.CouponId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(cu => cu.User)
-                .WithMany()
+            builder.HasOne(cu => cu.ApplicationUser)
+                .WithMany(x => x.CouponUsages)
                 .HasForeignKey(cu => cu.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(cu => cu.Order)
-                .WithMany()
-                .HasForeignKey(cu => cu.OrderId)
+                .WithOne(x=>x.CouponUsage)
+                .HasForeignKey<CouponUsage>(cu => cu.OrderId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // the sem clint dont use the sem coup on the sem order
             builder.HasIndex(cu => new { cu.CouponId, cu.OrderId })
                 .IsUnique();
 
