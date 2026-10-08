@@ -15,9 +15,12 @@ namespace EasyShop.Domain.Entities
         public ApplicationUser ApplicationUser { get; set; }
         public int? CouponId { get; set; } //FK
         public Coupon Coupon { get; set; }
+        public Payment Payment { get; set; }
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public ICollection<OrderStatusHistory> OrderStatusHistories { get; set; } = new List<OrderStatusHistory>();
         public OrderShippingAddress OrderShippingAddress { get; set; }
+        public CouponUsage? CouponUsage { get; set; }
+        public ICollection<Shipment> Shipments { get; set; } = new List<Shipment>();
 
 
     }

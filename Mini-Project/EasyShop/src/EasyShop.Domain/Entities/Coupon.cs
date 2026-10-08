@@ -15,7 +15,7 @@ namespace EasyShop.Domain.Entities
         public DateTime ExpirationDate { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
-        public ICollection<CouponUsage> Usages { get; set; }
+        public ICollection<CouponUsage> CouponUsages { get; set; }
         public ICollection<Order> Orders { get; set; }
     }
 }

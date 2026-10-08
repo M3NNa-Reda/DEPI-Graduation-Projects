@@ -11,7 +11,6 @@ namespace EasyShop.Domain.Entities
         public PaymentTransactionStatus Status { get; set; }
         public string? GatewayResponse { get; set; }
         public DateTime CreatedAt { get; set; }
-
         public Payment Payment { get; set; }
     }
 }

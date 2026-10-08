@@ -18,6 +18,8 @@ namespace EasyShop.Domain.Entities
         public byte[] RowVersion { get; set; }
         public ICollection<InventoryTransaction> InventoryTransactions { get; set; } = new List<InventoryTransaction>();
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
-
+        public Product Product { get; set; }
+        public ICollection<ProductVariantOptionValue> productVariantOptionValues { get; set; } = new List<ProductVariantOptionValue>();
+        public ICollection<CartItem> CartItems  { get; set; } = new List<CartItem>();
     }
 }
