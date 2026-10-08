@@ -31,10 +31,6 @@ namespace EasyShop.Infrastructure.Configurations
             builder.Property(c => c.MaximumDiscountAmount)
                 .HasPrecision(18, 2);
 
-            builder.HasMany(c => c.CouponUsages)
-                .WithOne(cu => cu.Coupon)
-                .HasForeignKey(cu => cu.CouponId)
-                .OnDelete(DeleteBehavior.Restrict); //import
 
             /*the relationship between Coupon and Order is one-to-many, where one Coupon can be used in 
              many Orders. The foreign key in the Order entity is CouponId, which references the Id of
@@ -42,9 +38,9 @@ namespace EasyShop.Infrastructure.Configurations
              deleted if it is associated with any Orders, preventing orphaned records in the Orders
               table.*/
             builder.HasMany(c => c.Orders)
-                .WithOne()
+                .WithOne(o => o.Coupon)
                 .HasForeignKey(o => o.CouponId)
-                .OnDelete(DeleteBehavior.Restrict); 
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.ToTable(t =>
             {

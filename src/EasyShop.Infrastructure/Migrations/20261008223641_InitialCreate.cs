@@ -254,8 +254,7 @@ namespace EasyShop.Infrastructure.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    CouponId = table.Column<int>(type: "int", nullable: true),
-                    CouponId1 = table.Column<int>(type: "int", nullable: false)
+                    CouponId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -272,12 +271,6 @@ namespace EasyShop.Infrastructure.Migrations
                         principalTable: "Coupons",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Orders_Coupons_CouponId1",
-                        column: x => x.CouponId1,
-                        principalTable: "Coupons",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -336,7 +329,7 @@ namespace EasyShop.Infrastructure.Migrations
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RowVersion = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -357,8 +350,7 @@ namespace EasyShop.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     WishlistId = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
-                    AddedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ProductId1 = table.Column<int>(type: "int", nullable: true)
+                    AddedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -369,11 +361,6 @@ namespace EasyShop.Infrastructure.Migrations
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_WishlistItems_Products_ProductId1",
-                        column: x => x.ProductId1,
-                        principalTable: "Products",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_WishlistItems_Wishlists_WishlistId",
                         column: x => x.WishlistId,
@@ -391,18 +378,11 @@ namespace EasyShop.Infrastructure.Migrations
                     CouponId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     OrderId = table.Column<int>(type: "int", nullable: false),
-                    UsedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ApplicationUserId = table.Column<int>(type: "int", nullable: true),
-                    OrderId1 = table.Column<int>(type: "int", nullable: true)
+                    UsedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CouponUsages", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CouponUsages_ApplicationUsers_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
-                        principalTable: "ApplicationUsers",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_CouponUsages_ApplicationUsers_UserId",
                         column: x => x.UserId,
@@ -421,11 +401,6 @@ namespace EasyShop.Infrastructure.Migrations
                         principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_CouponUsages_Orders_OrderId1",
-                        column: x => x.OrderId1,
-                        principalTable: "Orders",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -522,8 +497,7 @@ namespace EasyShop.Infrastructure.Migrations
                     ShippingFee = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     Status = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     ShippedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeliveredAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    OrderId1 = table.Column<int>(type: "int", nullable: true)
+                    DeliveredAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -534,11 +508,6 @@ namespace EasyShop.Infrastructure.Migrations
                         principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Shipments_Orders_OrderId1",
-                        column: x => x.OrderId1,
-                        principalTable: "Orders",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -570,8 +539,7 @@ namespace EasyShop.Infrastructure.Migrations
                     CartId = table.Column<int>(type: "int", nullable: false),
                     ProductVariantId = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    AddedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ProductVariantId1 = table.Column<int>(type: "int", nullable: true)
+                    AddedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -587,12 +555,7 @@ namespace EasyShop.Infrastructure.Migrations
                         column: x => x.ProductVariantId,
                         principalTable: "ProductVariants",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CartItems_ProductVariants_ProductVariantId1",
-                        column: x => x.ProductVariantId1,
-                        principalTable: "ProductVariants",
-                        principalColumn: "Id");
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -755,11 +718,6 @@ namespace EasyShop.Infrastructure.Migrations
                 column: "ProductVariantId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CartItems_ProductVariantId1",
-                table: "CartItems",
-                column: "ProductVariantId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Carts_UserId",
                 table: "Carts",
                 column: "UserId",
@@ -787,11 +745,6 @@ namespace EasyShop.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_CouponUsages_ApplicationUserId",
-                table: "CouponUsages",
-                column: "ApplicationUserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_CouponUsages_CouponId_OrderId",
                 table: "CouponUsages",
                 columns: new[] { "CouponId", "OrderId" },
@@ -800,14 +753,8 @@ namespace EasyShop.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_CouponUsages_OrderId",
                 table: "CouponUsages",
-                column: "OrderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CouponUsages_OrderId1",
-                table: "CouponUsages",
-                column: "OrderId1",
-                unique: true,
-                filter: "[OrderId1] IS NOT NULL");
+                column: "OrderId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_CouponUsages_UserId",
@@ -833,11 +780,6 @@ namespace EasyShop.Infrastructure.Migrations
                 name: "IX_Orders_CouponId",
                 table: "Orders",
                 column: "CouponId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Orders_CouponId1",
-                table: "Orders",
-                column: "CouponId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_UserId",
@@ -911,23 +853,18 @@ namespace EasyShop.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_OrderItemId",
                 table: "Reviews",
-                column: "OrderItemId",
-                unique: true);
+                column: "OrderItemId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reviews_UserId",
+                name: "IX_Reviews_UserId_OrderItemId",
                 table: "Reviews",
-                column: "UserId");
+                columns: new[] { "UserId", "OrderItemId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Shipments_OrderId",
                 table: "Shipments",
                 column: "OrderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Shipments_OrderId1",
-                table: "Shipments",
-                column: "OrderId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Shipments_TrackingNumber",
@@ -943,11 +880,6 @@ namespace EasyShop.Infrastructure.Migrations
                 name: "IX_WishlistItems_ProductId",
                 table: "WishlistItems",
                 column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_WishlistItems_ProductId1",
-                table: "WishlistItems",
-                column: "ProductId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_WishlistItems_WishlistId_ProductId",

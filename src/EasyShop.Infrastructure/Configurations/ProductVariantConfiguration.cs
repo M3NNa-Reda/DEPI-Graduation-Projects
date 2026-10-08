@@ -14,7 +14,9 @@ namespace EasyShop.Infrastructure.Configurations
             builder.HasOne(x => x.Product)
                 .WithMany(x => x.ProductVariants)
                 .HasForeignKey(x => x.ProductId)
-                .OnDelete(DeleteBehavior.Cascade); 
+                .OnDelete(DeleteBehavior.Cascade);
+            builder.Property(pv => pv.RowVersion)
+                .IsRowVersion();
         }
     }
 }

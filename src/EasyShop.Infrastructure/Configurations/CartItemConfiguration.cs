@@ -12,10 +12,12 @@ public class CartItemConfiguration : IEntityTypeConfiguration<CartItem>
 
         builder.HasOne(ci => ci.Cart)
                .WithMany(c => c.CartItems)
-               .HasForeignKey(ci => ci.CartId);
+               .HasForeignKey(ci => ci.CartId)
+               .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(ci => ci.ProductVariant)
-               .WithMany()
-               .HasForeignKey(ci => ci.ProductVariantId);
+               .WithMany(x => x.CartItems)
+               .HasForeignKey(ci => ci.ProductVariantId)
+               .OnDelete(DeleteBehavior.Restrict);
     }
 }

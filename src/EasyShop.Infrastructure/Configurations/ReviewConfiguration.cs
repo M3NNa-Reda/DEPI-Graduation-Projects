@@ -17,15 +17,19 @@ namespace EasyShop.Infrastructure.Configurations
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(v => v.OrderItem)
-                .WithOne(o => o.Review)
-                .HasForeignKey<Review>(vo => vo.OrderItemId)
+                .WithMany(o => o.Reviews)
+                .HasForeignKey(v => v.OrderItemId)
                 .OnDelete(DeleteBehavior.Restrict);
+
             builder.Property(v => v.CreatedAt)
                 .HasDefaultValueSql("GETUTCDATE()");
 
             builder.Property(v => v.Comment)
                 .IsRequired()
                 .HasMaxLength(1000);
+
+            builder.HasIndex(r => new { r.UserId, r.OrderItemId })
+               .IsUnique();
         }
     }
 }

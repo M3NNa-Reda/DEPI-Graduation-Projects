@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyShop.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20261008190937_InitialCreate")]
+    [Migration("20261008223641_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -196,9 +196,6 @@ namespace EasyShop.Infrastructure.Migrations
                     b.Property<int>("ProductVariantId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProductVariantId1")
-                        .HasColumnType("int");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
@@ -207,8 +204,6 @@ namespace EasyShop.Infrastructure.Migrations
                     b.HasIndex("CartId");
 
                     b.HasIndex("ProductVariantId");
-
-                    b.HasIndex("ProductVariantId1");
 
                     b.ToTable("CartItems");
                 });
@@ -332,16 +327,10 @@ namespace EasyShop.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ApplicationUserId")
-                        .HasColumnType("int");
-
                     b.Property<int>("CouponId")
                         .HasColumnType("int");
 
                     b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("OrderId1")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("UsedAt")
@@ -352,13 +341,8 @@ namespace EasyShop.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationUserId");
-
-                    b.HasIndex("OrderId");
-
-                    b.HasIndex("OrderId1")
-                        .IsUnique()
-                        .HasFilter("[OrderId1] IS NOT NULL");
+                    b.HasIndex("OrderId")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -417,9 +401,6 @@ namespace EasyShop.Infrastructure.Migrations
                     b.Property<int?>("CouponId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CouponId1")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
@@ -457,8 +438,6 @@ namespace EasyShop.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CouponId");
-
-                    b.HasIndex("CouponId1");
 
                     b.HasIndex("UserId");
 
@@ -842,8 +821,10 @@ namespace EasyShop.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
                         .IsRequired()
-                        .HasColumnType("varbinary(max)");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<string>("SKU")
                         .IsRequired()
@@ -909,10 +890,10 @@ namespace EasyShop.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderItemId")
-                        .IsUnique();
+                    b.HasIndex("OrderItemId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId", "OrderItemId")
+                        .IsUnique();
 
                     b.ToTable("Reviews");
                 });
@@ -929,9 +910,6 @@ namespace EasyShop.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("OrderId1")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("ShippedAt")
@@ -958,8 +936,6 @@ namespace EasyShop.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
-
-                    b.HasIndex("OrderId1");
 
                     b.HasIndex("TrackingNumber");
 
@@ -1046,17 +1022,12 @@ namespace EasyShop.Infrastructure.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProductId1")
-                        .HasColumnType("int");
-
                     b.Property<int>("WishlistId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("ProductId1");
 
                     b.HasIndex("WishlistId", "ProductId")
                         .IsUnique();
@@ -1103,14 +1074,10 @@ namespace EasyShop.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("EasyShop.Domain.Entities.ProductVariant", "ProductVariant")
-                        .WithMany()
-                        .HasForeignKey("ProductVariantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EasyShop.Domain.Entities.ProductVariant", null)
                         .WithMany("CartItems")
-                        .HasForeignKey("ProductVariantId1");
+                        .HasForeignKey("ProductVariantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Cart");
 
@@ -1129,10 +1096,6 @@ namespace EasyShop.Infrastructure.Migrations
 
             modelBuilder.Entity("EasyShop.Domain.Entities.CouponUsage", b =>
                 {
-                    b.HasOne("EasyShop.Domain.Entities.ApplicationUser", null)
-                        .WithMany("CouponUsages")
-                        .HasForeignKey("ApplicationUserId");
-
                     b.HasOne("EasyShop.Domain.Entities.Coupon", "Coupon")
                         .WithMany("CouponUsages")
                         .HasForeignKey("CouponId")
@@ -1140,17 +1103,13 @@ namespace EasyShop.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("EasyShop.Domain.Entities.Order", "Order")
-                        .WithMany()
-                        .HasForeignKey("OrderId")
+                        .WithOne("CouponUsage")
+                        .HasForeignKey("EasyShop.Domain.Entities.CouponUsage", "OrderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("EasyShop.Domain.Entities.Order", null)
-                        .WithOne("CouponUsage")
-                        .HasForeignKey("EasyShop.Domain.Entities.CouponUsage", "OrderId1");
-
                     b.HasOne("EasyShop.Domain.Entities.ApplicationUser", "ApplicationUser")
-                        .WithMany()
+                        .WithMany("CouponUsages")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -1175,16 +1134,10 @@ namespace EasyShop.Infrastructure.Migrations
 
             modelBuilder.Entity("EasyShop.Domain.Entities.Order", b =>
                 {
-                    b.HasOne("EasyShop.Domain.Entities.Coupon", null)
+                    b.HasOne("EasyShop.Domain.Entities.Coupon", "Coupon")
                         .WithMany("Orders")
                         .HasForeignKey("CouponId")
                         .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("EasyShop.Domain.Entities.Coupon", "Coupon")
-                        .WithMany()
-                        .HasForeignKey("CouponId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.HasOne("EasyShop.Domain.Entities.ApplicationUser", "ApplicationUser")
                         .WithMany("Orders")
@@ -1351,8 +1304,8 @@ namespace EasyShop.Infrastructure.Migrations
             modelBuilder.Entity("EasyShop.Domain.Entities.Review", b =>
                 {
                     b.HasOne("EasyShop.Domain.Entities.OrderItem", "OrderItem")
-                        .WithOne("Review")
-                        .HasForeignKey("EasyShop.Domain.Entities.Review", "OrderItemId")
+                        .WithMany("Reviews")
+                        .HasForeignKey("OrderItemId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -1370,14 +1323,10 @@ namespace EasyShop.Infrastructure.Migrations
             modelBuilder.Entity("EasyShop.Domain.Entities.Shipment", b =>
                 {
                     b.HasOne("EasyShop.Domain.Entities.Order", "Order")
-                        .WithMany()
+                        .WithMany("Shipments")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("EasyShop.Domain.Entities.Order", null)
-                        .WithMany("Shipments")
-                        .HasForeignKey("OrderId1");
 
                     b.Navigation("Order");
                 });
@@ -1407,14 +1356,10 @@ namespace EasyShop.Infrastructure.Migrations
             modelBuilder.Entity("EasyShop.Domain.Entities.WishlistItem", b =>
                 {
                     b.HasOne("EasyShop.Domain.Entities.Product", "Product")
-                        .WithMany()
+                        .WithMany("WishlistItems")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("EasyShop.Domain.Entities.Product", null)
-                        .WithMany("WishlistItems")
-                        .HasForeignKey("ProductId1");
 
                     b.HasOne("EasyShop.Domain.Entities.Wishlist", "Wishlist")
                         .WithMany("WishlistItems")
@@ -1496,7 +1441,7 @@ namespace EasyShop.Infrastructure.Migrations
 
             modelBuilder.Entity("EasyShop.Domain.Entities.OrderItem", b =>
                 {
-                    b.Navigation("Review");
+                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("EasyShop.Domain.Entities.Payment", b =>

@@ -16,7 +16,7 @@ public class WishlistItemConfiguration : IEntityTypeConfiguration<WishlistItem>
                .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(wi => wi.Product)
-               .WithMany()
+               .WithMany(x=>x.WishlistItems)
                .HasForeignKey(wi => wi.ProductId)
                .OnDelete(DeleteBehavior.Restrict);
 

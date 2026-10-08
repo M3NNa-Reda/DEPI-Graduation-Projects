@@ -12,6 +12,6 @@
         public Order Order { get; set; }
         public int ProductVariantId { get; set; } //FK
         public ProductVariant ProductVariant { get; set; }
-        public Review? Review { get; set; }
+        public ICollection<Review> Reviews { get; set; } = new List<Review>();
     }
 }
