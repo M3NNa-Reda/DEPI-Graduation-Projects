@@ -6,10 +6,9 @@ namespace EasyShop.Application.Interfaces.Repositories
 {
     public interface IGenericRepository<TEntity> where TEntity : class
     {
-        Task<TEntity?> GetById(int id);
-        Task<IEnumerable<TEntity>> GetAll();
-
-        Task Add(TEntity entity);
+        TEntity? GetById(int id);
+        IEnumerable<TEntity> GetAll();
+        void Add(TEntity entity);
         void Update(TEntity entity);
         void Delete(TEntity entity);
 

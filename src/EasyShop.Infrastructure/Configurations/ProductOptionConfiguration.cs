@@ -18,7 +18,7 @@ namespace EasyShop.Infrastructure.Configurations
                     .HasMaxLength(100);
 
             builder.HasOne(x => x.Product)
-                    .WithMany(x => x.ProductOption)
+                    .WithMany(x => x.ProductOptions)
                     .HasForeignKey(x => x.ProductId)
                     .OnDelete(DeleteBehavior.Cascade);
         }

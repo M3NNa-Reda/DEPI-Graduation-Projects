@@ -28,11 +28,11 @@ namespace EasyShop.Infrastructure.Configurations
                 .IsUnique();
 
             builder.HasOne(p => p.Order)
-                .WithMany()
-                .HasForeignKey(p => p.OrderId)
+                .WithOne(p => p.Payment)
+                .HasForeignKey<Payment>(p => p.OrderId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasMany(p => p.Transactions)
+            builder.HasMany(p => p.PaymentTransactions)
                 .WithOne(pt => pt.Payment)
                 .HasForeignKey(pt => pt.PaymentId)
                 .OnDelete(DeleteBehavior.Cascade);

@@ -31,7 +31,7 @@ namespace EasyShop.Infrastructure.Configurations
             builder.Property(c => c.MaximumDiscountAmount)
                 .HasPrecision(18, 2);
 
-            builder.HasMany(c => c.Usages)
+            builder.HasMany(c => c.CouponUsages)
                 .WithOne(cu => cu.Coupon)
                 .HasForeignKey(cu => cu.CouponId)
                 .OnDelete(DeleteBehavior.Restrict); //import

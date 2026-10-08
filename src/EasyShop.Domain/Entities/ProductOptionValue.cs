@@ -11,7 +11,7 @@ namespace EasyShop.Domain.Entities
         public int ProductOptionId { get; set; }
         public string Value { get; set; }
         public ProductOption  ProductOption { get; set; }
-        public ICollection<ProductVariantOptionValue> productVariantOptionValues { get; set; } = new List<ProductVariantOptionValue>();
+        public ICollection<ProductVariantOptionValue> ProductVariantOptionValues { get; set; } = new List<ProductVariantOptionValue>();
 
     }
 }

@@ -24,7 +24,7 @@ namespace EasyShop.Infrastructure.Configurations
                          .HasDefaultValue(0);
 
                 builder.HasOne(x => x.Product)
-                        .WithMany(x => x.ProductImage)
+                        .WithMany(x => x.ProductImages)
                         .HasForeignKey(x => x.ProductId)
                         .OnDelete(DeleteBehavior.Cascade);
 

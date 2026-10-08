@@ -12,10 +12,19 @@ public class WishlistItemConfiguration : IEntityTypeConfiguration<WishlistItem>
 
         builder.HasOne(wi => wi.Wishlist)
                .WithMany(w => w.WishlistItems)
-               .HasForeignKey(wi => wi.WishlistId);
+               .HasForeignKey(wi => wi.WishlistId)
+               .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(wi => wi.Product)
                .WithMany()
-               .HasForeignKey(wi => wi.ProductId);
+               .HasForeignKey(wi => wi.ProductId)
+               .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasIndex(wi => new
+        {
+            wi.WishlistId,
+            wi.ProductId
+        })
+        .IsUnique();
     }
 }

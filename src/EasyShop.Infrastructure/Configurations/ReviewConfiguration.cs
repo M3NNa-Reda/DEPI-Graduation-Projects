@@ -14,7 +14,7 @@ namespace EasyShop.Infrastructure.Configurations
             builder.HasOne(v => v.ApplicationUser)
                 .WithMany(u => u.Reviews)
                 .HasForeignKey(vu => vu.UserId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(v => v.OrderItem)
                 .WithOne(o => o.Review)

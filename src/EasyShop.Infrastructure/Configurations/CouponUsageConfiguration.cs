@@ -12,11 +12,11 @@ namespace EasyShop.Infrastructure.Configurations
             builder.HasKey(cu => cu.Id);
 
             builder.HasOne(cu => cu.Coupon)
-                .WithMany(c => c.Usages)
+                .WithMany(c => c.CouponUsages)
                 .HasForeignKey(cu => cu.CouponId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(cu => cu.User)
+            builder.HasOne(cu => cu.ApplicationUser)
                 .WithMany()
                 .HasForeignKey(cu => cu.UserId)
                 .OnDelete(DeleteBehavior.Restrict);

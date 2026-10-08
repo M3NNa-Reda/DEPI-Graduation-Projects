@@ -12,19 +12,19 @@ namespace EasyShop.Infrastructure.Configurations
         public void Configure(EntityTypeBuilder<ProductVariantOptionValue> builder)
         {
 
-            builder.HasKey( x => 
-                            new { 
-                                x.ProductVariantId, 
-                                x.ProductOptionValueId 
-                         });
+            builder.HasKey(x => new
+            {
+                x.ProductVariantId,
+                x.ProductOptionValueId
+            });
 
             builder.HasOne(x => x.ProductVariant)
-                   .WithMany(v => v.productVariantOptionValues)
+                   .WithMany(v => v.ProductVariantOptionValues)
                    .HasForeignKey(x => x.ProductVariantId)
                    .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(x => x.ProductOptionValue)
-                   .WithMany(o => o.productVariantOptionValues)
+                   .WithMany(o => o.ProductVariantOptionValues)
                    .HasForeignKey(x => x.ProductOptionValueId)
                    .OnDelete(DeleteBehavior.Restrict);
 
