@@ -8,6 +8,9 @@ namespace EasyShop.Application.Interfaces.Repositories
     {
         IProductRepository Products { get; }
         IOrderRepository Orders { get; }
+        ICouponRepository Coupons { get; }
+        ICouponUsageRepository CouponUsages { get; }
+        IPaymentRepository Payments { get; }
 
         Task<int> CompleteAsync();
     }

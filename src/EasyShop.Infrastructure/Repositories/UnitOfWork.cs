@@ -12,14 +12,23 @@ namespace EasyShop.Infrastructure.Repositories
         public IProductRepository Products { get; private set; }
 
         public IOrderRepository Orders { get; private set; }
+        public ICouponRepository Coupons { get; private set; }
+        public ICouponUsageRepository CouponUsages { get; private set; }
+        public IPaymentRepository Payments { get; private set; }
 
         public UnitOfWork(AppDbContext context,
             IProductRepository productRepository,
-            IOrderRepository orderRepository)
+            IOrderRepository orderRepository,
+            ICouponRepository couponRepository ,
+            ICouponUsageRepository couponUsageRepository,
+            IPaymentRepository paymentRepository)
         {
             _context = context;
             Products = productRepository;
             Orders = orderRepository;
+            Coupons = couponRepository;
+            CouponUsages = couponUsageRepository;
+            Payments = paymentRepository;
         }
 
         public async Task<int> CompleteAsync()

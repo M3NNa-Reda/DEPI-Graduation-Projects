@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace EasyShop.Application.Interfaces.Services
+namespace EasyShop.Application.DTOs.Order
 {
-    internal interface Interface1
+    public class CreateOrderRequestDto
     {
     }
 }
