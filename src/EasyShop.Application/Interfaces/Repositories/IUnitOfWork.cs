@@ -11,7 +11,8 @@ namespace EasyShop.Application.Interfaces.Repositories
         ICouponRepository Coupons { get; }
         ICouponUsageRepository CouponUsages { get; }
         IPaymentRepository Payments { get; }
-
+        ICartRepository  Carts { get; }
+        IReviewRepository Reviews { get; }
         Task<int> CompleteAsync();
     }
 }
