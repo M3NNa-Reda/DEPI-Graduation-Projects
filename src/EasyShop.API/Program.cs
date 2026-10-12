@@ -21,6 +21,10 @@ namespace EasyShop.API
             builder.Services.AddScoped<ICouponRepository, CouponRepository>();
             builder.Services.AddScoped<ICouponUsageRepository, CouponUsageRepository>();
             builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+            builder.Services.AddScoped<ICartRepository, CartRepository>();
+            builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IWishlistRepository, WishlistRepository>();
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
