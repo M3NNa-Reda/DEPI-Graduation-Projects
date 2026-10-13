@@ -2,6 +2,8 @@ using EasyShop.Application.Interfaces.Repositories;
 using EasyShop.Infrastructure.Persistence.Context;
 using EasyShop.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
+using EasyShop.Application.Interfaces.Services;
+using EasyShop.Application.Services;
 
 namespace EasyShop.API
 {
@@ -25,7 +27,8 @@ namespace EasyShop.API
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IWishlistRepository, WishlistRepository>();
-
+            builder.Services.AddScoped<ICouponService, CouponService>();
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
