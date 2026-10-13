@@ -4,13 +4,13 @@ using System.Text;
 
 namespace EasyShop.Application.Interfaces.Repositories
 {
-    public interface IGenericRepository<TEntity> where TEntity : class
+    public interface IGenericRepository<T> where T : class
     {
-        TEntity? GetById(int id);
-        IEnumerable<TEntity> GetAll();
-        void Add(TEntity entity);
-        void Update(TEntity entity);
-        void Delete(TEntity entity);
+        Task<T?> GetById(int id);
+        Task<IEnumerable<T>> GetAll();
+        Task AddAsync(T entity);
+        void Update(T entity);
+        void Delete(T entity);
 
     }
 }

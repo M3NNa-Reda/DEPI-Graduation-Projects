@@ -7,6 +7,6 @@ namespace EasyShop.Application.Interfaces.Repositories
 {
     public interface IProductRepository : IGenericRepository<Product>
     {
-        IEnumerable<Product> GetProductsByCategory(int categoryId);
+        Task<IEnumerable<Product>> GetProductsByCategory(int categoryId);
     }
 }

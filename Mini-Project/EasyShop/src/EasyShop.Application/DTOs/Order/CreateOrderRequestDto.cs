@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace EasyShop.Infrastructure.Repositories
+namespace EasyShop.Application.DTOs.Order
 {
-    internal class Class1
+    public class CreateOrderRequestDto
     {
     }
 }
