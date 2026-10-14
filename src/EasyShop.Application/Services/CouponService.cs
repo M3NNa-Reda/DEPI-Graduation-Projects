@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using EasyShop.Application.Interfaces.Repositories;
+﻿using EasyShop.Application.Interfaces.Repositories;
 using EasyShop.Application.Interfaces.Services;
 using EasyShop.Domain.Entities;
 using EasyShop.Domain.Enums;
@@ -11,7 +8,6 @@ namespace EasyShop.Application.Services
     public class CouponService : ICouponService
     {
         private readonly IUnitOfWork _unitOfWork;
-
         public CouponService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
@@ -50,23 +46,25 @@ namespace EasyShop.Application.Services
 
             if (coupon.MaximumDiscountAmount.HasValue)
                 discount = Math.Min(discount, coupon.MaximumDiscountAmount.Value);
-
             return Math.Min(discount, orderAmount);
         }
-
         public bool CheckUsageLimit(Coupon coupon)
         {
             return !coupon.UsageLimit.HasValue || coupon.UsedCount < coupon.UsageLimit.Value;
         }
-
         public bool CheckExpiration(Coupon coupon)
         {
             var now = DateTime.UtcNow;
             return coupon.IsActive && now >= coupon.StartDate && now <= coupon.ExpirationDate;
         }
-
         public async Task ApplyCouponAsync(Coupon coupon, int userId, int orderId)
         {
+            if (!CheckExpiration(coupon))
+                throw new InvalidOperationException("This coupon is expired or not active yet.");
+            var incremented = await _unitOfWork.Coupons.TryIncrementUsageAsync(coupon.Id);
+            if (!incremented)
+                throw new InvalidOperationException("This coupon has reached its usage limit.");
+
             var usage = new CouponUsage
             {
                 CouponId = coupon.Id,
@@ -75,10 +73,6 @@ namespace EasyShop.Application.Services
                 UsedAt = DateTime.UtcNow
             };
             await _unitOfWork.CouponUsages.AddAsync(usage);
-
-            coupon.UsedCount += 1;
-            _unitOfWork.Coupons.Update(coupon);
-
             await _unitOfWork.CompleteAsync();
         }
     }
