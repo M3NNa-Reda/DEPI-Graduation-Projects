@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EasyShop.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -13,6 +14,7 @@ namespace EasyShop.Application.Interfaces.Repositories
         IPaymentRepository Payments { get; }
         ICartRepository  Carts { get; }
         IReviewRepository Reviews { get; }
+        IGenericRepository<Category> Categories { get; }
         IUserRepository Users { get; }
         IWishlistRepository Wishlists { get; }
         Task<int> CompleteAsync();

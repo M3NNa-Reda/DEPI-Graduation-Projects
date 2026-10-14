@@ -1,4 +1,6 @@
 using EasyShop.Application.Interfaces.Repositories;
+using EasyShop.Application.Interfaces.Services;
+using EasyShop.Application.Services;
 using EasyShop.Infrastructure.Persistence.Context;
 using EasyShop.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +18,11 @@ namespace EasyShop.API
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionString")));
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<ICouponRepository, CouponRepository>();
             builder.Services.AddScoped<ICouponUsageRepository, CouponUsageRepository>();
@@ -25,7 +31,6 @@ namespace EasyShop.API
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IWishlistRepository, WishlistRepository>();
-
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
