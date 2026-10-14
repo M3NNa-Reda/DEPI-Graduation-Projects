@@ -1,5 +1,6 @@
 ﻿using EasyShop.Application.Interfaces.Repositories;
 using EasyShop.Infrastructure.Persistence.Context;
+using EasyShop.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,6 +18,7 @@ namespace EasyShop.Infrastructure.Repositories
         public IPaymentRepository Payments { get; private set; }
         public ICartRepository Carts { get; private set; }
         public IReviewRepository Reviews { get; private set; }
+        public IGenericRepository<Category> Categories { get; private set; }
         public UnitOfWork(AppDbContext context,
             IProductRepository productRepository,
             IOrderRepository orderRepository,
@@ -24,7 +26,8 @@ namespace EasyShop.Infrastructure.Repositories
             ICouponUsageRepository couponUsageRepository,
             IPaymentRepository paymentRepository,
             ICartRepository cartRepository,
-            IReviewRepository reviewRepository)
+            IReviewRepository reviewRepository,
+            IGenericRepository<Category> categoryRepository)
         {
             _context = context;
             Products = productRepository;
@@ -34,6 +37,7 @@ namespace EasyShop.Infrastructure.Repositories
             Payments = paymentRepository;
             Carts = cartRepository;
             Reviews = reviewRepository;
+            Categories = categoryRepository;
         }
 
         public async Task<int> CompleteAsync()
