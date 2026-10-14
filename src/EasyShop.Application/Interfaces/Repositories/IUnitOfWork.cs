@@ -13,6 +13,8 @@ namespace EasyShop.Application.Interfaces.Repositories
         IPaymentRepository Payments { get; }
         ICartRepository  Carts { get; }
         IReviewRepository Reviews { get; }
+        IUserRepository Users { get; }
+        IWishlistRepository Wishlists { get; }
         Task<int> CompleteAsync();
     }
 }

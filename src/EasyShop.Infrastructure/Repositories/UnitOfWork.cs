@@ -17,6 +17,8 @@ namespace EasyShop.Infrastructure.Repositories
         public IPaymentRepository Payments { get; private set; }
         public ICartRepository Carts { get; private set; }
         public IReviewRepository Reviews { get; private set; }
+        public IUserRepository Users { get; private set; }
+        public IWishlistRepository Wishlists { get; private set; }
         public UnitOfWork(AppDbContext context,
             IProductRepository productRepository,
             IOrderRepository orderRepository,
@@ -24,7 +26,9 @@ namespace EasyShop.Infrastructure.Repositories
             ICouponUsageRepository couponUsageRepository,
             IPaymentRepository paymentRepository,
             ICartRepository cartRepository,
-            IReviewRepository reviewRepository)
+            IReviewRepository reviewRepository,
+            IUserRepository userRepository,
+            IWishlistRepository wishlistRepository)
         {
             _context = context;
             Products = productRepository;
@@ -34,6 +38,8 @@ namespace EasyShop.Infrastructure.Repositories
             Payments = paymentRepository;
             Carts = cartRepository;
             Reviews = reviewRepository;
+            Users = userRepository;
+            Wishlists = wishlistRepository;
         }
 
         public async Task<int> CompleteAsync()
