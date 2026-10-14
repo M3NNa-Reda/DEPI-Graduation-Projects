@@ -346,6 +346,9 @@ namespace EasyShop.Infrastructure.Migrations
                     b.HasIndex("CouponId", "OrderId")
                         .IsUnique();
 
+                    b.HasIndex("CouponId", "UserId")
+                        .IsUnique();
+
                     b.ToTable("CouponUsages");
                 });
 
