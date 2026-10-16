@@ -11,7 +11,7 @@ namespace EasyShop.Application.Interfaces.Services
         Task<IEnumerable<OrderSummaryDto>> GetMyOrdersAsync(int userId);
         Task<OrderDetailsDto?> GetMyOrderByIdAsync(int userId,int orderId);
         Task CancelOrderAsync(int userId, int orderId);
-        Task<IEnumerable<OrderSummaryDto>> GetAllOrdersAsync();
+        Task<IEnumerable<OrderSummaryDto>> GetRecentOrdersAsync(int page, int pageSize);
         Task<OrderDetailsDto?> GetOrderByIdForAdminAsync(int orderId);
         Task UpdateOrderStatusAsync(int adminId,int orderId,UpdateOrderStatusDto dto);
     }

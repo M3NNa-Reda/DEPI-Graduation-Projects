@@ -13,6 +13,5 @@ namespace EasyShop.Application.DTOs.Order
         public decimal TotalAmount { get; set; }
         public DateTime CreatedAt { get; set; }
         public int TotalItems { get; set; }
-        public PaymentStatus? PaymentStatus { get; set; }
     }
 }

@@ -141,10 +141,11 @@ namespace EasyShop.Application.Services
                 throw new KeyNotFoundException("Order not found.");
             if (order.UserId != userId)
                 throw new UnauthorizedAccessException("You are not authorized to cancel this order.");
-            if (order.Status==OrderStatus.Processing)
-                throw new InvalidOperationException("Cannot cancel an order that is currently being processed.");
             if (order.Status == OrderStatus.Cancelled)
                 throw new InvalidOperationException("Order is already cancelled.");
+            if (order.Status!=OrderStatus.Pending)
+                throw new InvalidOperationException("Cannot cancel an order that is currently being processed.");
+            
             var items = await _unitOfWork.OrderItems.FindByConditionAsync(o => o.OrderId == orderId);
             var productVariantIds = items.Select(x => x.ProductVariantId).ToList();
             var productVariants = await _unitOfWork.ProductVariants.GetVariantsByIdsAsync(productVariantIds);
@@ -153,66 +154,161 @@ namespace EasyShop.Application.Services
                 var productVariant = productVariants.FirstOrDefault(p => p.Id == item.ProductVariantId);
                 if(productVariant != null)
                 {
-                    if (!productVariant.IsActive && productVariant.StockQuantity == 0) productVariant.IsActive = true;
+                    //if (!productVariant.IsActive && productVariant.StockQuantity == 0) productVariant.IsActive = true; مش دايما صح
                     productVariant.StockQuantity += item.Quantity;
                     _unitOfWork.ProductVariants.Update(productVariant);
                 }
                 
             }
+            var oldStatus = order.Status;
             order.Status=OrderStatus.Cancelled;
             _unitOfWork.Orders.Update(order);
+            await _unitOfWork.OrderStatusHistories.AddAsync(
+                new OrderStatusHistory
+                {
+                    OrderId = order.Id,
+                    OldStatus = oldStatus,
+                    NewStatus = OrderStatus.Cancelled,
+                    ChangedAt = DateTime.UtcNow,
+                    ChangedByUserId = userId,
+                    Notes = $"Order cancelled by customer Id: {userId}."
+                });
             await _unitOfWork.CompleteAsync();
         }
 
        
-        // admin
         public async Task<IEnumerable<OrderSummaryDto>> GetRecentOrdersAsync(int page, int pageSize)
         {
             if (page < 1) page = 1;
             if(pageSize < 1) pageSize = 10;
             var orders = await _unitOfWork.Orders.GetRecentOrdersAsync(page, pageSize);
-            /*
-             public int Id { get; set; }
-        public OrderStatus Status { get; set; }
-        public decimal TotalAmount { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public int TotalItems { get; set; }
-        public PaymentStatus? PaymentStatus { get; set; }*/
-            var orderSummaryDtos = new List<OrderSummaryDto>();
-            foreach (var order in orders)
+            return orders.Select(order => new OrderSummaryDto
             {
-                orderSummaryDtos.Add(new OrderSummaryDto
+                Id = order.Id,
+                Status = order.Status,
+                TotalAmount = order.TotalAmount,
+                CreatedAt = order.CreatedAt,
+                TotalItems = order.OrderItems?.Count ?? 0,
+            });
+
+        }
+
+        public async Task<OrderDetailsDto?> GetMyOrderByIdAsync(int userId, int orderId)
+        {
+            var user = await _unitOfWork.Users.GetByIdAsync(userId);
+            if (user == null)
+                throw new KeyNotFoundException("User not found.");
+
+            var order = await _unitOfWork.Orders.GetOrderWithItemsByUserIdAsync(userId, orderId);
+            if (order == null)
+                throw new KeyNotFoundException("Order not found.");
+            if (order.UserId != userId)
+                throw new UnauthorizedAccessException("You are not authorized to see this order.");
+
+            var couponId=order.CouponId;
+            Coupon? coupon = null;
+            if (couponId != null)
+                coupon = await _unitOfWork.Coupons.GetByIdAsync((int)couponId);
+
+            return new OrderDetailsDto
+            {
+                Id = order.Id,
+                Status = order.Status,
+                Subtotal = order.Subtotal,
+                DiscountAmount = order.DiscountAmount,
+                TotalAmount = order.TotalAmount,
+                CouponCode = coupon?.Code,
+                CreatedAt = order.CreatedAt,
+                UpdatedAt = order.UpdatedAt,
+                Items = order.OrderItems.Select(i => new OrderItemDto
                 {
-                    Id = order.Id,
-                    Status = order.Status,
-                    TotalAmount = order.TotalAmount,
-                    CreatedAt = order.CreatedAt,
-                    TotalItems = order.OrderItems.Count,
-                    PaymentStatus = order.Payment.Status
-                });
-            }
+                    ProductVariantId = i.ProductVariantId,   // نعمل لينك يرجعه لل product
+                    ProductName = i.ProductName,
+                    SKU = i.SKU,
+                    UnitPrice = i.UnitPrice,
+                    Quantity = i.Quantity,
+                    TotalPrice = i.TotalPrice
+                }).ToList()
+            };
 
-            return orders;
         }
 
-        public Task<OrderDetailsDto?> GetMyOrderByIdAsync(int userId, int orderId)
+        public async Task<IEnumerable<OrderSummaryDto>> GetMyOrdersAsync(int userId)
         {
-            throw new NotImplementedException();
+            var user = await _unitOfWork.Users.GetByIdAsync(userId);
+            if (user == null)
+                throw new KeyNotFoundException("User not found.");
+            var orders= await _unitOfWork.Orders.GetOrdersByUserIdAsync(userId);
+            return orders.Select(order => new OrderSummaryDto
+            {
+                Id = order.Id,
+                Status = order.Status,
+                TotalAmount = order.TotalAmount,
+                CreatedAt = order.CreatedAt,
+                TotalItems = order.OrderItems?.Count ?? 0,
+            });
+
+        }
+        // للادمن بس
+        public async Task<OrderDetailsDto?> GetOrderByIdForAdminAsync(int orderId)
+        {
+            var order = await _unitOfWork.Orders.GetOrderWithItemsAsync(orderId);
+            if (order == null)
+                throw new KeyNotFoundException("Order not found.");
+            var couponId = order.CouponId;
+            Coupon? coupon = null;
+            if (couponId != null)
+                coupon = await _unitOfWork.Coupons.GetByIdAsync((int)couponId);
+            return new OrderDetailsDto
+            {
+                Id = order.Id,
+                Status = order.Status,
+                Subtotal = order.Subtotal,
+                DiscountAmount = order.DiscountAmount,
+                TotalAmount = order.TotalAmount,
+                CouponCode = coupon?.Code,
+                CreatedAt = order.CreatedAt,
+                UpdatedAt = order.UpdatedAt,
+                Items = order.OrderItems.Select(i => new OrderItemDto
+                {
+                    ProductVariantId = i.ProductVariantId,  
+                    ProductName = i.ProductName,
+                    SKU = i.SKU,
+                    UnitPrice = i.UnitPrice,
+                    Quantity = i.Quantity,
+                    TotalPrice = i.TotalPrice
+                }).ToList()
+            };
+
         }
 
-        public Task<IEnumerable<OrderSummaryDto>> GetMyOrdersAsync(int userId)
+        // للادمن بس
+        public async Task UpdateOrderStatusAsync(int adminId, int orderId, UpdateOrderStatusDto dto)
         {
-            throw new NotImplementedException();
-        }
+            var admin = await _unitOfWork.Users.GetByIdAsync(adminId);
+            if (admin == null)
+                throw new KeyNotFoundException("Admin not found.");
 
-        public Task<OrderDetailsDto?> GetOrderByIdForAdminAsync(int orderId)
-        {
-            throw new NotImplementedException();
-        }
+            var order = await _unitOfWork.Orders.GetByIdAsync(orderId);
+            if (order == null)
+                throw new KeyNotFoundException("Order not found.");
+            if (order.Status == dto.Status)
+                throw new InvalidOperationException($"Order is already {dto.Status}.");
 
-        public Task UpdateOrderStatusAsync(int adminId, int orderId, UpdateOrderStatusDto dto)
-        {
-            throw new NotImplementedException();
+            var orderStatusHistory = new OrderStatusHistory
+            {
+                OldStatus = order.Status,
+                NewStatus = dto.Status,
+                Notes = dto.Notes,
+                ChangedAt = DateTime.UtcNow,
+                OrderId = orderId,
+                ChangedByUserId = adminId
+            };
+            order.Status=dto.Status;
+            order.UpdatedAt= DateTime.UtcNow;
+             _unitOfWork.Orders.Update(order); 
+            await _unitOfWork.OrderStatusHistories.AddAsync(orderStatusHistory);
+            await _unitOfWork.CompleteAsync();
         }
     }
 }

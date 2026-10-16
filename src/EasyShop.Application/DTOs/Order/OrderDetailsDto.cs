@@ -17,5 +17,6 @@ namespace EasyShop.Application.DTOs.Order
         public string? CouponCode { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
+        public List<OrderItemDto> Items { get; set; } = new();
     }
 }
