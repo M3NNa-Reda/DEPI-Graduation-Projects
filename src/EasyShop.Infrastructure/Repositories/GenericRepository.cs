@@ -3,6 +3,7 @@ using EasyShop.Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace EasyShop.Infrastructure.Repositories
@@ -14,12 +15,12 @@ namespace EasyShop.Infrastructure.Repositories
         {
             _context = context;
         }
-        public async Task<IEnumerable<T>> GetAll()
+        public async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _context.Set<T>().ToListAsync();
         }
 
-        public async Task<T?> GetById(int id)
+        public async Task<T?> GetByIdAsync(int id)
         {
             return await _context.Set<T>().FindAsync(id);
         }
@@ -35,6 +36,10 @@ namespace EasyShop.Infrastructure.Repositories
         {
             _context.Set<T>().Remove(entity);
         }
-
+        //Expression -> مخصص للترجمة من C# إلى SQL عشان يكلم الداتابيز بكفاءة (LINQ to Entities).
+        public async Task<IEnumerable<T>> FindByConditionAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _context.Set<T>().Where(predicate).ToListAsync();
+        }
     }
 }

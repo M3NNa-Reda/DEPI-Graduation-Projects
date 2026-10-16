@@ -18,12 +18,12 @@ namespace EasyShop.Application.Services
 
         public async Task<Product?> GetProductByIdAsync(int id)
         {
-            return await _unitOfWork.Products.GetById(id);
+            return await _unitOfWork.Products.GetByIdAsync(id);
         }
 
         public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
-            return await _unitOfWork.Products.GetAll();
+            return await _unitOfWork.Products.GetAllAsync();
         }
 
         public async Task<IEnumerable<Product>> GetProductsByCategoryAsync(int categoryId)

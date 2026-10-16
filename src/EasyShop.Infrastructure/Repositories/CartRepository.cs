@@ -19,5 +19,12 @@ namespace EasyShop.Infrastructure.Repositories
                  .Include(item => item.CartItems)
                  .FirstOrDefaultAsync(c => c.UserId == userId);
         }
+
+
+
+        public async Task RemoveCartItems(IEnumerable<CartItem> cartItems)
+        {
+              _context.RemoveRange(cartItems);
+        }
     }
 }
