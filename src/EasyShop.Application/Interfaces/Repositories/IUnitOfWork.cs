@@ -1,9 +1,4 @@
-﻿using EasyShop.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EasyShop.Application.Interfaces.Repositories
+﻿namespace EasyShop.Application.Interfaces.Repositories
 {
     public interface IUnitOfWork: IDisposable
     {
@@ -15,6 +10,7 @@ namespace EasyShop.Application.Interfaces.Repositories
         ICartRepository  Carts { get; }
         IReviewRepository Reviews { get; }
         IGenericRepository<Category> Categories { get; }
+        IGenericRepository<Brand> Brands { get; }
         IUserRepository Users { get; }
         IWishlistRepository Wishlists { get; }
         IProductVariantRepository ProductVariants { get; }

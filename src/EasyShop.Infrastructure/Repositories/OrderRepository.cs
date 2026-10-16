@@ -1,11 +1,4 @@
-﻿using EasyShop.Application.Interfaces.Repositories;
-using EasyShop.Domain.Entities;
-using EasyShop.Domain.Enums;
-using EasyShop.Infrastructure.Persistence.Context;
-using Microsoft.EntityFrameworkCore;
-
-
-namespace EasyShop.Infrastructure.Repositories
+﻿namespace EasyShop.Infrastructure.Repositories
 {
     public class OrderRepository : GenericRepository<Order>, IOrderRepository
     {

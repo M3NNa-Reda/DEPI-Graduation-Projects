@@ -1,0 +1,16 @@
+﻿@model HomeViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="mb-4">
+    <h1 class="h3 mb-1">EasyShop Dashboard</h1>
+    <p class="text-muted mb-0">A quick overview of your catalog.</p>
+</div>
+
+<div class="row g-3">
+    @foreach (var card in Model.Cards)
+    {
+        <partial name="_StatCard" model="card" />
+    }
+</div>

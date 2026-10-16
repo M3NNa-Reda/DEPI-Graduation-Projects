@@ -1,10 +1,4 @@
-﻿using EasyShop.Domain.Entities;
-using EasyShop.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EasyShop.Application.Interfaces.Repositories
+﻿namespace EasyShop.Application.Interfaces.Repositories
 {
     public interface IOrderRepository:IGenericRepository<Order>
     {

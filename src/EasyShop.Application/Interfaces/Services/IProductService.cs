@@ -1,9 +1,4 @@
-﻿
-using EasyShop.Domain.Entities;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace EasyShop.Application.Interfaces.Services
+﻿namespace EasyShop.Application.Interfaces.Services
 {
     public interface IProductService
     {

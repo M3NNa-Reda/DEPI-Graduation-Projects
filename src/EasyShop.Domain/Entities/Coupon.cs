@@ -1,5 +1,4 @@
-﻿using EasyShop.Domain.Enums;
-namespace EasyShop.Domain.Entities
+﻿namespace EasyShop.Domain.Entities
 {
     public class Coupon
     {

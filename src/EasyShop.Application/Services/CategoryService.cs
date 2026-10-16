@@ -1,11 +1,4 @@
-﻿
-using EasyShop.Application.Interfaces.Repositories;
-using EasyShop.Application.Interfaces.Services;
-using EasyShop.Domain.Entities;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace EasyShop.Application.Services
+﻿namespace EasyShop.Application.Services
 {
     public class CategoryService : ICategoryService
     {

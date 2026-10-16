@@ -1,7 +1,4 @@
-﻿using EasyShop.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-
-namespace EasyShop.Infrastructure.Persistence.Context
+﻿namespace EasyShop.Infrastructure.Persistence.Context
 {
     public class AppDbContext: DbContext
     {

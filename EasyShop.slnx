@@ -4,5 +4,6 @@
     <Project Path="src/EasyShop.Application/EasyShop.Application.csproj" />
     <Project Path="src/EasyShop.Domain/EasyShop.Domain.csproj" />
     <Project Path="src/EasyShop.Infrastructure/EasyShop.Infrastructure.csproj" />
+    <Project Path="src/EasyShop.MVC/EasyShop.MVC.csproj" />
   </Folder>
 </Solution>

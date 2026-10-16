@@ -1,10 +1,4 @@
-﻿using EasyShop.Application.Interfaces.Repositories;
-using EasyShop.Infrastructure.Persistence.Context;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Text;
+﻿using System.Linq.Expressions;
 
 namespace EasyShop.Infrastructure.Repositories
 {

@@ -1,10 +1,4 @@
-﻿using EasyShop.API.Helpers.Extensions;
-using EasyShop.Application.DTOs.Order;
-using EasyShop.Application.Interfaces.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-
-namespace EasyShop.API.Controllers
+﻿namespace EasyShop.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

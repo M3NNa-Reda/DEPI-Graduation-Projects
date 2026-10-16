@@ -1,9 +1,4 @@
-﻿using EasyShop.Application.DTOs.Order;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EasyShop.Application.Interfaces.Services
+﻿namespace EasyShop.Application.Interfaces.Services
 {
     public interface IOrderService
     {

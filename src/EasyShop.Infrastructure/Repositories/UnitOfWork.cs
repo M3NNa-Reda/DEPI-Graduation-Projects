@@ -1,11 +1,4 @@
-﻿using EasyShop.Application.Interfaces.Repositories;
-using EasyShop.Infrastructure.Persistence.Context;
-using EasyShop.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EasyShop.Infrastructure.Repositories
+﻿namespace EasyShop.Infrastructure.Repositories
 {
     public class UnitOfWork:IUnitOfWork
     {
@@ -19,6 +12,7 @@ namespace EasyShop.Infrastructure.Repositories
         public ICartRepository Carts { get; private set; }
         public IReviewRepository Reviews { get; private set; }
         public IGenericRepository<Category> Categories { get; private set; }
+        public IGenericRepository<Brand> Brands { get; private set; }
         public IUserRepository Users { get; private set; }
         public IWishlistRepository Wishlists { get; private set; }
         public IProductVariantRepository ProductVariants { get; private set; }
@@ -35,6 +29,7 @@ namespace EasyShop.Infrastructure.Repositories
             ICartRepository cartRepository,
             IReviewRepository reviewRepository,
             IGenericRepository<Category> categoryRepository,
+            IGenericRepository<Brand> brandRepository,
             IUserRepository userRepository,
             IWishlistRepository wishlistRepository,
             IProductVariantRepository productVariantRepository,
@@ -52,6 +47,7 @@ namespace EasyShop.Infrastructure.Repositories
             Carts = cartRepository;
             Reviews = reviewRepository;
             Categories = categoryRepository;
+            Brands = brandRepository;
             Users = userRepository;
             Wishlists = wishlistRepository;
             ProductVariants = productVariantRepository;

@@ -1,0 +1,11 @@
+﻿global using System.ComponentModel.DataAnnotations;
+global using System.Diagnostics;
+global using Microsoft.AspNetCore.Builder;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.AspNetCore.Mvc.Rendering;
+global using Microsoft.Extensions.DependencyInjection;
+global using EasyShop.Application.Interfaces.Services;
+global using EasyShop.Domain.Entities;
+global using EasyShop.Application.DTOs.Order;
+global using EasyShop.MVC.Helpers.Extensions;
+global using Microsoft.AspNetCore.Authorization;

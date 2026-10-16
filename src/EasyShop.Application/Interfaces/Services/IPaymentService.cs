@@ -1,9 +1,4 @@
-﻿
-
-using EasyShop.Domain.Entities;
-using EasyShop.Domain.Enums;
-
-namespace EasyShop.Application.Interfaces.Services
+﻿namespace EasyShop.Application.Interfaces.Services
 {
     public interface IPaymentService
     {
