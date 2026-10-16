@@ -42,7 +42,7 @@ namespace EasyShop.Application.Services
         }
         public async Task MarkAsPaidAsync(int paymentId)
         {
-            var payment = await _unitOfWork.Payments.GetById(paymentId)
+            var payment = await _unitOfWork.Payments.GetByIdAsync(paymentId)
                 ?? throw new InvalidOperationException("Payment not found.");
 
             payment.Status = PaymentStatus.Paid;
@@ -53,7 +53,7 @@ namespace EasyShop.Application.Services
         }
         public async Task MarkAsFailedAsync(int paymentId)
         {
-            var payment = await _unitOfWork.Payments.GetById(paymentId)
+            var payment = await _unitOfWork.Payments.GetByIdAsync(paymentId)
                 ?? throw new InvalidOperationException("Payment not found.");
 
             payment.Status = PaymentStatus.Failed;

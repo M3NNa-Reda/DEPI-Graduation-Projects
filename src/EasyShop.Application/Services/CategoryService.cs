@@ -18,12 +18,12 @@ namespace EasyShop.Application.Services
 
         public async Task<Category?> GetCategoryByIdAsync(int id)
         {
-            return await _unitOfWork.Categories.GetById(id);
+            return await _unitOfWork.Categories.GetByIdAsync(id);
         }
 
         public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
         {
-            return await _unitOfWork.Categories.GetAll();
+            return await _unitOfWork.Categories.GetAllAsync();
         }
 
         public async Task AddCategoryAsync(Category category)

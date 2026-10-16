@@ -17,6 +17,9 @@ namespace EasyShop.Application.Interfaces.Repositories
         IGenericRepository<Category> Categories { get; }
         IUserRepository Users { get; }
         IWishlistRepository Wishlists { get; }
+        IProductVariantRepository ProductVariants { get; }
+        IGenericRepository<UserAddress> UserAddresses { get; }
+
         Task<int> CompleteAsync();
     }
 }

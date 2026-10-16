@@ -21,6 +21,9 @@ namespace EasyShop.Infrastructure.Repositories
         public IGenericRepository<Category> Categories { get; private set; }
         public IUserRepository Users { get; private set; }
         public IWishlistRepository Wishlists { get; private set; }
+        public IProductVariantRepository ProductVariants { get; private set; }
+        public IGenericRepository<UserAddress> UserAddresses { get; private set; }
+
         public UnitOfWork(AppDbContext context,
             IProductRepository productRepository,
             IOrderRepository orderRepository,
@@ -31,7 +34,10 @@ namespace EasyShop.Infrastructure.Repositories
             IReviewRepository reviewRepository,
             IGenericRepository<Category> categoryRepository,
             IUserRepository userRepository,
-            IWishlistRepository wishlistRepository)
+            IWishlistRepository wishlistRepository,
+            IProductVariantRepository productVariantRepository,
+            IGenericRepository<UserAddress> userAddressRepository
+            )
         {
             _context = context;
             Products = productRepository;
@@ -44,6 +50,8 @@ namespace EasyShop.Infrastructure.Repositories
             Categories = categoryRepository;
             Users = userRepository;
             Wishlists = wishlistRepository;
+            ProductVariants = productVariantRepository;
+            UserAddresses = userAddressRepository;
         }
 
         public async Task<int> CompleteAsync()
