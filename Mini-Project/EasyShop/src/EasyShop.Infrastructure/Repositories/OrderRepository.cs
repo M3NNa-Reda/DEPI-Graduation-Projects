@@ -15,13 +15,13 @@ namespace EasyShop.Infrastructure.Repositories
         {
             return await _context.Orders
                 .Where(o => o.Status == status)
-                .AsNoTracking()
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<Order>> GetOrdersByUserIdAsync(int userId)
         {
             return await _context.Orders
+                .Include(o=>o.OrderItems)
                 .Where(o => o.UserId == userId)
                 .AsNoTracking()
                 .ToListAsync();
@@ -35,14 +35,23 @@ namespace EasyShop.Infrastructure.Repositories
                 .FirstOrDefaultAsync(o => o.Id == orderId);
         }
 
-        public async Task<IEnumerable<Order>> GetResentOrdersAsync(int page, int pageSize)
+        public async Task<IEnumerable<Order>> GetRecentOrdersAsync(int page, int pageSize)
         {
             return await _context.Orders
+                .Include(o => o.OrderItems)
                 .OrderByDescending(o => o.CreatedAt)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .AsNoTracking()
                 .ToListAsync();
+        }
+
+        public async Task<Order?> GetOrderWithItemsByUserIdAsync(int userId, int orderId)
+        {
+            return await _context.Orders
+                .Include(it => it.OrderItems)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.UserId == userId && x.Id == orderId);
         }
     }
 }

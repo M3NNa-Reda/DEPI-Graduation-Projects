@@ -346,6 +346,9 @@ namespace EasyShop.Infrastructure.Migrations
                     b.HasIndex("CouponId", "OrderId")
                         .IsUnique();
 
+                    b.HasIndex("CouponId", "UserId")
+                        .IsUnique();
+
                     b.ToTable("CouponUsages");
                 });
 
@@ -947,8 +950,14 @@ namespace EasyShop.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AddressLine")
+                    b.Property<string>("ApartmentNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Area")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BuildingNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("City")
@@ -963,10 +972,9 @@ namespace EasyShop.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("PostalCode")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("State")
+                    b.Property<string>("Street")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

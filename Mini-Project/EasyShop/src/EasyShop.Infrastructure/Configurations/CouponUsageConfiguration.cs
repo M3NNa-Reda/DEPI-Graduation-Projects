@@ -22,14 +22,15 @@ namespace EasyShop.Infrastructure.Configurations
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(cu => cu.Order)
-                .WithOne(x=>x.CouponUsage)
+                .WithOne(x => x.CouponUsage)
                 .HasForeignKey<CouponUsage>(cu => cu.OrderId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasIndex(cu => new { cu.CouponId, cu.OrderId })
                 .IsUnique();
 
-            builder.HasIndex(cu => cu.UserId);
+            builder.HasIndex(cu => new { cu.CouponId, cu.UserId })
+                .IsUnique();
         }
     }
 }

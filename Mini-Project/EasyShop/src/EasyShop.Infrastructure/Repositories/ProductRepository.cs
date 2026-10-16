@@ -20,6 +20,6 @@ namespace EasyShop.Infrastructure.Repositories
             return await _context.Set<Product>()
                 .Where(p => p.CategoryId == categoryId)
                 .ToListAsync();
-        }
+       }
     }
 }

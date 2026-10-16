@@ -1,5 +1,6 @@
 ﻿using EasyShop.Application.Interfaces.Repositories;
 using EasyShop.Infrastructure.Persistence.Context;
+using EasyShop.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,6 +18,14 @@ namespace EasyShop.Infrastructure.Repositories
         public IPaymentRepository Payments { get; private set; }
         public ICartRepository Carts { get; private set; }
         public IReviewRepository Reviews { get; private set; }
+        public IGenericRepository<Category> Categories { get; private set; }
+        public IUserRepository Users { get; private set; }
+        public IWishlistRepository Wishlists { get; private set; }
+        public IProductVariantRepository ProductVariants { get; private set; }
+        public IGenericRepository<UserAddress> UserAddresses { get; private set; }
+        public IGenericRepository<OrderItem> OrderItems { get; private set; }
+        public IGenericRepository<OrderStatusHistory> OrderStatusHistories { get; private set; }
+
         public UnitOfWork(AppDbContext context,
             IProductRepository productRepository,
             IOrderRepository orderRepository,
@@ -24,7 +33,15 @@ namespace EasyShop.Infrastructure.Repositories
             ICouponUsageRepository couponUsageRepository,
             IPaymentRepository paymentRepository,
             ICartRepository cartRepository,
-            IReviewRepository reviewRepository)
+            IReviewRepository reviewRepository,
+            IGenericRepository<Category> categoryRepository,
+            IUserRepository userRepository,
+            IWishlistRepository wishlistRepository,
+            IProductVariantRepository productVariantRepository,
+            IGenericRepository<UserAddress> userAddressRepository,
+            IGenericRepository<OrderItem> orderItemRepository,
+            IGenericRepository<OrderStatusHistory> OrderStatusHistoryRepository
+            )
         {
             _context = context;
             Products = productRepository;
@@ -34,6 +51,13 @@ namespace EasyShop.Infrastructure.Repositories
             Payments = paymentRepository;
             Carts = cartRepository;
             Reviews = reviewRepository;
+            Categories = categoryRepository;
+            Users = userRepository;
+            Wishlists = wishlistRepository;
+            ProductVariants = productVariantRepository;
+            UserAddresses = userAddressRepository;
+            OrderItems= orderItemRepository;
+            OrderStatusHistories = OrderStatusHistoryRepository;
         }
 
         public async Task<int> CompleteAsync()
