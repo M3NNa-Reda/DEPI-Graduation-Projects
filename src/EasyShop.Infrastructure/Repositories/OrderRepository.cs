@@ -21,6 +21,7 @@ namespace EasyShop.Infrastructure.Repositories
         public async Task<IEnumerable<Order>> GetOrdersByUserIdAsync(int userId)
         {
             return await _context.Orders
+                .Include(o=>o.OrderItems)
                 .Where(o => o.UserId == userId)
                 .AsNoTracking()
                 .ToListAsync();
@@ -37,6 +38,7 @@ namespace EasyShop.Infrastructure.Repositories
         public async Task<IEnumerable<Order>> GetRecentOrdersAsync(int page, int pageSize)
         {
             return await _context.Orders
+                .Include(o => o.OrderItems)
                 .OrderByDescending(o => o.CreatedAt)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
