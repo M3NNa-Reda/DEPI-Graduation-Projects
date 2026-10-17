@@ -25,16 +25,16 @@ namespace EasyShop.Application.Services
             await _unitOfWork.CompleteAsync();
         }
 
-        public void UpdateBrand(Brand brand)
+        public async Task UpdateBrandAsync(Brand brand)
         {
             _unitOfWork.Brands.Update(brand);
-            _unitOfWork.CompleteAsync().GetAwaiter().GetResult();
+            await _unitOfWork.CompleteAsync();
         }
 
-        public void DeleteBrand(Brand brand)
+        public async Task DeleteBrandAsync(Brand brand)
         {
             _unitOfWork.Brands.Delete(brand);
-            _unitOfWork.CompleteAsync().GetAwaiter().GetResult();
+            await _unitOfWork.CompleteAsync();
         }
     }
 }
