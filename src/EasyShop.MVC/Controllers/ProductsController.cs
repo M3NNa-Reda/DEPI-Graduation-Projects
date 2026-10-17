@@ -128,7 +128,7 @@ public class ProductsController : Controller
         product.IsActive = model.IsActive;
         product.UpdatedAt = DateTime.UtcNow;
 
-        _productService.UpdateProduct(product);
+        await _productService.UpdateProductAsync(product);
 
         TempData["Success"] = $"Product \"{product.Name}\" was updated.";
         return RedirectToAction(nameof(Index));
@@ -158,7 +158,7 @@ public class ProductsController : Controller
             return NotFound();
         }
 
-        _productService.DeleteProduct(product);
+        await _productService.DeleteProductAsync(product);
 
         TempData["Success"] = $"Product \"{product.Name}\" was deleted.";
         return RedirectToAction(nameof(Index));

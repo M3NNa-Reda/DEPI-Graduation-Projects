@@ -119,7 +119,7 @@ public class CategoriesController : Controller
         category.IsActive = model.IsActive;
         category.UpdatedAt = DateTime.UtcNow;
 
-        _categoryService.UpdateCategory(category);
+        await _categoryService.UpdateCategoryAsync(category);
 
         TempData["Success"] = $"Category \"{category.Name}\" was updated.";
         return RedirectToAction(nameof(Index));
@@ -156,7 +156,7 @@ public class CategoriesController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        _categoryService.DeleteCategory(category);
+        await _categoryService.DeleteCategoryAsync(category);
 
         TempData["Success"] = $"Category \"{category.Name}\" was deleted.";
         return RedirectToAction(nameof(Index));
