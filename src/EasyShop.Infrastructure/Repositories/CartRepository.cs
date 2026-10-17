@@ -7,9 +7,10 @@
         public async Task<Cart?> GetCartWithItemsByUserIdAsync(int userId)
         {
             return await _context.Carts
-                 .AsNoTracking()
-                 .Include(item => item.CartItems)
-                 .FirstOrDefaultAsync(c => c.UserId == userId);
+                         .Include(c => c.CartItems)
+                         .ThenInclude(ci => ci.ProductVariant)
+                         .ThenInclude(pv => pv.Product)
+                         .FirstOrDefaultAsync(c => c.UserId == userId);
         }
 
 

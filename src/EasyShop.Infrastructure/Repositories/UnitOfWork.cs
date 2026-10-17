@@ -1,4 +1,11 @@
-﻿namespace EasyShop.Infrastructure.Repositories
+﻿using EasyShop.Application.Interfaces.Repositories;
+using EasyShop.Infrastructure.Persistence.Context;
+using EasyShop.Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace EasyShop.Infrastructure.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
@@ -13,14 +20,14 @@
         public ICartRepository Carts { get; private set; }
         public IReviewRepository Reviews { get; private set; }
         public IGenericRepository<Category> Categories { get; private set; }
-        public IGenericRepository<Brand> Brands { get; private set; }
         public IUserRepository Users { get; private set; }
         public IWishlistRepository Wishlists { get; private set; }
         public IProductVariantRepository ProductVariants { get; private set; }
         public IGenericRepository<UserAddress> UserAddresses { get; private set; }
         public IGenericRepository<OrderItem> OrderItems { get; private set; }
+        public IGenericRepository<Shipment> Shipments { get; private set; }
         public IGenericRepository<OrderStatusHistory> OrderStatusHistories { get; private set; }
-
+        public IGenericRepository<Brand> Brands { get; private set; }
         public UnitOfWork(AppDbContext context,
             IProductRepository productRepository,
             IOrderRepository orderRepository,
@@ -31,13 +38,14 @@
             ICartRepository cartRepository,
             IReviewRepository reviewRepository,
             IGenericRepository<Category> categoryRepository,
-            IGenericRepository<Brand> brandRepository,
             IUserRepository userRepository,
             IWishlistRepository wishlistRepository,
             IProductVariantRepository productVariantRepository,
             IGenericRepository<UserAddress> userAddressRepository,
             IGenericRepository<OrderItem> orderItemRepository,
-            IGenericRepository<OrderStatusHistory> OrderStatusHistoryRepository
+            IGenericRepository<OrderStatusHistory> OrderStatusHistoryRepository,
+            IGenericRepository<Shipment> ShipmentRepository,
+            IGenericRepository<Brand> brandRepository
             )
         {
             _context = context;
@@ -50,13 +58,14 @@
             Carts = cartRepository;
             Reviews = reviewRepository;
             Categories = categoryRepository;
-            Brands = brandRepository;
             Users = userRepository;
             Wishlists = wishlistRepository;
             ProductVariants = productVariantRepository;
             UserAddresses = userAddressRepository;
             OrderItems = orderItemRepository;
             OrderStatusHistories = OrderStatusHistoryRepository;
+            Shipments = ShipmentRepository;
+            Brands = brandRepository; 
         }
 
         public async Task<int> CompleteAsync()
