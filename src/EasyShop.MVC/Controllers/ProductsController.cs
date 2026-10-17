@@ -129,6 +129,7 @@ public class ProductsController : Controller
         product.UpdatedAt = DateTime.UtcNow;
 
         await _productService.UpdateProductAsync(product);
+
         TempData["Success"] = $"Product \"{product.Name}\" was updated.";
         return RedirectToAction(nameof(Index));
     }
@@ -158,6 +159,7 @@ public class ProductsController : Controller
         }
 
         await _productService.DeleteProductAsync(product);
+
         TempData["Success"] = $"Product \"{product.Name}\" was deleted.";
         return RedirectToAction(nameof(Index));
     }
