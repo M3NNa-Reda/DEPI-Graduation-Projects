@@ -1,0 +1,50 @@
+﻿using EasyShop.Application.Interfaces.Repositories;
+using EasyShop.Application.Interfaces.Services;
+using EasyShop.Domain.Entities;
+
+namespace EasyShop.Application.Services
+{
+    public class AddressService : IAddressService
+    {
+        private readonly IUnitOfWork _unitOfWork;
+
+        public AddressService(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
+
+        public async Task<UserAddress?> GetAddressByIdAsync(int id)
+        {
+            return await _unitOfWork.UserAddresses.GetByIdAsync(id);
+        }
+
+        public async Task<IEnumerable<UserAddress>> GetAllAddressesAsync()
+        {
+            return await _unitOfWork.UserAddresses.GetAllAsync();
+        }
+
+        public async Task<IEnumerable<UserAddress>> GetAddressesByUserIdAsync(int userId)
+        {
+            return await _unitOfWork.UserAddresses
+                .FindByConditionAsync(a => a.UserId == userId);
+        }
+
+        public async Task AddAddressAsync(UserAddress address)
+        {
+            await _unitOfWork.UserAddresses.AddAsync(address);
+            await _unitOfWork.CompleteAsync();
+        }
+
+        public void UpdateAddress(UserAddress address)
+        {
+            _unitOfWork.UserAddresses.Update(address);
+            _unitOfWork.CompleteAsync().GetAwaiter().GetResult();
+        }
+
+        public void DeleteAddress(UserAddress address)
+        {
+            _unitOfWork.UserAddresses.Delete(address);
+            _unitOfWork.CompleteAsync().GetAwaiter().GetResult();
+        }
+    }
+}
