@@ -5,7 +5,7 @@ namespace EasyShop.Application.Interfaces.Services
         Task<Brand?> GetBrandByIdAsync(int id);
         Task<IEnumerable<Brand>> GetAllBrandsAsync();
         Task AddBrandAsync(Brand brand);
-        void UpdateBrand(Brand brand);
-        void DeleteBrand(Brand brand);
+        Task UpdateBrandAsync(Brand brand);
+        Task DeleteBrandAsync(Brand brand);
     }
 }

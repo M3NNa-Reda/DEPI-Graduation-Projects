@@ -117,7 +117,7 @@ public class BrandsController : Controller
         brand.IsActive = model.IsActive;
         brand.UpdatedAt = DateTime.UtcNow;
 
-        _brandService.UpdateBrand(brand);
+        await _brandService.UpdateBrandAsync(brand);
 
         TempData["Success"] = $"Brand \"{brand.Name}\" was updated.";
         return RedirectToAction(nameof(Index));
@@ -153,7 +153,7 @@ public class BrandsController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        _brandService.DeleteBrand(brand);
+        await _brandService.DeleteBrandAsync(brand);
 
         TempData["Success"] = $"Brand \"{brand.Name}\" was deleted.";
         return RedirectToAction(nameof(Index));

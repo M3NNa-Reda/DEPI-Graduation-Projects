@@ -5,7 +5,7 @@
         Task<Category?> GetCategoryByIdAsync(int id);
         Task<IEnumerable<Category>> GetAllCategoriesAsync();
         Task AddCategoryAsync(Category category);
-        void UpdateCategory(Category category);
-        void DeleteCategory(Category category);
+        Task UpdateCategoryAsync(Category category);
+        Task DeleteCategoryAsync(Category category);
     }
 }

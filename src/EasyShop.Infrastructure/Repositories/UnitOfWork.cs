@@ -7,7 +7,7 @@ using System.Text;
 
 namespace EasyShop.Infrastructure.Repositories
 {
-    public class UnitOfWork:IUnitOfWork
+    public class UnitOfWork : IUnitOfWork
     {
         private readonly AppDbContext _context;
         public IProductRepository Products { get; private set; }
@@ -16,6 +16,7 @@ namespace EasyShop.Infrastructure.Repositories
         public ICouponRepository Coupons { get; private set; }
         public ICouponUsageRepository CouponUsages { get; private set; }
         public IPaymentRepository Payments { get; private set; }
+        public IPaymentTransactionRepository PaymentTransactions { get; private set; }
         public ICartRepository Carts { get; private set; }
         public IReviewRepository Reviews { get; private set; }
         public IGenericRepository<Category> Categories { get; private set; }
@@ -30,9 +31,10 @@ namespace EasyShop.Infrastructure.Repositories
         public UnitOfWork(AppDbContext context,
             IProductRepository productRepository,
             IOrderRepository orderRepository,
-            ICouponRepository couponRepository ,
+            ICouponRepository couponRepository,
             ICouponUsageRepository couponUsageRepository,
             IPaymentRepository paymentRepository,
+            IPaymentTransactionRepository paymentTransactionRepository,
             ICartRepository cartRepository,
             IReviewRepository reviewRepository,
             IGenericRepository<Category> categoryRepository,
@@ -52,6 +54,7 @@ namespace EasyShop.Infrastructure.Repositories
             Coupons = couponRepository;
             CouponUsages = couponUsageRepository;
             Payments = paymentRepository;
+            PaymentTransactions = paymentTransactionRepository;
             Carts = cartRepository;
             Reviews = reviewRepository;
             Categories = categoryRepository;
@@ -59,7 +62,7 @@ namespace EasyShop.Infrastructure.Repositories
             Wishlists = wishlistRepository;
             ProductVariants = productVariantRepository;
             UserAddresses = userAddressRepository;
-            OrderItems= orderItemRepository;
+            OrderItems = orderItemRepository;
             OrderStatusHistories = OrderStatusHistoryRepository;
             Shipments = ShipmentRepository;
             Brands = brandRepository; 

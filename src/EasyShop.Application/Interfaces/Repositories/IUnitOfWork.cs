@@ -5,7 +5,7 @@ using System.Text;
 
 namespace EasyShop.Application.Interfaces.Repositories
 {
-    public interface IUnitOfWork: IDisposable
+    public interface IUnitOfWork : IDisposable
     {
         IProductRepository Products { get; }
         IOrderRepository Orders { get; }
@@ -13,7 +13,8 @@ namespace EasyShop.Application.Interfaces.Repositories
         ICouponUsageRepository CouponUsages { get; }
         IPaymentRepository Payments { get; }
         IGenericRepository<Shipment> Shipments { get; }
-        ICartRepository  Carts { get; }
+        IPaymentTransactionRepository PaymentTransactions { get; }
+        ICartRepository Carts { get; }
         IReviewRepository Reviews { get; }
         IGenericRepository<Category> Categories { get; }
         IUserRepository Users { get; }
