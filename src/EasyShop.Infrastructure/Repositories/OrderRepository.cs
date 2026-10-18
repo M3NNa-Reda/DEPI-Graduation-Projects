@@ -46,5 +46,12 @@
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.UserId == userId && x.Id == orderId);
         }
+        public async Task<string?> GetShippingAddressByOrderIdAsync(int orderId)
+        {
+            return await _context.Set<OrderShippingAddress>()
+                .Where(a => a.OrderId == orderId)
+                .Select(a => $"{a.FullName} - {a.PhoneNumber}, {a.Street}, {a.Area}, {a.City}, {a.Country}")
+                .FirstOrDefaultAsync();
+        }
     }
 }

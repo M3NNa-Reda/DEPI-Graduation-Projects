@@ -7,6 +7,7 @@
         Task<IEnumerable<Order>> GetOrdersByStatusAsync(OrderStatus status);
         Task<IEnumerable<Order>> GetRecentOrdersAsync(int page, int pageSize);
         Task<Order?> GetOrderWithItemsByUserIdAsync(int userId, int orderId);
+        Task<string?> GetShippingAddressByOrderIdAsync(int orderId);
 
 
     }

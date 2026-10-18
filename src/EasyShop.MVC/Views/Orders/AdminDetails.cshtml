@@ -1,0 +1,73 @@
+﻿@model OrderDetailsDto
+
+
+@{
+    ViewData["Title"] = $"Admin Order #{Model.Id}";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Admin Order View <span class="text-muted">#@Model.Id</span></h1>
+    <a asp-action="RecentOrders" class="btn btn-outline-secondary">Back to Recent Orders</a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title">Order Information</h5>
+                <p class="mb-1"><strong>Date:</strong> @Model.CreatedAt.ToString("MMM dd, yyyy HH:mm")</p>
+                <p class="mb-1"><strong>Current Status:</strong> <span class="badge bg-primary">@Model.Status</span></p>
+                <p class="mb-1"><strong>Total Amount:</strong> @Model.TotalAmount.ToString("C")</p>
+                <p class="mb-0"><strong>Shipping Address:</strong> @Model.ShippingAddress</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100 border-primary">
+            <div class="card-body">
+                <h5 class="card-title text-primary">Update Order Status</h5>
+                <form asp-action="UpdateStatus" asp-route-id="@Model.Id" method="post" class="mt-3">
+                    <div class="mb-3">
+                        <label class="form-label">New Status</label>
+                        <select name="Status" class="form-select" asp-items="Html.GetEnumSelectList<OrderStatus>()">
+                            <option value="">-- Select Status --</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Status</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-white">
+        <h5 class="card-title mb-0">Items Included</h5>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Product Name</th>
+                    <th>Unit Price</th>
+                    <th>Quantity</th>
+                    <th class="text-end">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Items != null && Model.Items.Any())
+                {
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td>@item.ProductName</td>
+                            <td>@item.UnitPrice.ToString("C")</td>
+                            <td>@item.Quantity</td>
+                            <td class="text-end">@item.TotalPrice.ToString("C")</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

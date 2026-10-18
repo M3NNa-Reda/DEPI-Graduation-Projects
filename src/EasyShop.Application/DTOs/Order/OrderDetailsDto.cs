@@ -10,6 +10,7 @@
         public decimal ShippingFee { get; set; }
         public decimal TotalAmount { get; set; }
         public string? CouponCode { get; set; }
+        public string? ShippingAddress { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public List<OrderItemDto> Items { get; set; } = new();

@@ -1,0 +1,71 @@
+﻿@model OrderDetailsDto
+
+@{
+    ViewData["Title"] = $"Order #{Model.Id}";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Order Details <span class="text-muted">#@Model.Id</span></h1>
+    <div class="d-flex gap-2">
+        @if (Model.Status == OrderStatus.Pending)
+        {
+            <form asp-action="Cancel" asp-route-id="@Model.Id" method="post" onsubmit="return confirm('Are you sure you want to cancel this order?');">
+                <button type="submit" class="btn btn-outline-danger">Cancel Order</button>
+            </form>
+        }
+        <a asp-action="MyOrders" class="btn btn-outline-secondary">Back to Orders</a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">Order Info</h6>
+                <p class="mb-1"><strong>Date:</strong> @Model.CreatedAt.ToString("MMM dd, yyyy HH:mm")</p>
+                <p class="mb-1"><strong>Status:</strong> <span class="badge bg-info">@Model.Status</span></p>
+                <p class="mb-0"><strong>Total Amount:</strong> @Model.TotalAmount.ToString("C")</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">Shipping Address</h6>
+                <p class="card-text mb-0">@(string.IsNullOrWhiteSpace(Model.ShippingAddress) ? "No shipping address provided" : Model.ShippingAddress)</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-white">
+        <h5 class="card-title mb-0">Order Items</h5>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Product</th>
+                    <th>Unit Price</th>
+                    <th>Quantity</th>
+                    <th class="text-end">Total Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Items != null && Model.Items.Any())
+                {
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td>@item.ProductName</td>
+                            <td>@item.UnitPrice.ToString("C")</td>
+                            <td>@item.Quantity</td>
+                            <td class="text-end">@item.TotalPrice.ToString("C")</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

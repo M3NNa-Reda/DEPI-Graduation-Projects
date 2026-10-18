@@ -12,7 +12,7 @@ namespace EasyShop.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOrder(CreateOrderRequestDto dto)
+        public async Task<IActionResult> Create(CreateOrderRequestDto dto)
         {
             if (!ModelState.IsValid)
             {
