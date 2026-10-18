@@ -9,3 +9,4 @@ global using EasyShop.Domain.Entities;
 global using EasyShop.Application.DTOs.Order;
 global using EasyShop.MVC.Helpers.Extensions;
 global using Microsoft.AspNetCore.Authorization;
+global using EasyShop.Domain.Enums;

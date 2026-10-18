@@ -200,6 +200,7 @@
             Coupon? coupon = null;
             if (couponId != null)
                 coupon = await _unitOfWork.Coupons.GetByIdAsync((int)couponId);
+            var shippingAddress = await _unitOfWork.Orders.GetShippingAddressByOrderIdAsync(orderId);
 
             return new OrderDetailsDto
             {
@@ -207,10 +208,12 @@
                 Status = order.Status,
                 Subtotal = order.Subtotal,
                 DiscountAmount = order.DiscountAmount,
+                ShippingFee=order.ShippingFee,
                 TotalAmount = order.TotalAmount,
                 CouponCode = coupon?.Code,
                 CreatedAt = order.CreatedAt,
                 UpdatedAt = order.UpdatedAt,
+                ShippingAddress = shippingAddress,
                 Items = order.OrderItems.Select(i => new OrderItemDto
                 {
                     ProductVariantId = i.ProductVariantId,   // نعمل لينك يرجعه لل product
@@ -250,16 +253,20 @@
             Coupon? coupon = null;
             if (couponId != null)
                 coupon = await _unitOfWork.Coupons.GetByIdAsync((int)couponId);
+            var shippingAddress = await _unitOfWork.Orders.GetShippingAddressByOrderIdAsync(orderId);
+
             return new OrderDetailsDto
             {
                 Id = order.Id,
                 Status = order.Status,
                 Subtotal = order.Subtotal,
                 DiscountAmount = order.DiscountAmount,
+                ShippingFee = order.ShippingFee,
                 TotalAmount = order.TotalAmount,
                 CouponCode = coupon?.Code,
                 CreatedAt = order.CreatedAt,
                 UpdatedAt = order.UpdatedAt,
+                ShippingAddress = shippingAddress,
                 Items = order.OrderItems.Select(i => new OrderItemDto
                 {
                     ProductVariantId = i.ProductVariantId,  
