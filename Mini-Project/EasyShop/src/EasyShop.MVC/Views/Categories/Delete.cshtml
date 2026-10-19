@@ -1,0 +1,29 @@
+@model Category
+@{
+    ViewData["Title"] = "Delete Category";
+}
+
+<h1 class="h3 mb-3 text-danger">Delete Category</h1>
+<p class="lead">Are you sure you want to delete this category?</p>
+
+<div class="card shadow-sm mb-3">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Name</dt>
+            <dd class="col-sm-9">@Model.Name</dd>
+
+            <dt class="col-sm-3">Description</dt>
+            <dd class="col-sm-9">@(string.IsNullOrWhiteSpace(Model.Description) ? "-" : Model.Description)</dd>
+
+            <dt class="col-sm-3">Parent Category</dt>
+            <dd class="col-sm-9">@(ViewBag.ParentCategoryName ?? "-")</dd>
+        </dl>
+    </div>
+</div>
+
+<p class="text-muted small">Products in this category will become uncategorized. Categories with sub-categories can't be deleted.</p>
+
+<form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-flex gap-2">
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+</form>

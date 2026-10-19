@@ -1,11 +1,4 @@
-﻿
-using EasyShop.Application.Interfaces.Repositories;
-using EasyShop.Application.Interfaces.Services;
-using EasyShop.Domain.Entities;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace EasyShop.Application.Services
+﻿namespace EasyShop.Application.Services
 {
     public class CategoryService : ICategoryService
     {
@@ -32,16 +25,16 @@ namespace EasyShop.Application.Services
             await _unitOfWork.CompleteAsync();
         }
 
-        public void UpdateCategory(Category category)
+        public async Task UpdateCategoryAsync(Category category)
         {
             _unitOfWork.Categories.Update(category);
-            _unitOfWork.CompleteAsync().GetAwaiter().GetResult();
+            await _unitOfWork.CompleteAsync();
         }
 
-        public void DeleteCategory(Category category)
+        public async Task DeleteCategoryAsync(Category category)
         {
             _unitOfWork.Categories.Delete(category);
-            _unitOfWork.CompleteAsync().GetAwaiter().GetResult();
+            await _unitOfWork.CompleteAsync();
         }
     }
 }

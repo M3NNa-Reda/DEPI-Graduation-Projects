@@ -1,12 +1,4 @@
-﻿using EasyShop.Application.Interfaces.Repositories;
-using EasyShop.Domain.Entities;
-using EasyShop.Infrastructure.Persistence.Context;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EasyShop.Infrastructure.Repositories
+﻿namespace EasyShop.Infrastructure.Repositories
 {
     public class CartRepository : GenericRepository<Cart>, ICartRepository
     {
@@ -15,9 +7,10 @@ namespace EasyShop.Infrastructure.Repositories
         public async Task<Cart?> GetCartWithItemsByUserIdAsync(int userId)
         {
             return await _context.Carts
-                 .AsNoTracking()
-                 .Include(item => item.CartItems)
-                 .FirstOrDefaultAsync(c => c.UserId == userId);
+                         .Include(c => c.CartItems)
+                         .ThenInclude(ci => ci.ProductVariant)
+                         .ThenInclude(pv => pv.Product)
+                         .FirstOrDefaultAsync(c => c.UserId == userId);
         }
 
 

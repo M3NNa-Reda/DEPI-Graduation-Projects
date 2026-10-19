@@ -1,9 +1,4 @@
-﻿using EasyShop.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EasyShop.Application.DTOs.Order
+﻿namespace EasyShop.Application.DTOs.Order
 {
     // order card --> client -> my order
     public class OrderSummaryDto

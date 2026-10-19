@@ -1,9 +1,4 @@
-﻿using EasyShop.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EasyShop.Application.DTOs.Order
+﻿namespace EasyShop.Application.DTOs.Order
 {
     // all order datails 
     public class OrderDetailsDto
@@ -15,6 +10,7 @@ namespace EasyShop.Application.DTOs.Order
         public decimal ShippingFee { get; set; }
         public decimal TotalAmount { get; set; }
         public string? CouponCode { get; set; }
+        public string? ShippingAddress { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public List<OrderItemDto> Items { get; set; } = new();

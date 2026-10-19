@@ -1,11 +1,4 @@
-﻿
-using EasyShop.Application.Interfaces.Repositories;
-using EasyShop.Application.Interfaces.Services;
-using EasyShop.Domain.Entities;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace EasyShop.Application.Services
+﻿namespace EasyShop.Application.Services
 {
     public class ProductService : IProductService
     {
@@ -37,16 +30,16 @@ namespace EasyShop.Application.Services
             await _unitOfWork.CompleteAsync();
         }
 
-        public void UpdateProduct(Product product)
+        public async Task UpdateProductAsync(Product product)
         {
             _unitOfWork.Products.Update(product);
-            _unitOfWork.CompleteAsync().GetAwaiter().GetResult();
+            await _unitOfWork.CompleteAsync();
         }
 
-        public void DeleteProduct(Product product)
+        public async Task DeleteProductAsync(Product product)
         {
             _unitOfWork.Products.Delete(product);
-            _unitOfWork.CompleteAsync().GetAwaiter().GetResult();
+            await _unitOfWork.CompleteAsync();
         }
     }
 }

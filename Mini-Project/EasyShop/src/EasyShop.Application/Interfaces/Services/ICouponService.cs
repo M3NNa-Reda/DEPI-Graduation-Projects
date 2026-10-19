@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using EasyShop.Domain.Entities;
-
-namespace EasyShop.Application.Interfaces.Services
+﻿namespace EasyShop.Application.Interfaces.Services
 {
     public interface ICouponService
     {

@@ -1,12 +1,4 @@
-﻿using EasyShop.Domain.Entities;
-using EasyShop.Domain.Enums;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EasyShop.Infrastructure.Configurations
+﻿namespace EasyShop.Infrastructure.Configurations
 {
     internal class OrderConfiguration : IEntityTypeConfiguration<Order>
     {

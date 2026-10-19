@@ -1,0 +1,11 @@
+﻿global using EasyShop.API.Helpers.Extensions;
+global using EasyShop.Application.DTOs.Order;
+global using EasyShop.Application.Interfaces.Repositories;
+global using EasyShop.Application.Interfaces.Services;
+global using EasyShop.Application.Services;
+global using EasyShop.Infrastructure.Persistence.Context;
+global using EasyShop.Infrastructure.Repositories;
+global using EasyShop.MVC;
+global using Microsoft.AspNetCore.Authorization;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.EntityFrameworkCore;

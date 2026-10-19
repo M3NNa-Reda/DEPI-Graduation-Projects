@@ -1,8 +1,4 @@
-﻿using EasyShop.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-namespace EasyShop.Infrastructure.Configurations;
+﻿namespace EasyShop.Infrastructure.Configurations;
 
 public class WishlistItemConfiguration : IEntityTypeConfiguration<WishlistItem>
 {

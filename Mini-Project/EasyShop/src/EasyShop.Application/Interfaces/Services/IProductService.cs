@@ -1,9 +1,4 @@
-﻿
-using EasyShop.Domain.Entities;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace EasyShop.Application.Interfaces.Services
+﻿namespace EasyShop.Application.Interfaces.Services
 {
     public interface IProductService
     {
@@ -11,7 +6,7 @@ namespace EasyShop.Application.Interfaces.Services
         Task<IEnumerable<Product>> GetAllProductsAsync();
         Task<IEnumerable<Product>> GetProductsByCategoryAsync(int categoryId);
         Task AddProductAsync(Product product);
-        void UpdateProduct(Product product);
-        void DeleteProduct(Product product);
+        Task UpdateProductAsync(Product product);
+        Task DeleteProductAsync(Product product);
     }
 }

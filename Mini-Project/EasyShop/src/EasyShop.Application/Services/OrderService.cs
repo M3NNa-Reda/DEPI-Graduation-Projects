@@ -1,13 +1,4 @@
-﻿using EasyShop.Application.DTOs.Order;
-using EasyShop.Application.Interfaces.Repositories;
-using EasyShop.Application.Interfaces.Services;
-using EasyShop.Domain.Entities;
-using EasyShop.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EasyShop.Application.Services
+﻿namespace EasyShop.Application.Services
 {
     public class OrderService : IOrderService
     {
@@ -209,6 +200,7 @@ namespace EasyShop.Application.Services
             Coupon? coupon = null;
             if (couponId != null)
                 coupon = await _unitOfWork.Coupons.GetByIdAsync((int)couponId);
+            var shippingAddress = await _unitOfWork.Orders.GetShippingAddressByOrderIdAsync(orderId);
 
             return new OrderDetailsDto
             {
@@ -216,10 +208,12 @@ namespace EasyShop.Application.Services
                 Status = order.Status,
                 Subtotal = order.Subtotal,
                 DiscountAmount = order.DiscountAmount,
+                ShippingFee=order.ShippingFee,
                 TotalAmount = order.TotalAmount,
                 CouponCode = coupon?.Code,
                 CreatedAt = order.CreatedAt,
                 UpdatedAt = order.UpdatedAt,
+                ShippingAddress = shippingAddress,
                 Items = order.OrderItems.Select(i => new OrderItemDto
                 {
                     ProductVariantId = i.ProductVariantId,   // نعمل لينك يرجعه لل product
@@ -259,16 +253,20 @@ namespace EasyShop.Application.Services
             Coupon? coupon = null;
             if (couponId != null)
                 coupon = await _unitOfWork.Coupons.GetByIdAsync((int)couponId);
+            var shippingAddress = await _unitOfWork.Orders.GetShippingAddressByOrderIdAsync(orderId);
+
             return new OrderDetailsDto
             {
                 Id = order.Id,
                 Status = order.Status,
                 Subtotal = order.Subtotal,
                 DiscountAmount = order.DiscountAmount,
+                ShippingFee = order.ShippingFee,
                 TotalAmount = order.TotalAmount,
                 CouponCode = coupon?.Code,
                 CreatedAt = order.CreatedAt,
                 UpdatedAt = order.UpdatedAt,
+                ShippingAddress = shippingAddress,
                 Items = order.OrderItems.Select(i => new OrderItemDto
                 {
                     ProductVariantId = i.ProductVariantId,  

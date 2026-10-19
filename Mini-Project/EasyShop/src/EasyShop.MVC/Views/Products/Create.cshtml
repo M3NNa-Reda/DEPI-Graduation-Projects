@@ -1,0 +1,65 @@
+@model ProductFormViewModel
+@{
+    ViewData["Title"] = "New Product";
+}
+
+<h1 class="h3 mb-3">New Product</h1>
+
+<div class="row">
+    <div class="col-lg-7">
+        <form asp-action="Create" method="post" class="card shadow-sm">
+            <div class="card-body">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Slug" class="form-label"></label>
+                    <input asp-for="Slug" class="form-control" placeholder="e.g. apple-iphone-15" />
+                    <span asp-validation-for="Slug" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label"></label>
+                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="BrandId" class="form-label"></label>
+                        <select asp-for="BrandId" asp-items="ViewBag.Brands" class="form-select">
+                            <option value="">-- Select brand --</option>
+                        </select>
+                        <span asp-validation-for="BrandId" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="CategoryId" class="form-label"></label>
+                        <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select">
+                            <option value="">-- None --</option>
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-check mb-1">
+                    <input asp-for="IsActive" class="form-check-input" />
+                    <label asp-for="IsActive" class="form-check-label"></label>
+                </div>
+            </div>
+            <div class="card-footer d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

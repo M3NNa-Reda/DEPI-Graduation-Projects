@@ -7,7 +7,7 @@ using System.Text;
 
 namespace EasyShop.Infrastructure.Repositories
 {
-    public class UnitOfWork:IUnitOfWork
+    public class UnitOfWork : IUnitOfWork
     {
         private readonly AppDbContext _context;
         public IProductRepository Products { get; private set; }
@@ -16,6 +16,7 @@ namespace EasyShop.Infrastructure.Repositories
         public ICouponRepository Coupons { get; private set; }
         public ICouponUsageRepository CouponUsages { get; private set; }
         public IPaymentRepository Payments { get; private set; }
+        public IPaymentTransactionRepository PaymentTransactions { get; private set; }
         public ICartRepository Carts { get; private set; }
         public IReviewRepository Reviews { get; private set; }
         public IGenericRepository<Category> Categories { get; private set; }
@@ -24,14 +25,16 @@ namespace EasyShop.Infrastructure.Repositories
         public IProductVariantRepository ProductVariants { get; private set; }
         public IGenericRepository<UserAddress> UserAddresses { get; private set; }
         public IGenericRepository<OrderItem> OrderItems { get; private set; }
+        public IGenericRepository<Shipment> Shipments { get; private set; }
         public IGenericRepository<OrderStatusHistory> OrderStatusHistories { get; private set; }
-
+        public IGenericRepository<Brand> Brands { get; private set; }
         public UnitOfWork(AppDbContext context,
             IProductRepository productRepository,
             IOrderRepository orderRepository,
-            ICouponRepository couponRepository ,
+            ICouponRepository couponRepository,
             ICouponUsageRepository couponUsageRepository,
             IPaymentRepository paymentRepository,
+            IPaymentTransactionRepository paymentTransactionRepository,
             ICartRepository cartRepository,
             IReviewRepository reviewRepository,
             IGenericRepository<Category> categoryRepository,
@@ -40,7 +43,9 @@ namespace EasyShop.Infrastructure.Repositories
             IProductVariantRepository productVariantRepository,
             IGenericRepository<UserAddress> userAddressRepository,
             IGenericRepository<OrderItem> orderItemRepository,
-            IGenericRepository<OrderStatusHistory> OrderStatusHistoryRepository
+            IGenericRepository<OrderStatusHistory> OrderStatusHistoryRepository,
+            IGenericRepository<Shipment> ShipmentRepository,
+            IGenericRepository<Brand> brandRepository
             )
         {
             _context = context;
@@ -49,6 +54,7 @@ namespace EasyShop.Infrastructure.Repositories
             Coupons = couponRepository;
             CouponUsages = couponUsageRepository;
             Payments = paymentRepository;
+            PaymentTransactions = paymentTransactionRepository;
             Carts = cartRepository;
             Reviews = reviewRepository;
             Categories = categoryRepository;
@@ -56,8 +62,10 @@ namespace EasyShop.Infrastructure.Repositories
             Wishlists = wishlistRepository;
             ProductVariants = productVariantRepository;
             UserAddresses = userAddressRepository;
-            OrderItems= orderItemRepository;
+            OrderItems = orderItemRepository;
             OrderStatusHistories = OrderStatusHistoryRepository;
+            Shipments = ShipmentRepository;
+            Brands = brandRepository; 
         }
 
         public async Task<int> CompleteAsync()

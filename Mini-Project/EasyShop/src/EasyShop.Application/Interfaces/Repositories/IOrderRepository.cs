@@ -1,10 +1,4 @@
-﻿using EasyShop.Domain.Entities;
-using EasyShop.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EasyShop.Application.Interfaces.Repositories
+﻿namespace EasyShop.Application.Interfaces.Repositories
 {
     public interface IOrderRepository:IGenericRepository<Order>
     {
@@ -13,6 +7,7 @@ namespace EasyShop.Application.Interfaces.Repositories
         Task<IEnumerable<Order>> GetOrdersByStatusAsync(OrderStatus status);
         Task<IEnumerable<Order>> GetRecentOrdersAsync(int page, int pageSize);
         Task<Order?> GetOrderWithItemsByUserIdAsync(int userId, int orderId);
+        Task<string?> GetShippingAddressByOrderIdAsync(int orderId);
 
 
     }

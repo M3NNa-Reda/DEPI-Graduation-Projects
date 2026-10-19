@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using EasyShop.Application.Interfaces.Repositories;
-using EasyShop.Application.Interfaces.Services;
-using EasyShop.Domain.Entities;
-using EasyShop.Domain.Enums;
-
-namespace EasyShop.Application.Services
+﻿namespace EasyShop.Application.Services
 {
     public class PaymentService : IPaymentService
     {
@@ -45,10 +37,21 @@ namespace EasyShop.Application.Services
             var payment = await _unitOfWork.Payments.GetByIdAsync(paymentId)
                 ?? throw new InvalidOperationException("Payment not found.");
 
+            if (payment.Status == PaymentStatus.Paid)
+                throw new InvalidOperationException("This payment has already been marked as paid.");
+
             payment.Status = PaymentStatus.Paid;
             payment.PaidAt = DateTime.UtcNow;
-
             _unitOfWork.Payments.Update(payment);
+
+            await _unitOfWork.PaymentTransactions.AddAsync(new PaymentTransaction
+            {
+                PaymentId = payment.Id,
+                Amount = payment.Amount,
+                Status = PaymentTransactionStatus.Succeeded,
+                CreatedAt = DateTime.UtcNow
+            });
+
             await _unitOfWork.CompleteAsync();
         }
         public async Task MarkAsFailedAsync(int paymentId)
@@ -56,9 +59,20 @@ namespace EasyShop.Application.Services
             var payment = await _unitOfWork.Payments.GetByIdAsync(paymentId)
                 ?? throw new InvalidOperationException("Payment not found.");
 
-            payment.Status = PaymentStatus.Failed;
+            if (payment.Status == PaymentStatus.Paid)
+                throw new InvalidOperationException("Cannot fail a payment that has already been paid.");
 
+            payment.Status = PaymentStatus.Failed;
             _unitOfWork.Payments.Update(payment);
+
+            await _unitOfWork.PaymentTransactions.AddAsync(new PaymentTransaction
+            {
+                PaymentId = payment.Id,
+                Amount = payment.Amount,
+                Status = PaymentTransactionStatus.Failed,
+                CreatedAt = DateTime.UtcNow
+            });
+
             await _unitOfWork.CompleteAsync();
         }
     }

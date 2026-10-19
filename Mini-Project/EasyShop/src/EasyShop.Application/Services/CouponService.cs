@@ -1,9 +1,4 @@
-﻿using EasyShop.Application.Interfaces.Repositories;
-using EasyShop.Application.Interfaces.Services;
-using EasyShop.Domain.Entities;
-using EasyShop.Domain.Enums;
-
-namespace EasyShop.Application.Services
+﻿namespace EasyShop.Application.Services
 {
     public class CouponService : ICouponService
     {

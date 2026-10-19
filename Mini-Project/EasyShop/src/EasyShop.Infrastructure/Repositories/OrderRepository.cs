@@ -1,11 +1,4 @@
-﻿using EasyShop.Application.Interfaces.Repositories;
-using EasyShop.Domain.Entities;
-using EasyShop.Domain.Enums;
-using EasyShop.Infrastructure.Persistence.Context;
-using Microsoft.EntityFrameworkCore;
-
-
-namespace EasyShop.Infrastructure.Repositories
+﻿namespace EasyShop.Infrastructure.Repositories
 {
     public class OrderRepository : GenericRepository<Order>, IOrderRepository
     {
@@ -52,6 +45,13 @@ namespace EasyShop.Infrastructure.Repositories
                 .Include(it => it.OrderItems)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.UserId == userId && x.Id == orderId);
+        }
+        public async Task<string?> GetShippingAddressByOrderIdAsync(int orderId)
+        {
+            return await _context.Set<OrderShippingAddress>()
+                .Where(a => a.OrderId == orderId)
+                .Select(a => $"{a.FullName} - {a.PhoneNumber}, {a.Street}, {a.Area}, {a.City}, {a.Country}")
+                .FirstOrDefaultAsync();
         }
     }
 }

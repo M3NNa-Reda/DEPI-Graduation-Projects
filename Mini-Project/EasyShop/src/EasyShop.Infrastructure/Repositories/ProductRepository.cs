@@ -1,13 +1,4 @@
-﻿
-using EasyShop.Application.Interfaces.Repositories;
-using EasyShop.Domain.Entities;
-using EasyShop.Infrastructure.Persistence.Context;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace EasyShop.Infrastructure.Repositories
+﻿namespace EasyShop.Infrastructure.Repositories
 {
     public class ProductRepository : GenericRepository<Product>, IProductRepository
     {

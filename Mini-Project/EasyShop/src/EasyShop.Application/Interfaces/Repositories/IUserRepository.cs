@@ -1,6 +1,4 @@
-﻿using EasyShop.Domain.Entities;
-
-namespace EasyShop.Application.Interfaces.Repositories
+﻿namespace EasyShop.Application.Interfaces.Repositories
 {
     public interface IUserRepository : IGenericRepository<ApplicationUser>
     {
