@@ -11,6 +11,15 @@
                 .FirstOrDefaultAsync(u => u.Email == email);
         }
 
+        public async Task<ApplicationUser?> GetByEmailWithRolesAsync(string email)
+        {
+            return await _context.ApplicationUsers
+                .AsNoTracking()
+                .Include(u => u.ApplicationUserRoles)
+                    .ThenInclude(ur => ur.ApplicationRole)
+                .FirstOrDefaultAsync(u => u.Email == email);
+        }
+
         public async Task<ApplicationUser?> GetByPhoneNumberAsync(string phoneNumber)
         {
             return await _context.ApplicationUsers

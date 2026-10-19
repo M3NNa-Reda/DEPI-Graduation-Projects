@@ -24,6 +24,7 @@ namespace EasyShop.Application.Interfaces.Repositories
         IGenericRepository<OrderItem> OrderItems { get; }
         IGenericRepository<OrderStatusHistory> OrderStatusHistories { get; }
         IGenericRepository<Brand> Brands { get; }
+        IGenericRepository<ApplicationRole> Roles { get; }
         Task<int> CompleteAsync();
     }
 }
