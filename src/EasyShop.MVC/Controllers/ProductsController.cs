@@ -1,5 +1,6 @@
 namespace EasyShop.MVC.Controllers;
 
+[Authorize(Roles = RoleNames.Admin)]
 public class ProductsController : Controller
 {
     private readonly IProductService _productService;
@@ -17,6 +18,7 @@ public class ProductsController : Controller
     }
 
     // GET: /Products
+    [AllowAnonymous]
     public async Task<IActionResult> Index()
     {
         var products = await _productService.GetAllProductsAsync();
@@ -28,6 +30,7 @@ public class ProductsController : Controller
     }
 
     // GET: /Products/Details/5
+    [AllowAnonymous]
     public async Task<IActionResult> Details(int id)
     {
         var product = await _productService.GetProductByIdAsync(id);

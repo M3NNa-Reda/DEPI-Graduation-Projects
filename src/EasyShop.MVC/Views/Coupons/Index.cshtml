@@ -1,0 +1,91 @@
+@model IEnumerable<Coupon>
+@{
+    ViewData["Title"] = "Coupons";
+    var now = DateTime.UtcNow;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Coupons</h1>
+    <a asp-action="Create" class="btn btn-primary">+ New Coupon</a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No coupons yet. Click <strong>New Coupon</strong> to add one.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Code</th>
+                    <th>Discount</th>
+                    <th>Min. order</th>
+                    <th>Used</th>
+                    <th>Valid</th>
+                    <th>Status</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var coupon in Model)
+                {
+                    <tr>
+                        <td><code>@coupon.Code</code></td>
+                        <td>
+                            @if (coupon.DiscountType == DiscountType.Percentage)
+                            {
+                                @($"{coupon.DiscountValue:0.##}%")
+                            }
+                            else
+                            {
+                                @coupon.DiscountValue.ToString("0.00")
+                            }
+                            @if (coupon.MaximumDiscountAmount.HasValue)
+                            {
+                                <div class="small text-muted">max @coupon.MaximumDiscountAmount.Value.ToString("0.00")</div>
+                            }
+                        </td>
+                        <td>@(coupon.MinimumOrderAmount.HasValue ? coupon.MinimumOrderAmount.Value.ToString("0.00") : "-")</td>
+                        <td>@coupon.UsedCount / @(coupon.UsageLimit.HasValue ? coupon.UsageLimit.Value.ToString() : "∞")</td>
+                        <td class="text-nowrap">@coupon.StartDate.ToString("yyyy-MM-dd") → @coupon.ExpirationDate.ToString("yyyy-MM-dd")</td>
+                        <td>
+                            @if (!coupon.IsActive)
+                            {
+                                <span class="badge bg-secondary">Inactive</span>
+                            }
+                            else if (now < coupon.StartDate)
+                            {
+                                <span class="badge bg-info text-dark">Scheduled</span>
+                            }
+                            else if (now > coupon.ExpirationDate)
+                            {
+                                <span class="badge bg-warning text-dark">Expired</span>
+                            }
+                            else if (coupon.UsageLimit.HasValue && coupon.UsedCount >= coupon.UsageLimit.Value)
+                            {
+                                <span class="badge bg-warning text-dark">Used up</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                        </td>
+                        <td class="text-end text-nowrap">
+                            <a asp-action="Edit" asp-route-id="@coupon.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
