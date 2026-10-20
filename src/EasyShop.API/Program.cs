@@ -29,6 +29,8 @@ namespace EasyShop.API
             builder.Services.AddScoped<ICouponService, CouponService>();
             builder.Services.AddScoped<IPaymentService, PaymentService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddSingleton<IPasswordHasher, EasyShop.Infrastructure.Security.Pbkdf2PasswordHasher>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddClientServices();

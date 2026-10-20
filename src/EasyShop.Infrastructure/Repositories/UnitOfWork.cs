@@ -28,6 +28,7 @@ namespace EasyShop.Infrastructure.Repositories
         public IGenericRepository<Shipment> Shipments { get; private set; }
         public IGenericRepository<OrderStatusHistory> OrderStatusHistories { get; private set; }
         public IGenericRepository<Brand> Brands { get; private set; }
+        public IGenericRepository<ApplicationRole> Roles { get; private set; }
         public UnitOfWork(AppDbContext context,
             IProductRepository productRepository,
             IOrderRepository orderRepository,
@@ -45,7 +46,8 @@ namespace EasyShop.Infrastructure.Repositories
             IGenericRepository<OrderItem> orderItemRepository,
             IGenericRepository<OrderStatusHistory> OrderStatusHistoryRepository,
             IGenericRepository<Shipment> ShipmentRepository,
-            IGenericRepository<Brand> brandRepository
+            IGenericRepository<Brand> brandRepository,
+            IGenericRepository<ApplicationRole> roleRepository
             )
         {
             _context = context;
@@ -65,7 +67,8 @@ namespace EasyShop.Infrastructure.Repositories
             OrderItems = orderItemRepository;
             OrderStatusHistories = OrderStatusHistoryRepository;
             Shipments = ShipmentRepository;
-            Brands = brandRepository; 
+            Brands = brandRepository;
+            Roles = roleRepository;
         }
 
         public async Task<int> CompleteAsync()

@@ -4,6 +4,8 @@
     {
         Task<ApplicationUser?> GetByEmailAsync(string email);
 
+        Task<ApplicationUser?> GetByEmailWithRolesAsync(string email);
+
         Task<ApplicationUser?> GetByPhoneNumberAsync(string phoneNumber);
 
         Task<ApplicationUser?> GetUserWithAddressesAsync(int userId);
