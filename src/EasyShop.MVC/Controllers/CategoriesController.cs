@@ -1,5 +1,6 @@
 namespace EasyShop.MVC.Controllers;
 
+[Authorize(Roles = RoleNames.Admin)]
 public class CategoriesController : Controller
 {
     private readonly ICategoryService _categoryService;
@@ -10,6 +11,7 @@ public class CategoriesController : Controller
     }
 
     // GET: /Categories
+    [AllowAnonymous]
     public async Task<IActionResult> Index()
     {
         var categories = await _categoryService.GetAllCategoriesAsync();
@@ -20,6 +22,7 @@ public class CategoriesController : Controller
     }
 
     // GET: /Categories/Details/5
+    [AllowAnonymous]
     public async Task<IActionResult> Details(int id)
     {
         var category = await _categoryService.GetCategoryByIdAsync(id);

@@ -1,5 +1,6 @@
 namespace EasyShop.MVC.Controllers;
 
+[Authorize(Roles = RoleNames.Admin)]
 public class BrandsController : Controller
 {
     private readonly IBrandService _brandService;
@@ -12,6 +13,7 @@ public class BrandsController : Controller
     }
 
     // GET: /Brands
+    [AllowAnonymous]
     public async Task<IActionResult> Index()
     {
         var brands = await _brandService.GetAllBrandsAsync();
@@ -19,6 +21,7 @@ public class BrandsController : Controller
     }
 
     // GET: /Brands/Details/5
+    [AllowAnonymous]
     public async Task<IActionResult> Details(int id)
     {
         var brand = await _brandService.GetBrandByIdAsync(id);
