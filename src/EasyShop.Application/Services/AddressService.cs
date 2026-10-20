@@ -1,4 +1,5 @@
-﻿using EasyShop.Application.Interfaces.Repositories;
+﻿using EasyShop.Application.DTOs.User;
+using EasyShop.Application.Interfaces.Repositories;
 using EasyShop.Application.Interfaces.Services;
 using EasyShop.Domain.Entities;
 
@@ -23,12 +24,19 @@ namespace EasyShop.Application.Services
             return await _unitOfWork.UserAddresses.GetAllAsync();
         }
 
-        public async Task<IEnumerable<UserAddress>> GetAddressesByUserIdAsync(int userId)
+        public async Task<IEnumerable<AddressDto>> GetAddressesByUserIdAsync(int userId)
         {
-            return await _unitOfWork.UserAddresses
+            var addresses = await _unitOfWork.UserAddresses
                 .FindByConditionAsync(a => a.UserId == userId);
-        }
 
+            return addresses.Select(a => new AddressDto
+            {
+                Id = a.Id,
+                FullAddress = $"{a.City}, {a.Area}, {a.Street}" +
+                              (!string.IsNullOrEmpty(a.BuildingNumber) ? $", Bldg: {a.BuildingNumber}" : "") +
+                              (!string.IsNullOrEmpty(a.ApartmentNumber) ? $", Apt: {a.ApartmentNumber}" : "")
+            }).ToList();
+        }
         public async Task AddAddressAsync(UserAddress address)
         {
             await _unitOfWork.UserAddresses.AddAsync(address);

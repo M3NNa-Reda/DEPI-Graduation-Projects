@@ -1,16 +1,23 @@
-﻿namespace EasyShop.Application.Services
+﻿using EasyShop.Application.DTOs.Shipment;
+
+namespace EasyShop.Application.Services
 {
     public class OrderService : IOrderService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICouponService _couponService;
         private readonly IPaymentService _paymentService ;
+        private readonly IShipmentService _shipmentService ;
 
-        public OrderService(IUnitOfWork unitOfWork,ICouponService couponService, IPaymentService paymentService)
+        public OrderService(IUnitOfWork unitOfWork,
+            ICouponService couponService,
+            IPaymentService paymentService,
+            IShipmentService shipmentService)
         {
             _unitOfWork = unitOfWork;
             _couponService = couponService;
             _paymentService = paymentService;
+            _shipmentService = shipmentService;
         }
 
         public async Task<OrderDetailsDto> CreateOrderAsync(int userId, CreateOrderRequestDto dto)
@@ -40,53 +47,55 @@
             {
                 throw new KeyNotFoundException("Cart is empty or not found.");
             }
-            var productVariantIds = cart.CartItems.Select(x => x.ProductVariantId).ToList();
+            var productVariantIds = cart.CartItems.Select(x => x.ProductVariantId).Distinct().ToList();
             var productVariants = await _unitOfWork.ProductVariants.GetVariantsWithProductByIdsAsync(productVariantIds);
+            var variantsById = productVariants.ToDictionary(x => x.Id);
             var orderItems = new List<OrderItem>();
-            decimal totalAmountOfItems = 0;
+            decimal subtotal = 0;
             foreach (var item in cart.CartItems)
             {
-                var productVariant = productVariants.FirstOrDefault(p => p.Id == item.ProductVariantId); //one by one
-                if(productVariant==null||!productVariant.IsActive)
-                    throw new InvalidOperationException($"Product item is unavailable.");
-                if(productVariant.StockQuantity<item.Quantity)
-                    throw new InvalidOperationException($"Insufficient stock for item ID: {item.ProductVariantId}");
+                if (item.Quantity <= 0)
+                    throw new InvalidOperationException("Quantity must be greater than zero.");
 
-                productVariant.StockQuantity -= item.Quantity;
-                var price=productVariant.Price;
-                var itemTotalPrice = price * item.Quantity;
-                totalAmountOfItems += itemTotalPrice;
+                if (!variantsById.TryGetValue( item.ProductVariantId, out var variant)
+                    || !variant.IsActive)
+                    throw new InvalidOperationException("Product variant is unavailable.");
+                if (variant.StockQuantity < item.Quantity)
+                    throw new InvalidOperationException($"Insufficient stock for variant ID: {variant.Id}.");
+
+                var itemTotalPrice = variant.Price * item.Quantity;
+
+                subtotal += itemTotalPrice;
 
                 orderItems.Add(new OrderItem
                 {
-                    ProductName = productVariant.Product.Name,
-                    SKU = productVariant.SKU,
-                    UnitPrice = productVariant.Price,
+                    ProductVariantId = variant.Id,
+                    ProductName = variant.Product.Name,
+                    SKU = variant.SKU,
+                    UnitPrice = variant.Price,
                     Quantity = item.Quantity,
-                    TotalPrice = itemTotalPrice,
-                    ProductVariantId = productVariant.Id
-
+                    TotalPrice = itemTotalPrice
                 });
-
             }
+
+        
             Coupon coupon = null;
             decimal discount = 0;
             if (!string.IsNullOrEmpty(dto.CouponCode))
             {
-                coupon = await _couponService.ValidateCouponAsync(dto.CouponCode, userId, totalAmountOfItems); // يرجع كوبون صالح
-                discount = _couponService.CalculateDiscount(coupon, totalAmountOfItems);
-                if (discount < 0 || discount > totalAmountOfItems)
+                coupon = await _couponService.ValidateCouponAsync(dto.CouponCode, userId, subtotal); // يرجع كوبون صالح
+                discount = _couponService.CalculateDiscount(coupon, subtotal);
+                if (discount < 0 || discount > subtotal)
                     throw new InvalidOperationException("Invalid coupon discount.");
             }
 
-            // لسه هنحسب الشحن
-            decimal shipping = 0;
-
-            decimal totalAmount = (totalAmountOfItems + shipping) - discount;
+            decimal shipping = 70m;
+            decimal totalAmount = (subtotal + shipping) - discount;
             var order = new Order
             {
+                UserId = userId,
                 Status = OrderStatus.Confirmed,
-                Subtotal = totalAmountOfItems,
+                Subtotal = subtotal,
                 DiscountAmount = discount,
                 ShippingFee = shipping,
                 TotalAmount = totalAmount,
@@ -95,7 +104,7 @@
                 CreatedAt = DateTime.UtcNow,
                 OrderShippingAddress = new OrderShippingAddress
                 {
-                    FullName = user.FirstName + user.LastName,
+                    FullName = $"{user.FirstName} {user.LastName}".Trim(),
                     PhoneNumber = user.PhoneNumber,
                     Country = address.Country,
                     City = address.City,
@@ -107,20 +116,95 @@
                 }
 
             };
-            await _unitOfWork.Orders.AddAsync(order);
-            await _unitOfWork.CompleteAsync();
-            if (coupon != null)
+             await _unitOfWork.BeginTransactionAsync();
+
+            try
             {
-                await _couponService.ApplyCouponAsync(coupon, userId, order.Id);
+                foreach (var cartItem in cart.CartItems)
+                {
+                    var variant = variantsById[cartItem.ProductVariantId];
+
+                    variant.StockQuantity -= cartItem.Quantity;
+                }
+
+                await _unitOfWork.Orders.AddAsync(order);
+                await _unitOfWork.CompleteAsync();
+
+
+                foreach (var cartItem in cart.CartItems)
+                {
+                    await _unitOfWork.InventoryTransactions.AddAsync(
+                        new InventoryTransaction
+                        {
+                            ProductVariantId = cartItem.ProductVariantId,
+                            Quantity = cartItem.Quantity,
+                            TransactionType = TransactionType.Sale,
+                            ReferenceType = "Order",
+                            ReferenceId = order.Id,
+                            CreatedAt = DateTime.UtcNow
+                        });
+                }
+
+                if (coupon != null)
+                {
+                    await _couponService.ApplyCouponAsync(
+                        coupon,
+                        userId,
+                        order.Id);
+                }
+
+                await _paymentService.CreatePaymentAsync(
+                    order.Id,
+                    dto.PaymentMethod,
+                    totalAmount);
+
+                await _shipmentService.CreateShipmentAsync(
+                    new CreateShipmentDto
+                    {
+                        OrderId = order.Id,
+                        Carrier = "Default",
+                        TrackingNumber = null,
+                        ShippingCost = shipping
+                    });
+
+                await _unitOfWork.Carts.RemoveCartItems(cart.CartItems);
+
+                await _unitOfWork.CompleteAsync();
+
+                await _unitOfWork.CommitTransactionAsync();
+            }
+            catch
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
             }
 
-            var payment = await _paymentService.CreatePaymentAsync(order.Id, dto.PaymentMethod, totalAmount);
-            await _unitOfWork.Carts.RemoveCartItems(cart.CartItems);
+            return new OrderDetailsDto
+            {
+                Id = order.Id,
+                Status = order.Status,
+                Subtotal = order.Subtotal,
+                DiscountAmount = order.DiscountAmount,
+                ShippingFee = order.ShippingFee,
+                TotalAmount = order.TotalAmount,
+                CouponCode = coupon?.Code,
+                ShippingAddress =
+                    $"{address.Street}, {address.Area}, {address.City}, {address.Country}",
+                CreatedAt = order.CreatedAt,
+                UpdatedAt = order.UpdatedAt,
 
+                Items = order.OrderItems.Select(item => new OrderItemDto
+                {
+                    ProductVariantId = item.ProductVariantId,
+                    ProductName = item.ProductName,
+                    SKU = item.SKU,
+                    UnitPrice = item.UnitPrice,
+                    Quantity = item.Quantity,
+                    TotalPrice = item.TotalPrice
+                }).ToList()
+            };
            
-            return new OrderDetailsDto();
         }
-
         public async Task CancelOrderAsync(int userId, int orderId)
         {
             var user = await _unitOfWork.Users.GetByIdAsync(userId);

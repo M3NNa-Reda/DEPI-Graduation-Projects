@@ -1,11 +1,4 @@
 ﻿using EasyShop.Application.DTOs.Shipment;
-using EasyShop.Application.Interfaces.Repositories;
-using EasyShop.Application.Interfaces.Services;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using EasyShop.Domain.Entities;
-using EasyShop.Domain.Enums;
 
 namespace EasyShop.Application.Services
 {
