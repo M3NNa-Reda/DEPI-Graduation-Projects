@@ -1,30 +1,50 @@
 ﻿
+using EasyShop.Application.Services;
+
 namespace EasyShop.MVC.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class OrdersController : Controller
     {
         private readonly IOrderService _orderService;
+        private readonly IAddressService _addressService;
 
-        public OrdersController(IOrderService orderService)
+        public OrdersController(IOrderService orderService, IAddressService addressService)
         {
             _orderService = orderService;
+            _addressService = addressService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            int userId = User.GetUserId();
+            await PopulateAddressesSelectList(userId);
+            return View(new CreateOrderRequestDto());
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateOrderRequestDto dto)
         {
+            int userId = User.GetUserId();
+
             if (!ModelState.IsValid)
             {
+                await PopulateAddressesSelectList(userId);
                 return View(dto);
             }
 
-            int userId = User.GetUserId();
             var result = await _orderService.CreateOrderAsync(userId, dto);
-
             return RedirectToAction(nameof(Details), new { id = result.Id });
         }
 
+        private async Task PopulateAddressesSelectList(int userId)
+        {
+            var addresses = await _addressService.GetAddressesByUserIdAsync(userId);
+
+            ViewBag.Addresses = new SelectList(addresses, "Id", "FullAddress");
+        }
         [HttpGet]
         public async Task<IActionResult> MyOrders()
         {
@@ -59,7 +79,7 @@ namespace EasyShop.MVC.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RecentOrders(int page = 1, int pageSize = 10)
         {
             var orders = await _orderService.GetRecentOrdersAsync(page, pageSize);
@@ -67,7 +87,7 @@ namespace EasyShop.MVC.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AdminDetails(int id)
         {
             var order = await _orderService.GetOrderByIdForAdminAsync(id);
@@ -79,7 +99,7 @@ namespace EasyShop.MVC.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateStatus(int id, UpdateOrderStatusDto dto)
         {

@@ -1,15 +1,12 @@
-﻿using EasyShop.Application.Interfaces.Repositories;
-using EasyShop.Infrastructure.Persistence.Context;
-using EasyShop.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+
 
 namespace EasyShop.Infrastructure.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
         private readonly AppDbContext _context;
+        private IDbContextTransaction? _transaction;
         public IProductRepository Products { get; private set; }
 
         public IOrderRepository Orders { get; private set; }
@@ -29,6 +26,7 @@ namespace EasyShop.Infrastructure.Repositories
         public IGenericRepository<OrderStatusHistory> OrderStatusHistories { get; private set; }
         public IGenericRepository<Brand> Brands { get; private set; }
         public IGenericRepository<ApplicationRole> Roles { get; private set; }
+        public IGenericRepository<InventoryTransaction> InventoryTransactions { get; private set; }
         public UnitOfWork(AppDbContext context,
             IProductRepository productRepository,
             IOrderRepository orderRepository,
@@ -47,7 +45,8 @@ namespace EasyShop.Infrastructure.Repositories
             IGenericRepository<OrderStatusHistory> OrderStatusHistoryRepository,
             IGenericRepository<Shipment> ShipmentRepository,
             IGenericRepository<Brand> brandRepository,
-            IGenericRepository<ApplicationRole> roleRepository
+            IGenericRepository<ApplicationRole> roleRepository,
+            IGenericRepository<InventoryTransaction> inventoryTransactionRepository
             )
         {
             _context = context;
@@ -69,15 +68,52 @@ namespace EasyShop.Infrastructure.Repositories
             Shipments = ShipmentRepository;
             Brands = brandRepository;
             Roles = roleRepository;
+            InventoryTransactions = inventoryTransactionRepository;
         }
 
         public async Task<int> CompleteAsync()
         {
             return await _context.SaveChangesAsync();
         }
+        public async Task BeginTransactionAsync()
+        {
+            if (_transaction != null)
+                throw new InvalidOperationException(
+                    "A transaction is already in progress.");
 
+            _transaction = await _context.Database.BeginTransactionAsync();
+        }
+
+        public async Task CommitTransactionAsync()
+        {
+            if (_transaction == null)
+                throw new InvalidOperationException(
+                    "No active transaction.");
+
+            await _transaction.CommitAsync();
+            await _transaction.DisposeAsync();
+
+            _transaction = null;
+        }
+
+        public async Task RollbackTransactionAsync()
+        {
+            if (_transaction == null)
+                return;
+
+            try
+            {
+                await _transaction.RollbackAsync();
+            }
+            finally
+            {
+                await _transaction.DisposeAsync();
+                _transaction = null;
+            }
+        }
         public void Dispose()
         {
+            _transaction?.Dispose();
             _context.Dispose();
         }
     }
