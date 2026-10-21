@@ -12,7 +12,7 @@ namespace EasyShop.Application.Interfaces.Services
         Task<IEnumerable<ApplicationUser>> GetActiveUsersAsync();
         Task<IEnumerable<ApplicationUser>> GetAllUsersAsync();
         Task AddUserAsync(ApplicationUser user);
-        void UpdateUser(ApplicationUser user);
-        void DeleteUser(ApplicationUser user);
+        Task UpdateUserAsync(ApplicationUser user);
+        Task DeleteUserAsync(ApplicationUser user);
     }
 }

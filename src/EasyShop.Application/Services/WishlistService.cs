@@ -34,16 +34,16 @@ namespace EasyShop.Application.Services
             await _unitOfWork.CompleteAsync();
         }
 
-        public void UpdateWishlist(Wishlist wishlist)
+        public async Task UpdateWishlistAsync(Wishlist wishlist)
         {
             _unitOfWork.Wishlists.Update(wishlist);
-            _unitOfWork.CompleteAsync().GetAwaiter().GetResult();
+            await _unitOfWork.CompleteAsync();
         }
 
-        public void DeleteWishlist(Wishlist wishlist)
+        public async Task DeleteWishlistAsync(Wishlist wishlist)
         {
             _unitOfWork.Wishlists.Delete(wishlist);
-            _unitOfWork.CompleteAsync().GetAwaiter().GetResult();
+            await _unitOfWork.CompleteAsync();
         }
     }
 }
