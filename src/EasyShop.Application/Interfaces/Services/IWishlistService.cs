@@ -8,7 +8,7 @@ namespace EasyShop.Application.Interfaces.Services
         Task<Wishlist?> GetWishlistByUserIdAsync(int userId);
         Task<IEnumerable<Wishlist>> GetAllWishlistsAsync();
         Task AddWishlistAsync(Wishlist wishlist);
-        void UpdateWishlist(Wishlist wishlist);
-        void DeleteWishlist(Wishlist wishlist);
+        Task UpdateWishlistAsync(Wishlist wishlist);
+        Task DeleteWishlistAsync(Wishlist wishlist);
     }
 }

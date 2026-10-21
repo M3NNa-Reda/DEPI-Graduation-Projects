@@ -9,7 +9,7 @@ namespace EasyShop.Application.Interfaces.Services
         Task<IEnumerable<UserAddress>> GetAllAddressesAsync();
         Task<IEnumerable<AddressDto>> GetAddressesByUserIdAsync(int userId);
         Task AddAddressAsync(UserAddress address);
-        void UpdateAddress(UserAddress address);
-        void DeleteAddress(UserAddress address);
+        Task UpdateAddressAsync(UserAddress address);
+        Task DeleteAddressAsync(UserAddress address);
     }
 }

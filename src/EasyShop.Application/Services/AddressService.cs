@@ -43,16 +43,16 @@ namespace EasyShop.Application.Services
             await _unitOfWork.CompleteAsync();
         }
 
-        public void UpdateAddress(UserAddress address)
+        public async Task UpdateAddressAsync(UserAddress address)
         {
             _unitOfWork.UserAddresses.Update(address);
-            _unitOfWork.CompleteAsync().GetAwaiter().GetResult();
+            await _unitOfWork.CompleteAsync();
         }
 
-        public void DeleteAddress(UserAddress address)
+        public async Task DeleteAddressAsync(UserAddress address)
         {
             _unitOfWork.UserAddresses.Delete(address);
-            _unitOfWork.CompleteAsync().GetAwaiter().GetResult();
+            await _unitOfWork.CompleteAsync();
         }
     }
 }

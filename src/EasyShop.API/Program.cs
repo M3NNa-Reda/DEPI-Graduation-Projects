@@ -33,6 +33,10 @@ namespace EasyShop.API
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IAddressService, AddressService>();
             builder.Services.AddScoped<IShipmentService, ShipmentService>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IWishlistService, WishlistService>();
+            builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<IReviewService, ReviewService>();
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
