@@ -40,6 +40,7 @@ public class ProductsController : Controller
         }
 
         await LoadLookupNamesAsync(product);
+        ViewBag.Variants = await _productService.GetActiveVariantsAsync(id);
         return View(product);
     }
 

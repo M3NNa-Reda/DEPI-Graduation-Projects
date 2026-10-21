@@ -24,6 +24,14 @@
             return await _unitOfWork.Products.GetProductsByCategory(categoryId);
         }
 
+        public async Task<IEnumerable<ProductVariant>> GetActiveVariantsAsync(int productId)
+        {
+            var variants = await _unitOfWork.ProductVariants
+                .FindByConditionAsync(v => v.ProductId == productId && v.IsActive);
+
+            return variants.OrderBy(v => v.Price).ToList();
+        }
+
         public async Task AddProductAsync(Product product)
         {
             await _unitOfWork.Products.AddAsync(product);
