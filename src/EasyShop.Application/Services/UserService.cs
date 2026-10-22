@@ -54,16 +54,16 @@ namespace EasyShop.Application.Services
             await _unitOfWork.CompleteAsync();
         }
 
-        public void UpdateUser(ApplicationUser user)
+        public async Task UpdateUserAsync(ApplicationUser user)
         {
             _unitOfWork.Users.Update(user);
-            _unitOfWork.CompleteAsync().GetAwaiter().GetResult();
+            await _unitOfWork.CompleteAsync();
         }
 
-        public void DeleteUser(ApplicationUser user)
+        public async Task DeleteUserAsync(ApplicationUser user)
         {
             _unitOfWork.Users.Delete(user);
-            _unitOfWork.CompleteAsync().GetAwaiter().GetResult();
+            await _unitOfWork.CompleteAsync();
         }
     }
 }
