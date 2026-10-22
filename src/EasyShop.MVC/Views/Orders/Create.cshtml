@@ -17,6 +17,10 @@
                         <option value="">-- Select Delivery Address --</option>
                     </select>
                     <span asp-validation-for="AddressId" class="text-danger"></span>
+                    <div class="form-text">
+                        Need another address?
+                        <a asp-controller="Addresses" asp-action="Create" asp-route-returnUrl="@Url.Action("Create", "Orders")">Add one</a>
+                    </div>
                 </div>
 
                 <div class="mb-3">

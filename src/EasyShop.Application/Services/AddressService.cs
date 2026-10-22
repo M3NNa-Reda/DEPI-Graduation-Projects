@@ -37,6 +37,24 @@ namespace EasyShop.Application.Services
                               (!string.IsNullOrEmpty(a.ApartmentNumber) ? $", Apt: {a.ApartmentNumber}" : "")
             }).ToList();
         }
+        public async Task<IEnumerable<UserAddress>> GetUserAddressesAsync(int userId)
+        {
+            var addresses = await _unitOfWork.UserAddresses
+                .FindByConditionAsync(a => a.UserId == userId);
+
+            return addresses.OrderByDescending(a => a.IsDefault).ThenBy(a => a.Id).ToList();
+        }
+
+        public async Task<bool> DeleteUserAddressAsync(int userId, int addressId)
+        {
+            var address = await _unitOfWork.UserAddresses.GetByIdAsync(addressId);
+            if (address == null || address.UserId != userId)
+                return false;
+
+            await DeleteAddressAsync(address);
+            return true;
+        }
+
         public async Task AddAddressAsync(UserAddress address)
         {
             await _unitOfWork.UserAddresses.AddAsync(address);

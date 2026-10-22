@@ -17,6 +17,7 @@ public class RegisterViewModel
     [StringLength(256)]
     public string Email { get; set; } = string.Empty;
 
+    [Required]
     [Phone]
     [StringLength(20)]
     [Display(Name = "Phone number")]

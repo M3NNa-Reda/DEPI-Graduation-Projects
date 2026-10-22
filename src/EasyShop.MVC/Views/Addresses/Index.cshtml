@@ -1,0 +1,63 @@
+﻿@model IEnumerable<UserAddress>
+@{
+    ViewData["Title"] = "My Addresses";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">My Addresses</h1>
+    <a asp-action="Create" class="btn btn-primary">+ New Address</a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">You have no saved addresses yet. Add one to be able to place an order.</div>
+}
+else
+{
+    <div class="row g-3">
+        @foreach (var address in Model)
+        {
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h2 class="h6">
+                            @address.City, @address.Area
+                            @if (address.IsDefault)
+                            {
+                                <span class="badge bg-primary ms-1">Default</span>
+                            }
+                        </h2>
+                        <p class="mb-1">@address.Street</p>
+                        <p class="text-muted small mb-0">
+                            @address.Country
+                            @if (!string.IsNullOrEmpty(address.BuildingNumber)) { <text> &middot; Bldg @address.BuildingNumber</text> }
+                            @if (!string.IsNullOrEmpty(address.ApartmentNumber)) { <text> &middot; Apt @address.ApartmentNumber</text> }
+                            @if (!string.IsNullOrEmpty(address.PostalCode)) { <text> &middot; @address.PostalCode</text> }
+                        </p>
+                    </div>
+                    <div class="card-footer text-end">
+                        <form asp-action="Delete" asp-route-id="@address.Id" method="post"
+                              onsubmit="return confirm('Remove this address?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
