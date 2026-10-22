@@ -23,6 +23,12 @@ public class ProductsController : Controller
     {
         var products = await _productService.GetAllProductsAsync();
 
+        // Customers only see products that are on sale; administrators manage all of them.
+        if (!User.IsInRole(RoleNames.Admin))
+        {
+            products = products.Where(p => p.IsActive).ToList();
+        }
+
         ViewBag.BrandNames = (await _brandService.GetAllBrandsAsync()).ToDictionary(b => b.Id, b => b.Name);
         ViewBag.CategoryNames = (await _categoryService.GetAllCategoriesAsync()).ToDictionary(c => c.Id, c => c.Name);
 

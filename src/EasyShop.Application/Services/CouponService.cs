@@ -57,7 +57,7 @@
 
         public async Task<Coupon> ValidateCouponAsync(string code, int userId, decimal orderAmount)
         {
-            var coupon = await _unitOfWork.Coupons.GetByCodeAsync(code);
+            var coupon = await _unitOfWork.Coupons.GetByCodeAsync(NormalizeCode(code));
 
             if (coupon is null)
                 throw new InvalidOperationException("Coupon code not found.");
