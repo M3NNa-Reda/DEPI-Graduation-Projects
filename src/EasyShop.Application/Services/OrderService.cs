@@ -94,7 +94,7 @@ namespace EasyShop.Application.Services
             var order = new Order
             {
                 UserId = userId,
-                Status = OrderStatus.Confirmed,
+                Status = OrderStatus.Pending,
                 Subtotal = subtotal,
                 DiscountAmount = discount,
                 ShippingFee = shipping,
