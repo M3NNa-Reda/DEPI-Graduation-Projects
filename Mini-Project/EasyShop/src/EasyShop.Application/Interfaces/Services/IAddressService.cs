@@ -1,4 +1,5 @@
-﻿using EasyShop.Domain.Entities;
+﻿using EasyShop.Application.DTOs.User;
+using EasyShop.Domain.Entities;
 
 namespace EasyShop.Application.Interfaces.Services
 {
@@ -6,9 +7,11 @@ namespace EasyShop.Application.Interfaces.Services
     {
         Task<UserAddress?> GetAddressByIdAsync(int id);
         Task<IEnumerable<UserAddress>> GetAllAddressesAsync();
-        Task<IEnumerable<UserAddress>> GetAddressesByUserIdAsync(int userId);
+        Task<IEnumerable<AddressDto>> GetAddressesByUserIdAsync(int userId);
+        Task<IEnumerable<UserAddress>> GetUserAddressesAsync(int userId);
+        Task<bool> DeleteUserAddressAsync(int userId, int addressId);
         Task AddAddressAsync(UserAddress address);
-        void UpdateAddress(UserAddress address);
-        void DeleteAddress(UserAddress address);
+        Task UpdateAddressAsync(UserAddress address);
+        Task DeleteAddressAsync(UserAddress address);
     }
 }

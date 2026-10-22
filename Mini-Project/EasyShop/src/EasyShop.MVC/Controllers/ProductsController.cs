@@ -1,5 +1,6 @@
 namespace EasyShop.MVC.Controllers;
 
+[Authorize(Roles = RoleNames.Admin)]
 public class ProductsController : Controller
 {
     private readonly IProductService _productService;
@@ -17,9 +18,16 @@ public class ProductsController : Controller
     }
 
     // GET: /Products
+    [AllowAnonymous]
     public async Task<IActionResult> Index()
     {
         var products = await _productService.GetAllProductsAsync();
+
+        // Customers only see products that are on sale; administrators manage all of them.
+        if (!User.IsInRole(RoleNames.Admin))
+        {
+            products = products.Where(p => p.IsActive).ToList();
+        }
 
         ViewBag.BrandNames = (await _brandService.GetAllBrandsAsync()).ToDictionary(b => b.Id, b => b.Name);
         ViewBag.CategoryNames = (await _categoryService.GetAllCategoriesAsync()).ToDictionary(c => c.Id, c => c.Name);
@@ -28,6 +36,7 @@ public class ProductsController : Controller
     }
 
     // GET: /Products/Details/5
+    [AllowAnonymous]
     public async Task<IActionResult> Details(int id)
     {
         var product = await _productService.GetProductByIdAsync(id);
@@ -37,6 +46,7 @@ public class ProductsController : Controller
         }
 
         await LoadLookupNamesAsync(product);
+        ViewBag.Variants = await _productService.GetActiveVariantsAsync(id);
         return View(product);
     }
 

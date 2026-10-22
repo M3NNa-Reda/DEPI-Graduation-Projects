@@ -1,12 +1,14 @@
 ﻿using System.Text;
+using EasyShop.Domain.Constants;
 using EasyShop.Domain.Entities;
 
 namespace EasyShop.API.Helpers.Extensions
 {
     /// <summary>
     /// Applies pending EF Core migrations and seeds the catalog (brands, categories and
-    /// products with images, options and variants) with realistic sample data.
-    /// Seeding is idempotent: each block is skipped when its table already contains rows.
+    /// products with images, options and variants) with realistic sample data, plus the
+    /// application roles and, optionally, an admin account taken from configuration.
+    /// Seeding is idempotent: each block is skipped when its data already exists.
     /// </summary>
     public static class DatabaseMigrator
     {
@@ -18,6 +20,11 @@ namespace EasyShop.API.Helpers.Extensions
 
             await dbContext.Database.MigrateAsync();
             await SeedDataAsync(dbContext);
+            await SeedRolesAsync(dbContext);
+            await SeedAdminAsync(
+                dbContext,
+                serviceProvider.GetRequiredService<IPasswordHasher>(),
+                app.Configuration);
         }
 
         // ---------------------------------------------------------------------
@@ -29,6 +36,81 @@ namespace EasyShop.API.Helpers.Extensions
             await SeedBrandsAsync(context, cancellationToken);
             await SeedCategoriesAsync(context, cancellationToken);
             await SeedProductsAsync(context, cancellationToken);
+        }
+
+        // ------------------------- Roles and admin account -------------------------
+
+        private static async Task SeedRolesAsync(AppDbContext context, CancellationToken cancellationToken = default)
+        {
+            (string Name, string Description)[] roles =
+            {
+                (RoleNames.Admin, "Manages the catalog, orders and users."),
+                (RoleNames.Customer, "Registered shop customer.")
+            };
+
+            List<string> existingNames = await context.ApplicationRoles
+                .Select(r => r.Name)
+                .ToListAsync(cancellationToken);
+
+            List<ApplicationRole> missingRoles = roles
+                .Where(r => !existingNames.Contains(r.Name))
+                .Select(r => new ApplicationRole
+                {
+                    Name = r.Name,
+                    Description = r.Description,
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow
+                })
+                .ToList();
+
+            if (missingRoles.Count == 0)
+            {
+                return;
+            }
+
+            context.ApplicationRoles.AddRange(missingRoles);
+            await context.SaveChangesAsync(cancellationToken);
+        }
+
+        /// <summary>
+        /// Creates the first admin from the Seed:AdminEmail and Seed:AdminPassword settings
+        /// (use user-secrets or environment variables, never appsettings.json).
+        /// Does nothing when the settings are missing or the account already exists.
+        /// </summary>
+        private static async Task SeedAdminAsync(
+            AppDbContext context,
+            IPasswordHasher passwordHasher,
+            IConfiguration configuration,
+            CancellationToken cancellationToken = default)
+        {
+            string? email = configuration["Seed:AdminEmail"]?.Trim().ToLowerInvariant();
+            string? password = configuration["Seed:AdminPassword"];
+
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrEmpty(password))
+            {
+                return;
+            }
+
+            if (await context.ApplicationUsers.AnyAsync(u => u.Email == email, cancellationToken))
+            {
+                return;
+            }
+
+            ApplicationRole adminRole = await context.ApplicationRoles
+                .SingleAsync(r => r.Name == RoleNames.Admin, cancellationToken);
+
+            context.ApplicationUsers.Add(new ApplicationUser
+            {
+                Email = email,
+                FirstName = "Admin",
+                LastName = "User",
+                PasswordHash = passwordHasher.Hash(password),
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow,
+                ApplicationUserRoles = { new ApplicationUserRole { RoleId = adminRole.Id } }
+            });
+
+            await context.SaveChangesAsync(cancellationToken);
         }
 
         // ----------------------------- Brands (20) -----------------------------

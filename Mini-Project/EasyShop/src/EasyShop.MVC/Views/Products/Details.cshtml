@@ -1,9 +1,19 @@
 @model Product
 @{
     ViewData["Title"] = "Product Details";
+    var variants = (IEnumerable<ProductVariant>?)ViewBag.Variants ?? Enumerable.Empty<ProductVariant>();
 }
 
 <h1 class="h3 mb-3">Product Details</h1>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
 
 <div class="card shadow-sm">
     <div class="card-body">
@@ -43,7 +53,71 @@
         </dl>
     </div>
     <div class="card-footer d-flex gap-2">
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+        @if (User.IsInRole(RoleNames.Admin))
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+        }
         <a asp-action="Index" class="btn btn-outline-secondary">Back to list</a>
+    </div>
+</div>
+
+<div class="card shadow-sm mt-4">
+    <div class="card-header">Available options</div>
+    <div class="card-body">
+        @if (!variants.Any())
+        {
+            <p class="text-muted mb-0">This product has no purchasable options right now.</p>
+        }
+        else if (User.Identity?.IsAuthenticated != true)
+        {
+            <p class="mb-0">
+                <a asp-controller="Auth" asp-action="Login" asp-route-returnUrl="@Context.Request.Path">Log in</a>
+                to add this product to your cart.
+            </p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>SKU</th>
+                            <th class="text-end">Price</th>
+                            <th>Availability</th>
+                            <th style="width: 220px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var variant in variants)
+                        {
+                            <tr>
+                                <td><code>@variant.SKU</code></td>
+                                <td class="text-end">@variant.Price.ToString("N2")</td>
+                                <td>
+                                    @if (variant.StockQuantity > 0)
+                                    {
+                                        <span class="badge bg-success">In stock (@variant.StockQuantity)</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Out of stock</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (variant.StockQuantity > 0)
+                                    {
+                                        <form asp-controller="Cart" asp-action="Add" method="post" class="d-flex gap-2">
+                                            <input type="hidden" name="productVariantId" value="@variant.Id" />
+                                            <input type="number" name="quantity" value="1" min="1" max="@variant.StockQuantity" class="form-control form-control-sm" />
+                                            <button type="submit" class="btn btn-sm btn-primary text-nowrap">Add to cart</button>
+                                        </form>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
     </div>
 </div>

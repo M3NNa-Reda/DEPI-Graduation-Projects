@@ -32,6 +32,20 @@
         {
             return _unitOfWork.Payments.GetByOrderIdAsync(orderId);
         }
+        public Task<Payment?> GetPaymentByIdAsync(int paymentId)
+        {
+            return _unitOfWork.Payments.GetByIdAsync(paymentId);
+        }
+        public async Task<IEnumerable<Payment>> GetAllPaymentsAsync()
+        {
+            var payments = await _unitOfWork.Payments.GetAllAsync();
+            return payments.OrderByDescending(p => p.CreatedAt).ToList();
+        }
+        public async Task<IEnumerable<PaymentTransaction>> GetTransactionsAsync(int paymentId)
+        {
+            var transactions = await _unitOfWork.PaymentTransactions.GetByPaymentIdAsync(paymentId);
+            return transactions.OrderByDescending(t => t.CreatedAt).ToList();
+        }
         public async Task MarkAsPaidAsync(int paymentId)
         {
             var payment = await _unitOfWork.Payments.GetByIdAsync(paymentId)
