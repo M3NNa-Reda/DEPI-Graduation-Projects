@@ -11,4 +11,6 @@ public class StatCardViewModel
     public string Controller { get; set; } = string.Empty;
 
     public string Action { get; set; } = "Index";
+
+    public string ButtonText { get; set; } = "Manage";
 }

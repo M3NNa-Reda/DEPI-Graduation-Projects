@@ -1,11 +1,11 @@
 ﻿@model HomeViewModel
 @{
-    ViewData["Title"] = "Dashboard";
+    ViewData["Title"] = "Home";
 }
 
 <div class="mb-4">
-    <h1 class="h3 mb-1">EasyShop Dashboard</h1>
-    <p class="text-muted mb-0">A quick overview of your catalog.</p>
+    <h1 class="h3 mb-1">@Model.Title</h1>
+    <p class="text-muted mb-0">@Model.Subtitle</p>
 </div>
 
 <div class="row g-3">
@@ -14,3 +14,11 @@
         <partial name="_StatCard" model="card" />
     }
 </div>
+
+@if (User.Identity?.IsAuthenticated != true)
+{
+    <div class="mt-4 d-flex gap-2">
+        <a asp-controller="Auth" asp-action="Login" class="btn btn-primary">Login</a>
+        <a asp-controller="Auth" asp-action="Register" class="btn btn-outline-primary">Register</a>
+    </div>
+}
