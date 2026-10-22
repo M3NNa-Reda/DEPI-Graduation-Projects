@@ -25,6 +25,29 @@
 {
     <div class="alert alert-info">No products yet.</div>
 }
+else if (!User.IsInRole(RoleNames.Admin))
+{
+    <div class="row g-3">
+        @foreach (var product in Model)
+        {
+            <div class="col-12 col-sm-6 col-lg-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body d-flex flex-column">
+                        <h2 class="h6 mb-1">
+                            <a asp-action="Details" asp-route-id="@product.Id" class="text-decoration-none">@product.Name</a>
+                        </h2>
+                        <p class="text-muted small mb-3">
+                            @(brandNames.GetValueOrDefault(product.BrandId) ?? "-")
+                            &middot;
+                            @(product.CategoryId != null ? categoryNames.GetValueOrDefault(product.CategoryId.Value) : "-")
+                        </p>
+                        <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-primary mt-auto align-self-start">View &amp; add to cart</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
 else
 {
     <div class="table-responsive">

@@ -35,8 +35,19 @@ namespace EasyShop.MVC.Controllers
                 return View(dto);
             }
 
-            var result = await _orderService.CreateOrderAsync(userId, dto);
-            return RedirectToAction(nameof(Details), new { id = result.Id });
+            try
+            {
+                var result = await _orderService.CreateOrderAsync(userId, dto);
+                return RedirectToAction(nameof(Details), new { id = result.Id });
+            }
+            catch (Exception ex) when (ex is InvalidOperationException or KeyNotFoundException)
+            {
+                // Business rule failures (invalid coupon, empty cart, not enough stock...)
+                // are shown on the form instead of crashing the request.
+                ModelState.AddModelError(string.Empty, ex.Message);
+                await PopulateAddressesSelectList(userId);
+                return View(dto);
+            }
         }
 
         private async Task PopulateAddressesSelectList(int userId)
