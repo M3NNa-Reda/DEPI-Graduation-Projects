@@ -105,7 +105,7 @@ namespace EasyShop.Application.Services
                 OrderShippingAddress = new OrderShippingAddress
                 {
                     FullName = $"{user.FirstName} {user.LastName}".Trim(),
-                    PhoneNumber = user.PhoneNumber,
+                    PhoneNumber = user.PhoneNumber ?? string.Empty,
                     Country = address.Country,
                     City = address.City,
                     Area = address.Area,
