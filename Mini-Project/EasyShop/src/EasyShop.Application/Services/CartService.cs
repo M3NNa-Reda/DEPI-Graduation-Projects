@@ -153,6 +153,10 @@ namespace EasyShop.Application.Services
             if (variant == null || !variant.IsActive)
                 throw new ArgumentException("This product is no longer available.");
 
+            var product = await _unitOfWork.Products.GetByIdAsync(variant.ProductId);
+            if (product == null || !product.IsActive)
+                throw new ArgumentException("This product is no longer available.");
+
             return variant;
         }
 
