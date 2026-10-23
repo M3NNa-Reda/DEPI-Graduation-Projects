@@ -58,7 +58,8 @@ namespace EasyShop.Application.Services
                     throw new InvalidOperationException("Quantity must be greater than zero.");
 
                 if (!variantsById.TryGetValue( item.ProductVariantId, out var variant)
-                    || !variant.IsActive)
+                    || !variant.IsActive
+                    || !variant.Product.IsActive)
                     throw new InvalidOperationException("Product variant is unavailable.");
                 if (variant.StockQuantity < item.Quantity)
                     throw new InvalidOperationException($"Insufficient stock for variant ID: {variant.Id}.");

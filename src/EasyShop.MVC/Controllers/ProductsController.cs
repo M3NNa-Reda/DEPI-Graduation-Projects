@@ -45,6 +45,12 @@ public class ProductsController : Controller
             return NotFound();
         }
 
+        // Inactive products are hidden from everyone except administrators.
+        if (!product.IsActive && !User.IsInRole(RoleNames.Admin))
+        {
+            return NotFound();
+        }
+
         await LoadLookupNamesAsync(product);
         ViewBag.Variants = await _productService.GetActiveVariantsAsync(id);
         return View(product);
@@ -170,7 +176,7 @@ public class ProductsController : Controller
 
         await _productService.DeleteProductAsync(product);
 
-        TempData["Success"] = $"Product \"{product.Name}\" was deleted.";
+        TempData["Success"] = $"Product \"{product.Name}\" was deactivated and is now hidden from customers.";
         return RedirectToAction(nameof(Index));
     }
 

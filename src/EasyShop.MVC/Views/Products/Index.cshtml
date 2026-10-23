@@ -89,7 +89,7 @@ else
                             @if (User.IsInRole(RoleNames.Admin))
                             {
                                 <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-sm btn-outline-primary">Edit</a>
-                                <a asp-action="Delete" asp-route-id="@product.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                                <a asp-action="Delete" asp-route-id="@product.Id" class="btn btn-sm btn-outline-danger">Deactivate</a>
                             }
                         </td>
                     </tr>
