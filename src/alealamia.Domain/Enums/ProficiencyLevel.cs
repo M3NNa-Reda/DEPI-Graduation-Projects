@@ -4,7 +4,10 @@ using System.Text;
 
 namespace alealamia.Domain.Enums
 {
-    internal class ProficiencyLevel
+    public enum ProficiencyLevel
     {
+        Beginner = 1,
+        Intermediate = 2,
+        Advanced = 3
     }
 }

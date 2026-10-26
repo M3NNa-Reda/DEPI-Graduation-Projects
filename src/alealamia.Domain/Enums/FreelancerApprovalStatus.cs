@@ -4,7 +4,10 @@ using System.Text;
 
 namespace alealamia.Domain.Enums
 {
-    internal class FreelancerApprovalStatus
+    public enum FreelancerApprovalStatus
     {
+        Pending,
+        Approved,
+        Rejected
     }
 }
