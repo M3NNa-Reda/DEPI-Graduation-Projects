@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace alealamia.Infrastructure.Persistence.Context
+namespace alealamia.Domain.Entities
 {
-    public class AppDbContext
+    internal class FreelancerSkill
     {
     }
 }

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace alealamia.Domain.Enums
+namespace alealamia.Domain.Entities
 {
-    internal class Class1
+    internal class Skill
     {
     }
 }
