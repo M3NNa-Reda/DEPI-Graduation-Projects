@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8">
+<title>العالمية — العميل</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+.app,.app *{box-sizing:border-box}
+.app{font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;color:#242944;background:#F6F2EF}
+.app h1,.app h2,.app h3,.app p{margin:0}
+.btn{font:inherit;font-weight:600;border:0;border-radius:12px;padding:0 22px;min-height:48px;cursor:pointer;background:#242944;color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;font-size:15px}
+.btn:hover{background:#181C33}
+.btn.ghost{background:#fff;color:#242944;border:1px solid #D3CBBE}
+.btn.ghost:hover{background:#EFEAE2}
+.card{background:#fff;border:1px solid #E4DED5;border-radius:18px}
+.opt{border:1.5px solid #E4DED5;background:#fff;border-radius:16px;padding:18px;cursor:pointer;font:inherit;color:inherit;text-align:start;display:flex;flex-direction:column;gap:6px;text-decoration:none}
+.opt:hover{border-color:#C9A15F}
+.opt.sel{border-color:#242944;background:#F3E9D6;box-shadow:0 0 0 3px #24294422}
+.chip{display:inline-flex;align-items:center;padding:4px 12px;border-radius:999px;font-size:13px;font-weight:600;white-space:nowrap}
+.chip.done{background:#DDF5E8;color:#0B6B3A}
+.chip.progress{background:#F3E9D6;color:#181C33}
+.chip.review{background:#FFF1CC;color:#7A4B00}
+.chip.queued{background:#EFEAE2;color:#4A5568}
+.inp{font:inherit;border:1.5px solid #D3CBBE;border-radius:12px;padding:12px 14px;min-height:48px;width:100%;background:#fff;color:#242944;font-size:15px}
+.inp:focus{outline:3px solid #24294444;border-color:#242944}
+.lbl{font-weight:600;font-size:14px;margin-bottom:6px;display:block}
+.muted{color:#4A5568}
+.pill{font:inherit;cursor:pointer;border:1.5px solid #D3CBBE;background:#fff;color:#242944;border-radius:12px;padding:10px 16px;min-height:44px;font-weight:600;font-size:14px}
+.pill:hover{border-color:#C9A15F}
+.pill.sel{background:#242944;border-color:#242944;color:#fff}
+.back{font:inherit;cursor:pointer;background:none;border:0;color:#242944;font-weight:600;min-height:44px;padding:0 4px;font-size:15px}
+.iconbtn{font:inherit;cursor:pointer;background:#fff;border:1px solid #D3CBBE;border-radius:999px;min-height:40px;padding:0 16px;font-weight:600;font-size:14px;color:#242944}
+.iconbtn:hover{background:#EFEAE2}
+.bubble{padding:10px 14px;border-radius:14px;max-width:85%;font-size:14px;line-height:1.6}
+.bubble.sup{background:#EFEAE2;align-self:flex-start}
+.bubble.me{background:#242944;color:#fff;align-self:flex-end}
+.tile{border-radius:8px;background:#E4DED5}
+</style>
+</helmet>
+
+<div class="app" dir="{{dir}}" style="min-height: 940px; display: flex; flex-direction: column">
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 16px 40px; background: #fff; border-bottom: 1px solid #E4DED5; gap: 16px; flex-wrap: wrap">
+<div style="display: flex; align-items: center; gap: 12px">
+<svg width="33" height="41" viewBox="12 0 76 94" aria-hidden="true" ><g transform="translate(100 0) scale(-1 1)"><path d="M18 92V14Q18 6 26 6H74Q82 6 82 14V92" fill="none" stroke="#242944" stroke-width="9"/><circle cx="36" cy="40" r="7" fill="#C9A15F"/><path d="M29 92V54a7 7 0 0 1 14 0V92Z" fill="#C9A15F"/><circle cx="64" cy="40" r="7" fill="#B9CBEA"/><path d="M57 92V54a7 7 0 0 1 14 0V92Z" fill="#B9CBEA"/></g></svg>
+<div style="display: flex; flex-direction: column; line-height: 1.2">
+<span style="font-weight: 700; font-size: 20px">{{t.brand}}</span>
+<span class="muted" style="font-size: 12px">{{t.brandSub}}</span>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px">
+<sc-if value="{{showBack}}" hint-placeholder-val="{{ true }}">
+<button class="back" onClick="{{back}}">{{t.back}}</button>
+</sc-if>
+<button class="iconbtn" onClick="{{toggleLang}}" aria-label="Language">{{t.langBtn}}</button>
+<sc-if value="{{loggedIn}}" hint-placeholder-val="{{ true }}">
+<div style="width: 40px; height: 40px; border-radius: 999px; background: #242944; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px">AM</div>
+</sc-if>
+</div>
+</div>
+
+<sc-if value="{{isLogin}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-wrap: wrap; flex: 1; min-height: 700px">
+<div style="flex: 1 1 520px; background: #242944; color: #fff; padding: 72px 64px; display: flex; flex-direction: column; justify-content: center; gap: 24px; position: relative; overflow: hidden">
+<svg width="420" height="520" viewBox="12 0 76 94" aria-hidden="true" style="position: absolute; inset-inline-end: -70px; bottom: -90px; opacity: 0.06"><g transform="translate(100 0) scale(-1 1)"><path d="M18 92V14Q18 6 26 6H74Q82 6 82 14V92" fill="none" stroke="#F6F2EF" stroke-width="9"/><circle cx="36" cy="40" r="7" fill="#C9A15F"/><path d="M29 92V54a7 7 0 0 1 14 0V92Z" fill="#C9A15F"/><circle cx="64" cy="40" r="7" fill="#B9CBEA"/><path d="M57 92V54a7 7 0 0 1 14 0V92Z" fill="#B9CBEA"/></g></svg>
+<span class="chip" style="background: #C9A15F; color: #242944; align-self: flex-start">{{t.heroTag}}</span>
+<h1 style="font-size: 56px; line-height: 1.2; font-weight: 700; max-width: 520px">{{t.heroTitle}}</h1>
+<p style="font-size: 18px; line-height: 1.8; max-width: 480px; color: #D8D0C3">{{t.heroSub}}</p>
+<div style="display: flex; gap: 32px; margin-top: 16px; position: relative">
+<div><div style="font-size: 32px; font-weight: 700">6</div><div style="color: #D8D0C3; font-size: 14px">{{t.statMonths}}</div></div>
+<div><div style="font-size: 32px; font-weight: 700">24/7</div><div style="color: #D8D0C3; font-size: 14px">{{t.statTrack}}</div></div>
+<div><div style="font-size: 32px; font-weight: 700">1</div><div style="color: #D8D0C3; font-size: 14px">{{t.statTeam}}</div></div>
+</div>
+</div>
+<div style="flex: 1 1 480px; display: flex; align-items: center; justify-content: center; padding: 48px 32px">
+<div class="card" style="width: 100%; max-width: 440px; padding: 36px; display: flex; flex-direction: column; gap: 20px">
+<div>
+<h2 style="font-size: 26px; font-weight: 700">{{t.loginTitle}}</h2>
+<p class="muted" style="margin-top: 6px; font-size: 15px">{{t.loginSub}}</p>
+</div>
+<div>
+<label class="lbl" for="em">{{t.email}}</label>
+<input class="inp" id="em" type="email" placeholder="name@example.com">
+</div>
+<button class="btn" onClick="{{toPath}}">{{t.continue}}</button>
+<div style="display: flex; align-items: center; gap: 12px"><div style="flex: 1; height: 1px; background: #E4DED5"></div><span class="muted" style="font-size: 13px">{{t.or}}</span><div style="flex: 1; height: 1px; background: #E4DED5"></div></div>
+<button class="btn ghost" onClick="{{toPath}}">{{t.google}}</button>
+<p class="muted" style="font-size: 12px; line-height: 1.7">{{t.terms}}</p>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isPath}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 64px 40px; display: flex; flex-direction: column; align-items: center; gap: 36px">
+<div style="text-align: center; max-width: 640px; display: flex; flex-direction: column; gap: 10px">
+<h1 style="font-size: 40px; font-weight: 700">{{t.pathTitle}}</h1>
+<p class="muted" style="font-size: 17px; line-height: 1.8">{{t.pathSub}}</p>
+</div>
+<div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 920px">
+<button class="opt" onClick="{{toProject}}" style="flex: 1 1 380px; padding: 32px; gap: 14px; min-height: 260px">
+<div style="width: 56px; height: 56px; border-radius: 16px; background: #F3E9D6; display: flex; align-items: center; justify-content: center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#242944" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l1.5-5h15L21 9M3 9v11h18V9M3 9c0 2 3 2 3 0 0 2 3 2 3 0 0 2 3 2 3 0 0 2 3 2 3 0 0 2 3 2 3 0"/></svg></div>
+<h2 style="font-size: 24px; font-weight: 700">{{t.pathClient}}</h2>
+<p class="muted" style="font-size: 15px; line-height: 1.8">{{t.pathClientDesc}}</p>
+<span style="color: #242944; font-weight: 700; margin-top: auto">{{t.pathClientCta}}</span>
+</button>
+<a class="opt" href="Freelancer.dc.html" style="flex: 1 1 380px; padding: 32px; gap: 14px; min-height: 260px">
+<div style="width: 56px; height: 56px; border-radius: 16px; background: #E6EDF8; display: flex; align-items: center; justify-content: center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#485982" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V4h6v3M3 13h18"/></svg></div>
+<h2 style="font-size: 24px; font-weight: 700">{{t.pathFree}}</h2>
+<p class="muted" style="font-size: 15px; line-height: 1.8">{{t.pathFreeDesc}}</p>
+<span style="color: #485982; font-weight: 700; margin-top: auto">{{t.pathFreeCta}}</span>
+</a>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isProject}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 64px 40px; display: flex; flex-direction: column; align-items: center; gap: 36px">
+<div style="text-align: center; max-width: 640px; display: flex; flex-direction: column; gap: 10px">
+<h1 style="font-size: 40px; font-weight: 700">{{t.projTitle}}</h1>
+<p class="muted" style="font-size: 17px; line-height: 1.8">{{t.projSub}}</p>
+</div>
+<div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 920px">
+<button class="opt" onClick="{{toStore}}" style="flex: 1 1 380px; padding: 32px; gap: 14px; min-height: 280px">
+<div style="display: flex; justify-content: space-between; align-items: center; width: 100%"><div style="width: 56px; height: 56px; border-radius: 16px; background: #F3E9D6; display: flex; align-items: center; justify-content: center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#242944" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.5 12h11L21 7H6"/></svg></div><span class="chip progress">{{t.projPopular}}</span></div>
+<h2 style="font-size: 24px; font-weight: 700">{{t.projStore}}</h2>
+<p class="muted" style="font-size: 15px; line-height: 1.8">{{t.projStoreDesc}}</p>
+<span style="color: #242944; font-weight: 700; margin-top: auto">{{t.projStoreCta}}</span>
+</button>
+<button class="opt" onClick="{{toBooking}}" style="flex: 1 1 380px; padding: 32px; gap: 14px; min-height: 280px">
+<div style="width: 56px; height: 56px; border-radius: 16px; background: #FFF1CC; display: flex; align-items: center; justify-content: center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7A4B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3v8a3 3 0 0 0 3 3v7M6 3v5M9 3v5M18 3c-2 1-3 4-3 7s1 4 3 4v7"/></svg></div>
+<h2 style="font-size: 24px; font-weight: 700">{{t.projRest}}</h2>
+<p class="muted" style="font-size: 15px; line-height: 1.8">{{t.projRestDesc}}</p>
+<span style="color: #7A4B00; font-weight: 700; margin-top: auto">{{t.projRestCta}}</span>
+</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isStore}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 40px; display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start">
+<div style="flex: 1 1 560px; display: flex; flex-direction: column; gap: 24px; min-width: 0">
+<div>
+<h1 style="font-size: 34px; font-weight: 700">{{t.storeTitle}}</h1>
+<p class="muted" style="margin-top: 6px; font-size: 16px">{{t.storeSub}}</p>
+</div>
+<div class="card" style="padding: 24px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; align-items: center; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 999px; background: #242944; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px">1</span><h2 style="font-size: 19px; font-weight: 700">{{t.step1}}</h2></div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap">
+<sc-for list="{{platforms}}" as="p" hint-placeholder-count="3">
+<button class="opt {{p.sel}}" onClick="{{p.pick}}" style="flex: 1 1 160px"><span style="font-weight: 700; font-size: 16px">{{p.title}}</span><span class="muted" style="font-size: 13px; line-height: 1.6">{{p.desc}}</span></button>
+</sc-for>
+</div>
+</div>
+<div class="card" style="padding: 24px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; align-items: center; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 999px; background: #242944; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px">2</span><h2 style="font-size: 19px; font-weight: 700">{{t.step2}}</h2></div>
+<button class="opt {{planSel}}" onClick="{{togglePlan}}" style="gap: 14px">
+<div style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 12px"><span style="font-weight: 700; font-size: 18px">{{t.planName}}</span><span class="chip done">{{t.planBadge}}</span></div>
+<span class="muted" style="font-size: 14px; line-height: 1.7">{{t.planDesc}}</span>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 20px; margin-top: 6px">
+<sc-for list="{{planItems}}" as="it" hint-placeholder-count="6">
+<div style="display: flex; gap: 8px; align-items: flex-start; font-size: 14px; line-height: 1.6"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0B6B3A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 3px"><path d="M4 12l5 5L20 6"/></svg><span>{{it}}</span></div>
+</sc-for>
+</div>
+</button>
+</div>
+<div class="card" style="padding: 24px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; align-items: center; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 999px; background: #242944; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px">3</span><h2 style="font-size: 19px; font-weight: 700">{{t.step3}}</h2></div>
+<div>
+<label class="lbl" for="ex">{{t.extras}}</label>
+<textarea class="inp" id="ex" rows="3" placeholder="{{t.extrasPh}}"></textarea>
+</div>
+<div>
+<span class="lbl">{{t.meetOpt}}</span>
+<div style="display: flex; gap: 10px; flex-wrap: wrap">
+<sc-for list="{{storeDates}}" as="d" hint-placeholder-count="4">
+<button class="pill {{d.sel}}" onClick="{{d.pick}}">{{d.label}}</button>
+</sc-for>
+</div>
+</div>
+</div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap">
+<button class="btn" onClick="{{toTracker}}" style="min-width: 220px">{{t.submitReq}}</button>
+<button class="btn ghost" onClick="{{toProject}}">{{t.cancel}}</button>
+</div>
+</div>
+<div style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; justify-content: space-between; align-items: center"><h2 style="font-size: 19px; font-weight: 700">{{t.previewTitle}}</h2><span class="chip queued">{{t.previewHint}}</span></div>
+<div style="display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap">
+<sc-if value="{{showWeb}}" hint-placeholder-val="{{ true }}">
+<div class="card" style="flex: 1 1 280px; overflow: hidden; box-shadow: 0 10px 30px #24294418">
+<div style="background: #EFEAE2; padding: 10px 14px; display: flex; gap: 6px; align-items: center"><span style="width: 10px; height: 10px; border-radius: 99px; background: #E5484D"></span><span style="width: 10px; height: 10px; border-radius: 99px; background: #F5A623"></span><span style="width: 10px; height: 10px; border-radius: 99px; background: #30A46C"></span><span style="margin-inline-start: 12px; background: #fff; border-radius: 8px; padding: 3px 12px; font-size: 12px; color: #4A5568; flex: 1; direction: ltr">yourstore.alamiya.com</span></div>
+<div style="padding: 16px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: center"><span style="font-weight: 700; font-size: 14px">{{t.mockStore}}</span><div style="display: flex; gap: 6px"><span class="tile" style="width: 28px; height: 8px"></span><span class="tile" style="width: 28px; height: 8px"></span><span class="tile" style="width: 28px; height: 8px"></span></div></div>
+<div style="border-radius: 12px; background: linear-gradient(135deg, #242944, #485982); color: #fff; padding: 20px; display: flex; flex-direction: column; gap: 8px"><span style="font-weight: 700; font-size: 18px">{{t.mockHero}}</span><span style="background: #fff; color: #181C33; font-weight: 700; font-size: 12px; padding: 6px 14px; border-radius: 99px; align-self: flex-start">{{t.mockShop}}</span></div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+<div style="display: flex; flex-direction: column; gap: 6px"><div class="tile" style="height: 64px; background: #F3E9D6"></div><span class="tile" style="height: 8px; width: 70%"></span><span style="font-size: 12px; font-weight: 700">120 EGP</span></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><div class="tile" style="height: 64px; background: #E6EDF8"></div><span class="tile" style="height: 8px; width: 60%"></span><span style="font-size: 12px; font-weight: 700">95 EGP</span></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><div class="tile" style="height: 64px; background: #FFF1CC"></div><span class="tile" style="height: 8px; width: 80%"></span><span style="font-size: 12px; font-weight: 700">210 EGP</span></div>
+</div>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{showApp}}" hint-placeholder-val="{{ true }}">
+<div style="width: 190px; border-radius: 30px; border: 6px solid #242944; background: #fff; overflow: hidden; box-shadow: 0 10px 30px #24294424; flex: none">
+<div style="height: 18px; background: #242944; display: flex; justify-content: center"><span style="width: 56px; height: 8px; background: #242944; border-radius: 0 0 8px 8px"></span></div>
+<div style="padding: 12px; display: flex; flex-direction: column; gap: 10px; min-height: 300px">
+<span style="font-weight: 700; font-size: 13px">{{t.mockStore}}</span>
+<div style="border-radius: 10px; background: linear-gradient(135deg, #242944, #485982); height: 70px"></div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+<div class="tile" style="height: 64px; background: #F3E9D6"></div><div class="tile" style="height: 64px; background: #E6EDF8"></div><div class="tile" style="height: 64px; background: #FFF1CC"></div><div class="tile" style="height: 64px; background: #F6E1EE"></div>
+</div>
+<div style="margin-top: auto; background: #242944; color: #fff; text-align: center; border-radius: 10px; padding: 8px; font-size: 12px; font-weight: 700">{{t.mockCart}}</div>
+</div>
+</div>
+</sc-if>
+</div>
+<p class="muted" style="font-size: 13px; line-height: 1.7">{{t.previewNote}}</p>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isBooking}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 40px; display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start; justify-content: center">
+<sc-if value="{{notConfirmed}}" hint-placeholder-val="{{ true }}">
+<div style="flex: 1 1 560px; max-width: 700px; display: flex; flex-direction: column; gap: 24px">
+<div>
+<h1 style="font-size: 34px; font-weight: 700">{{t.bookTitle}}</h1>
+<p class="muted" style="margin-top: 6px; font-size: 16px; line-height: 1.8">{{t.bookSub}}</p>
+</div>
+<div class="card" style="padding: 24px; display: flex; flex-direction: column; gap: 20px">
+<div>
+<label class="lbl" for="bt">{{t.bizType}}</label>
+<input class="inp" id="bt" type="text" placeholder="{{t.bizPh}}">
+</div>
+<div>
+<span class="lbl">{{t.pickDay}}</span>
+<div style="display: flex; gap: 10px; flex-wrap: wrap">
+<sc-for list="{{bookDates}}" as="d" hint-placeholder-count="5">
+<button class="pill {{d.sel}}" onClick="{{d.pick}}">{{d.label}}</button>
+</sc-for>
+</div>
+</div>
+<div>
+<span class="lbl">{{t.pickTime}}</span>
+<div style="display: flex; gap: 10px; flex-wrap: wrap">
+<sc-for list="{{times}}" as="m" hint-placeholder-count="6">
+<button class="pill {{m.sel}}" onClick="{{m.pick}}" style="direction: ltr">{{m.label}}</button>
+</sc-for>
+</div>
+</div>
+<div>
+<label class="lbl" for="bn">{{t.bookNotes}}</label>
+<textarea class="inp" id="bn" rows="3" placeholder="{{t.bookNotesPh}}"></textarea>
+</div>
+<button class="btn" onClick="{{confirmBooking}}">{{t.confirmBook}}</button>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{confirmed}}" hint-placeholder-val="{{ false }}">
+<div style="flex: 1 1 560px; max-width: 700px; display: flex; flex-direction: column; gap: 24px; align-items: center; text-align: center">
+<div style="width: 72px; height: 72px; border-radius: 99px; background: #DDF5E8; display: flex; align-items: center; justify-content: center"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#0B6B3A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg></div>
+<h1 style="font-size: 32px; font-weight: 700">{{t.bookedTitle}}</h1>
+<p class="muted" style="font-size: 16px; line-height: 1.8; max-width: 520px">{{t.bookedSub}}</p>
+<div class="card" style="padding: 20px 24px; width: 100%; text-align: start; display: flex; flex-direction: column; gap: 10px">
+<span class="muted" style="font-size: 12px; font-weight: 600">{{t.emailPreview}}</span>
+<span style="font-weight: 700">{{t.emailSubject}}</span>
+<span class="muted" style="font-size: 14px; line-height: 1.8">{{t.emailBody}}</span>
+<span class="chip review" style="align-self: flex-start; direction: ltr">{{summary}}</span>
+</div>
+<button class="btn" onClick="{{toTracker}}">{{t.goTracker}}</button>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{isTracker}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 40px; display: flex; flex-direction: column; gap: 24px">
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap">
+<div>
+<h1 style="font-size: 34px; font-weight: 700">{{t.trackTitle}}</h1>
+<p class="muted" style="margin-top: 6px; font-size: 16px">{{t.trackSub}}</p>
+</div>
+<span class="chip progress" style="font-size: 14px; padding: 8px 16px">{{t.planName}}</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px">
+<div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 10px"><span class="muted" style="font-size: 14px">{{t.kpiSite}}</span><span style="font-size: 32px; font-weight: 700">62%</span><div style="height: 8px; border-radius: 99px; background: #F3E9D6"><div style="width: 62%; height: 8px; border-radius: 99px; background: #242944"></div></div></div>
+<div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 10px"><span class="muted" style="font-size: 14px">{{t.kpiLeft}}</span><span style="font-size: 32px; font-weight: 700">{{t.kpiLeftVal}}</span><span class="muted" style="font-size: 13px">{{t.kpiLeftNote}}</span></div>
+<div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 10px"><span class="muted" style="font-size: 14px">{{t.kpiDone}}</span><span style="font-size: 32px; font-weight: 700">3 / 7</span><div style="height: 8px; border-radius: 99px; background: #DDF5E8"><div style="width: 43%; height: 8px; border-radius: 99px; background: #0B6B3A"></div></div></div>
+<div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 10px"><span class="muted" style="font-size: 14px">{{t.kpiPlan}}</span><span style="font-size: 32px; font-weight: 700">{{t.kpiPlanVal}}</span><span class="muted" style="font-size: 13px">{{t.kpiPlanNote}}</span></div>
+</div>
+<div style="display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start">
+<div class="card" style="flex: 2 1 560px; padding: 24px; display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<h2 style="font-size: 19px; font-weight: 700; margin-bottom: 8px">{{t.timeline}}</h2>
+<sc-for list="{{tasks}}" as="k" hint-placeholder-count="7">
+<div style="display: flex; align-items: center; gap: 14px; padding: 14px 0; border-top: 1px solid #EFEAE2; flex-wrap: wrap">
+<div style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 600; font-size: 15px">{{k.title}}</span><span class="muted" style="font-size: 13px">{{k.meta}}</span></div>
+<span class="chip {{k.cls}}">{{k.status}}</span>
+</div>
+</sc-for>
+</div>
+<div class="card" style="flex: 1 1 340px; padding: 0; display: flex; flex-direction: column; overflow: hidden; min-width: 0">
+<div style="padding: 18px 20px; border-bottom: 1px solid #EFEAE2; display: flex; align-items: center; gap: 12px"><span style="width: 10px; height: 10px; border-radius: 99px; background: #30A46C"></span><div style="display: flex; flex-direction: column"><span style="font-weight: 700">{{t.supportTitle}}</span><span class="muted" style="font-size: 12px">{{t.supportSub}}</span></div></div>
+<div style="padding: 16px 20px; display: flex; flex-direction: column; gap: 10px; min-height: 260px; max-height: 340px; overflow-y: auto">
+<sc-for list="{{msgs}}" as="m" hint-placeholder-count="2">
+<div class="bubble {{m.cls}}">{{m.text}}</div>
+</sc-for>
+</div>
+<div style="padding: 14px 16px; border-top: 1px solid #EFEAE2; display: flex; gap: 10px">
+<input class="inp" type="text" aria-label="{{t.chatPh}}" placeholder="{{t.chatPh}}" value="{{draft}}" onChange="{{onDraft}}">
+<button class="btn" onClick="{{send}}" style="padding: 0 18px">{{t.send}}</button>
+</div>
+</div>
+</div>
+</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1360,"height":940}}'>
+class Component extends DCLogic {
+state = {
+lang: 'ar', screen: 'login', platform: 'web', plan: true, storeDate: 0, date: 1, time: 2, confirmed: false, draft: '',
+msgs: [{ from: 'sup', k: 'chatHello' }]
+};
+renderVals() {
+const st = this.state;
+const ar = st.lang === 'ar';
+const S = {
+brand: ['العالمية', 'Al-Alamia'], brandSub: ['ظهورك أونلاين، بمستوى عالمي', 'Your online presence, world-class'],
+back: ['رجوع', 'Back'], langBtn: ['English', 'عربي'],
+heroTag: ['منصة العالمية', 'Al-Alamia Platform'],
+heroTitle: ['اظهر للعالمية. إحنا بنوصّلك.', 'Go global. We take you there.'],
+heroSub: ['بنوصّل متجرك أو مطعمك أو كافيهك للعملاء أونلاين، وبنوفّر في نفس الوقت فرص حقيقية لنخبة من الفريلانسرز.', 'We take your store, restaurant or café online and, at the same time, open real opportunities for talented freelancers.'],
+statMonths: ['شهور إدارة كاملة', 'months of full management'], statTrack: ['متابعة لمشروعك', 'project tracking'], statTeam: ['فريق واحد لكل شيء', 'team for everything'],
+loginTitle: ['سجّل دخولك', 'Sign in'], loginSub: ['ادخل بالإيميل وابدأ طريقك نحو العالمية', 'Use your email to start your road to global'],
+email: ['البريد الإلكتروني', 'Email'], continue: ['متابعة', 'Continue'], or: ['أو', 'or'], google: ['المتابعة بحساب Google', 'Continue with Google'],
+terms: ['بالمتابعة أنت توافق على شروط الاستخدام وسياسة الخصوصية.', 'By continuing you agree to the Terms of Use and Privacy Policy.'],
+pathTitle: ['الطريق نحو العالمية', 'The Road to Global'], pathSub: ['اختر طريقك: أنت صاحب مشروع عايز يظهر، ولا فريلانسر عايز يشتغل ويكسب؟', 'Choose your road: a business that wants to be seen, or a freelancer who wants to work and earn?'],
+pathClient: ['أنا صاحب مشروع', 'I own a business'], pathClientDesc: ['متجر، مطعم، كافيه أو أي نشاط عايز يظهر للعالمية أونلاين.', 'A store, restaurant, café or any business that wants to be seen online.'], pathClientCta: ['اختر مشروعك ←', 'Choose your project →'],
+pathFree: ['أنا فريلانسر', 'I am a freelancer'], pathFreeDesc: ['سجّل مهاراتك وأعمالك، واستلم مهام مدفوعة في تخصصك.', 'Register your skills and work, and receive paid tasks in your track.'], pathFreeCta: ['سجّل كفريلانسر ←', 'Join as a freelancer →'],
+projTitle: ['اختر مشروعك لتظهر للعالمية', 'Choose your project to go global'], projSub: ['كل مسار له رحلة مختلفة، وكلهم بتتابعهم من مكان واحد.', 'Each type has its own journey, and you follow all of them in one place.'],
+projPopular: ['الأكثر طلبًا', 'Most popular'],
+projStore: ['متجر أونلاين', 'Online store'], projStoreDesc: ['عندك منتجات عايز تبيعها؟ نبني لك ويبسايت أو تطبيق موبايل، وباقة ظهور كاملة لمدة 6 شهور.', 'Selling products? We build your website or mobile app, plus a full 6-month visibility package.'], projStoreCta: ['ابدأ إعداد متجرك ←', 'Set up your store →'],
+projRest: ['مطعم / كافيه / نظام كاشير', 'Restaurant / café / cashier system'], projRestDesc: ['احجز ميعاد معانا، نفهم احتياجك بالتفصيل، وبعدها نصمم لك الحل المناسب.', 'Book a meeting, we learn your needs in detail, then design the right solution.'], projRestCta: ['احجز ميعادك ←', 'Book a meeting →'],
+storeTitle: ['إعداد متجرك', 'Set up your store'], storeSub: ['اختر المنصة والباقة، وشوف شكل موقعك قبل ما نبدأ.', 'Pick your platform and package, and preview your site before we start.'],
+step1: ['اختر المنصة', 'Choose a platform'], step2: ['باقة الظهور', 'Visibility package'], step3: ['إضافات وميتينج', 'Extras and meeting'],
+platWeb: ['ويبسايت', 'Website'], platWebD: ['متجر كامل بتيمبلت احترافي', 'Full store with a pro template'],
+platApp: ['موبايل أبليكيشن', 'Mobile app'], platAppD: ['تطبيق لعملائك على الموبايل', 'A mobile app for your customers'],
+platBoth: ['الاتنين معًا', 'Both together'], platBothD: ['ويبسايت + تطبيق بتجربة موحّدة', 'Website + app, one experience'],
+planName: ['باقة الظهور للعالمية · 6 شهور', 'Global Visibility Package · 6 months'], planBadge: ['مُضمّنة', 'Included'],
+planDesc: ['إحنا بنصوّر وننتج وننشر وندير، وإنت تتابع كل خطوة من لوحتك.', 'We shoot, produce, publish and manage. You follow every step from your dashboard.'],
+p1: ['إنتاج فيديوهات لمنتجاتك', 'Product video production'], p2: ['نشر ستوريهات وبوستات وفيديوهات', 'Stories, posts and videos publishing'],
+p3: ['تصميم بوسترات وهوية بصرية', 'Posters and visual identity'], p4: ['إدارة صفحاتك على السوشيال', 'Social pages management'],
+p5: ['إدارة كاملة للطلبات', 'Full order management'], p6: ['تقرير شهري بالنتائج', 'Monthly results report'],
+extras: ['أي إضافات تحب تطلبها؟', 'Anything extra you would like?'], extrasPh: ['مثال: لوجو جديد، صفحة حجز، لغة إضافية…', 'e.g. new logo, booking page, extra language…'],
+meetOpt: ['عايز تحجز ميتينج لمناقشة فكرتك؟ (اختياري)', 'Want a meeting to discuss your idea? (optional)'],
+submitReq: ['إرسال الطلب', 'Submit request'], cancel: ['إلغاء', 'Cancel'],
+previewTitle: ['معاينة مشروعك', 'Your project preview'], previewHint: ['تتغير مع اختيارك', 'Updates as you choose'],
+mockStore: ['متجرك', 'Your Store'], mockHero: ['أحدث المنتجات بين إيديك', 'New arrivals at your fingertips'], mockShop: ['تسوّق الآن', 'Shop now'], mockCart: ['السلة · 2', 'Cart · 2'],
+previewNote: ['ده تيمبلت مبدئي. اللوجو والألوان والمنتجات هتتخصص بالكامل لمشروعك.', 'This is a starter template. Logo, colors and products are fully customized to your project.'],
+bookTitle: ['احجز ميعادك معانا', 'Book a meeting with us'], bookSub: ['اختر الميعاد المناسب، وهنرد عليك بالإيميل لتأكيده، وبعدها نفهم تفاصيل مشروعك سوا.', 'Pick a time that suits you. We confirm by email, then go through your project details together.'],
+bizType: ['نوع نشاطك', 'Your business type'], bizPh: ['مطعم، كافيه، نظام كاشير…', 'Restaurant, café, cashier system…'],
+pickDay: ['اختر اليوم', 'Pick a day'], pickTime: ['اختر الوقت', 'Pick a time'],
+bookNotes: ['نبذة عن احتياجك', 'Brief about your needs'], bookNotesPh: ['مثال: عندي مطعم بفرعين وعايز نظام كاشير مع تتبع المخزون', 'e.g. I run a two-branch restaurant and need a cashier system with stock tracking'],
+confirmBook: ['تأكيد الحجز', 'Confirm booking'],
+bookedTitle: ['تم استلام طلب الحجز', 'Your booking request is in'], bookedSub: ['هنراجع الميعاد ونرد عليك بالإيميل قريبًا. وبعد الميتينج هتظهر لك لوحة متابعة مشروعك.', 'We will review the slot and reply by email shortly. After the meeting your project tracker appears.'],
+emailPreview: ['معاينة الإيميل اللي هيوصلك', 'Preview of the email you will get'], emailSubject: ['ميعادك مع العالمية اتأكد', 'Your Al-Alamia meeting is confirmed'],
+emailBody: ['أهلًا بيك! استلمنا طلب الحجز بتاعك وهنكون معاك في الميعاد التالي. جهّز أي تفاصيل عن نشاطك علشان نستفيد من الوقت.', 'Welcome! We received your booking and will meet you at the time below. Bring any details about your business so we can make the most of it.'],
+goTracker: ['تابع ظهورك نحو العالمية', 'Track your road to global'],
+trackTitle: ['تابع ظهورك نحو العالمية', 'Track your road to global'], trackSub: ['كل خطوة بنخلصها في مشروعك بتظهر هنا لحظة بلحظة.', 'Every step we finish on your project shows up here in real time.'],
+kpiSite: ['اكتمال الويبسايت', 'Website completion'], kpiLeft: ['المتبقي على التسليم', 'Left until delivery'], kpiLeftVal: ['18 يوم', '18 days'], kpiLeftNote: ['التسليم المتوقع 8 نوفمبر', 'Expected delivery Nov 8'],
+kpiDone: ['مهام الباقة المنجزة', 'Package tasks done'], kpiPlan: ['الباقة', 'Package'], kpiPlanVal: ['الشهر 2 من 6', 'Month 2 of 6'], kpiPlanNote: ['تجديد في 21 أبريل', 'Renews Apr 21'],
+timeline: ['مراحل مشروعك', 'Your project timeline'],
+stDone: ['تم', 'Done'], stProg: ['جاري العمل', 'In progress'], stRev: ['قيد المراجعة', 'In review'], stQ: ['في الانتظار', 'Queued'],
+supportTitle: ['الدعم الفني', 'Support'], supportSub: ['عادةً بنرد خلال دقائق', 'We usually reply within minutes'],
+chatHello: ['أهلًا بيك! تحب نساعدك في إيه بخصوص مشروعك؟', 'Hi there! How can we help with your project?'],
+chatReply: ['وصلتنا رسالتك، وفريق الدعم هيرد عليك حالًا.', 'We got your message and the support team will reply right away.'],
+chatPh: ['اكتب رسالتك…', 'Type your message…'], send: ['إرسال', 'Send']
+};
+const t = {}; Object.keys(S).forEach((k) => { t[k] = S[k][ar ? 0 : 1]; });
+const sc = st.screen;
+const go = (s) => () => this.setState({ screen: s });
+const prev = { path: 'login', project: 'path', store: 'project', booking: 'project', tracker: 'project' };
+const pl = [['web', 'platWeb', 'platWebD'], ['app', 'platApp', 'platAppD'], ['both', 'platBoth', 'platBothD']];
+const platforms = pl.map((p) => ({ title: t[p[1]], desc: t[p[2]], sel: st.platform === p[0] ? 'sel' : '', pick: () => this.setState({ platform: p[0] }) }));
+const days = ar ? ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء'] : ['Sat', 'Sun', 'Mon', 'Tue', 'Wed'];
+const nums = [24, 25, 26, 27, 28];
+const dl = (i) => days[i] + ' ' + nums[i] + (ar ? ' أكتوبر' : ' Oct');
+const storeDates = days.slice(0, 4).map((d, i) => ({ label: dl(i), sel: st.storeDate === i + 1 ? 'sel' : '', pick: () => this.setState({ storeDate: st.storeDate === i + 1 ? 0 : i + 1 }) }));
+const bookDates = days.map((d, i) => ({ label: dl(i), sel: st.date === i ? 'sel' : '', pick: () => this.setState({ date: i }) }));
+const tl = ['10:00', '11:30', '13:00', '14:30', '16:00', '18:00'];
+const times = tl.map((m, i) => ({ label: m, sel: st.time === i ? 'sel' : '', pick: () => this.setState({ time: i }) }));
+const tk = [
+['تصميم الهوية البصرية واللوجو', 'Brand identity and logo', 'تم الرفع في 2 أكتوبر', 'Delivered Oct 2', 'done', 'stDone'],
+['صفحات الموقع والمنتجات', 'Website and product pages', 'اكتمال 62% · متبقي 18 يوم', '62% complete · 18 days left', 'progress', 'stProg'],
+['فيديو المنتج الأول', 'Product video #1', 'اتنشر على صفحتك في 10 أكتوبر', 'Published to your page Oct 10', 'done', 'stDone'],
+['باكج الستوريهات', 'Stories pack', 'اتنشر · 12 ستوري', 'Published · 12 stories', 'done', 'stDone'],
+['فيديو المنتج التاني', 'Product video #2', 'اتسلّم للمراجعة الداخلية', 'Sent to internal review', 'review', 'stRev'],
+['إعداد إدارة الطلبات', 'Order management setup', 'ربط الدفع والشحن', 'Connecting payment and shipping', 'progress', 'stProg'],
+['بوستات الإطلاق (6)', 'Launch posts (6)', 'بعد اعتماد الموقع', 'After site approval', 'queued', 'stQ']
+];
+const tasks = tk.map((x) => ({ title: ar ? x[0] : x[1], meta: ar ? x[2] : x[3], cls: x[4], status: t[x[5]] }));
+const msgs = st.msgs.map((m) => ({ cls: m.from, text: m.k ? t[m.k] : m.text }));
+const send = () => {
+const v = st.draft.trim();
+if (!v) return;
+this.setState({ draft: '', msgs: st.msgs.concat([{ from: 'me', text: v }, { from: 'sup', k: 'chatReply' }]) });
+};
+return {
+t, dir: ar ? 'rtl' : 'ltr',
+isLogin: sc === 'login', isPath: sc === 'path', isProject: sc === 'project', isStore: sc === 'store', isBooking: sc === 'booking', isTracker: sc === 'tracker',
+showBack: sc !== 'login', loggedIn: sc !== 'login',
+toggleLang: () => this.setState({ lang: ar ? 'en' : 'ar' }),
+back: go(prev[sc] || 'login'),
+toPath: go('path'), toProject: go('project'), toStore: go('store'), toBooking: go('booking'), toTracker: go('tracker'),
+platforms, storeDates, bookDates, times, tasks, msgs,
+planItems: [t.p1, t.p2, t.p3, t.p4, t.p5, t.p6],
+planSel: st.plan ? 'sel' : '', togglePlan: () => this.setState({ plan: !st.plan }),
+showWeb: st.platform !== 'app', showApp: st.platform !== 'web',
+confirmed: st.confirmed, notConfirmed: !st.confirmed,
+confirmBooking: () => this.setState({ confirmed: true }),
+summary: dl(st.date) + ' · ' + tl[st.time],
+draft: st.draft, onDraft: (e) => this.setState({ draft: e.target.value }), send
+};
+}
+}
+</script>
+</body>
+</html>
