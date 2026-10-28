@@ -21,7 +21,9 @@ Menna Reda · Merna Abdelfattah · Mohamed Tawfik · Abdelrahman Khaled · Nahed
 9. [Task Assignment and Review](#task-assignment-and-review)
 10. [Challenges and Engineering Decisions](#challenges-and-engineering-decisions)
 11. [The Team](#the-team)
-12. [What Comes Next](#what-comes-next)
+12. [Delivery Plan](#delivery-plan)
+13. [Documentation](#documentation)
+14. [What Comes Next](#what-comes-next)
 
 ---
 
@@ -297,6 +299,41 @@ Al-Alamia is a collaborative graduation project developed by Team 4.
 | Nahed Magdy |
 
 Each team member contributes to building and refining the platform as part of the shared project.
+
+## Delivery Plan
+
+Hand-in: **Saturday 5 December 2026**. Work runs from 28 October with a milestone every week and a buffer at the end.
+
+| Week | Dates | Focus | Milestone |
+|---|---|---|---|
+| 1 | 28 Oct – 3 Nov | Foundation: CI, migrations, Identity, design system, OpenAPI contracts | M1: login for 3 roles, DB built from migrations |
+| 2 | 4 – 10 Nov | Flows: freelancer approval, projects, pricing, meetings, tasks and offers | M2: request → priced → tasks → offers |
+| 3 | 11 – 17 Nov | Engine: concurrent accept and monthly cap, delivery and review, notifications, support | M3: accept engine passes the 50-request test |
+| 4 | 18 – 24 Nov | Rules and money: deadline monitor, deductions, blocks, ledger, marketing packages | M4: full journey including penalties |
+| 5 | 25 Nov – 1 Dec | Polish: performance, E2E tests, security, accessibility, demo data | M5: release candidate |
+| – | 2 – 5 Dec | Buffer: code freeze, fixes only, rehearsal, hand-in | Delivery |
+
+Each member owns a vertical module (database, API, UI, tests). The proposed split is in section 12 of the design document.
+
+## Documentation
+
+| Document | Contents |
+|---|---|
+| [System design document (PDF)](docs/Alamia-System-Design-v1.1.pdf) | Scope, business rules BR-01 to BR-20, architecture, state machines, critical flows, database, API, UI, plan |
+| [Presentation (PPTX)](docs/Alamia-Presentation.pptx) | 15 editable slides |
+| [ERD](docs/erd/) | Mermaid source and per-module diagrams |
+| [UI prototype](prototype/) | Interactive client, freelancer and admin screens (see below) |
+| [Brand assets](brand/) | Logos (SVG and PNG) |
+
+### Run the prototype locally
+
+```bash
+cd prototype
+python -m http.server 8080
+# http://localhost:8080/Main.dc.html        (client)
+# http://localhost:8080/Freelancer.dc.html  (freelancer)
+# http://localhost:8080/Admin.dc.html       (admin)
+```
 
 ## What Comes Next
 

@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8">
+<title>العالمية — الفريلانسر</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+.app,.app *{box-sizing:border-box}
+.app{font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;color:#242944;background:#F6F2EF}
+.app h1,.app h2,.app h3,.app p{margin:0}
+.btn{font:inherit;font-weight:600;border:0;border-radius:12px;padding:0 22px;min-height:48px;cursor:pointer;background:#485982;color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;font-size:15px}
+.btn:hover{background:#242944}
+.btn.ghost{background:#fff;color:#242944;border:1px solid #D3CBBE}
+.btn.ghost:hover{background:#EFEAE2}
+.btn.warn{background:#B42318}
+.btn.warn:hover{background:#912018}
+.card{background:#fff;border:1px solid #E4DED5;border-radius:18px}
+.opt{border:1.5px solid #E4DED5;background:#fff;border-radius:14px;padding:12px 16px;cursor:pointer;font:inherit;color:inherit;text-align:start;min-height:44px;font-weight:600;font-size:14px}
+.opt:hover{border-color:#B9CBEA}
+.opt.sel{border-color:#485982;background:#E6EDF8;box-shadow:0 0 0 3px #48598222}
+.chip{display:inline-flex;align-items:center;padding:4px 12px;border-radius:999px;font-size:13px;font-weight:600;white-space:nowrap}
+.chip.done{background:#DDF5E8;color:#0B6B3A}
+.chip.progress{background:#E6EDF8;color:#1F3FD0}
+.chip.review{background:#FFF1CC;color:#7A4B00}
+.chip.queued{background:#EFEAE2;color:#4A5568}
+.chip.bad{background:#FDE7E4;color:#B42318}
+.inp{font:inherit;border:1.5px solid #D3CBBE;border-radius:12px;padding:12px 14px;min-height:48px;width:100%;background:#fff;color:#242944;font-size:15px}
+.inp:focus{outline:3px solid #48598244;border-color:#485982}
+.lbl{font-weight:600;font-size:14px;margin-bottom:6px;display:block}
+.muted{color:#4A5568}
+.iconbtn{font:inherit;cursor:pointer;background:#fff;border:1px solid #D3CBBE;border-radius:999px;min-height:40px;padding:0 16px;font-weight:600;font-size:14px;color:#242944}
+.iconbtn:hover{background:#EFEAE2}
+.nav{font:inherit;cursor:pointer;border:0;background:none;padding:0 16px;min-height:44px;border-radius:12px;font-weight:600;font-size:15px;color:#4A5568;display:flex;align-items:center;gap:8px}
+.nav:hover{background:#E6EDF8}
+.nav.sel{background:#485982;color:#fff}
+.upl{border:2px dashed #B9CBEA;border-radius:12px;background:#F5F8FD;display:flex;align-items:center;justify-content:center;color:#4A5568;font-size:13px;min-height:84px;text-align:center;padding:8px}
+.back{font:inherit;cursor:pointer;background:none;border:0;color:#485982;font-weight:600;min-height:44px;padding:0 4px;font-size:15px}
+</style>
+</helmet>
+
+<div class="app" dir="{{dir}}" style="min-height: 940px; display: flex; flex-direction: column; position: relative">
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 16px 40px; background: #fff; border-bottom: 1px solid #E4DED5; gap: 16px; flex-wrap: wrap">
+<div style="display: flex; align-items: center; gap: 12px">
+<svg width="33" height="41" viewBox="12 0 76 94" aria-hidden="true" ><g transform="translate(100 0) scale(-1 1)"><path d="M18 92V14Q18 6 26 6H74Q82 6 82 14V92" fill="none" stroke="#242944" stroke-width="9"/><circle cx="36" cy="40" r="7" fill="#C9A15F"/><path d="M29 92V54a7 7 0 0 1 14 0V92Z" fill="#C9A15F"/><circle cx="64" cy="40" r="7" fill="#B9CBEA"/><path d="M57 92V54a7 7 0 0 1 14 0V92Z" fill="#B9CBEA"/></g></svg>
+<div style="display: flex; flex-direction: column; line-height: 1.2"><span style="font-weight: 700; font-size: 20px">{{t.brand}}</span><span class="muted" style="font-size: 12px">{{t.brandSub}}</span></div>
+</div>
+<sc-if value="{{inApp}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; gap: 6px; flex-wrap: wrap">
+<button class="nav {{navFeed}}" onClick="{{toFeed}}">{{t.navFeed}}<span class="chip bad" style="padding: 1px 8px">1</span></button>
+<button class="nav {{navMine}}" onClick="{{toMine}}">{{t.navMine}}</button>
+<button class="nav {{navWallet}}" onClick="{{toWallet}}">{{t.navWallet}}</button>
+</div>
+</sc-if>
+<div style="display: flex; align-items: center; gap: 12px">
+<sc-if value="{{inApp}}" hint-placeholder-val="{{ false }}">
+<button class="iconbtn" aria-label="{{t.msgs}}" onClick="{{toFeed}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#242944" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align: middle"><path d="M21 12a8 8 0 0 1-11.6 7.1L3 20l1-5.2A8 8 0 1 1 21 12z"></path></svg></button>
+</sc-if>
+<button class="iconbtn" onClick="{{toggleLang}}" aria-label="Language">{{t.langBtn}}</button>
+<sc-if value="{{inApp}}" hint-placeholder-val="{{ false }}">
+<div style="width: 40px; height: 40px; border-radius: 999px; background: #485982; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px">YS</div>
+</sc-if>
+</div>
+</div>
+
+<sc-if value="{{isOnboard}}" hint-placeholder-val="{{ true }}">
+<div style="padding: 40px; display: flex; flex-direction: column; align-items: center; gap: 28px">
+<div style="text-align: center; display: flex; flex-direction: column; gap: 8px; max-width: 620px">
+<h1 style="font-size: 34px; font-weight: 700">{{t.obTitle}}</h1>
+<p class="muted" style="font-size: 16px; line-height: 1.8">{{t.obSub}}</p>
+</div>
+<div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: center">
+<sc-for list="{{steps}}" as="s" hint-placeholder-count="3">
+<div style="display: flex; align-items: center; gap: 10px"><span style="width: 32px; height: 32px; border-radius: 99px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; {{s.dot}}">{{s.n}}</span><span style="font-weight: 600; font-size: 14px; {{s.txt}}">{{s.label}}</span><span style="width: 36px; height: 2px; background: #D3CBBE"></span></div>
+</sc-for>
+</div>
+<div class="card" style="width: 100%; max-width: 860px; padding: 32px; display: flex; flex-direction: column; gap: 24px">
+
+<sc-if value="{{ob1}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 22px">
+<div>
+<span class="lbl">{{t.track}}</span>
+<div style="display: flex; gap: 10px; flex-wrap: wrap">
+<sc-for list="{{tracks}}" as="tr" hint-placeholder-count="6">
+<button class="opt {{tr.sel}}" onClick="{{tr.pick}}">{{tr.label}}</button>
+</sc-for>
+</div>
+</div>
+<div>
+<label class="lbl" for="jt">{{t.jobTitle}}</label>
+<input class="inp" id="jt" type="text" placeholder="{{t.jobPh}}">
+</div>
+<div>
+<label class="lbl" for="ab">{{t.about}}</label>
+<textarea class="inp" id="ab" rows="4" placeholder="{{t.aboutPh}}"></textarea>
+</div>
+<div>
+<span class="lbl">{{t.skills}}</span>
+<p class="muted" style="font-size: 13px; margin-bottom: 10px">{{t.skillsHint}}</p>
+<div style="display: flex; gap: 10px; flex-wrap: wrap">
+<sc-for list="{{skills}}" as="sk" hint-placeholder-count="8">
+<button class="opt {{sk.sel}}" onClick="{{sk.pick}}">{{sk.label}}</button>
+</sc-for>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ob2}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 20px">
+<p class="muted" style="font-size: 14px; line-height: 1.8">{{t.worksHint}}</p>
+<sc-for list="{{works}}" as="w" hint-placeholder-count="3">
+<div style="border: 1px solid #E4DED5; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; align-items: center"><span style="font-weight: 700">{{w.title}}</span><span class="chip queued">{{w.badge}}</span></div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
+<div class="upl">{{t.addImg}}</div><div class="upl">{{t.addImg}}</div><div class="upl">{{t.addImg}}</div>
+</div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap">
+<div style="flex: 1 1 240px"><label class="lbl" for="{{w.id}}t">{{t.workTitle}}</label><input class="inp" id="{{w.id}}t" type="text"></div>
+<div style="flex: 1 1 240px"><label class="lbl" for="{{w.id}}l">{{t.workLink}}</label><input class="inp" id="{{w.id}}l" type="url" placeholder="https://" style="direction: ltr"></div>
+</div>
+<div><label class="lbl" for="{{w.id}}d">{{t.workDesc}}</label><textarea class="inp" id="{{w.id}}d" rows="2"></textarea></div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ob3}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; gap: 28px; flex-wrap: wrap">
+<div style="display: flex; flex-direction: column; gap: 10px; align-items: center; flex: 0 0 200px">
+<div style="width: 140px; height: 140px; border-radius: 99px; border: 2px dashed #B9CBEA; background: #F5F8FD; display: flex; align-items: center; justify-content: center; color: #4A5568; font-size: 13px; text-align: center; padding: 12px">{{t.addPhoto}}</div>
+<span class="muted" style="font-size: 12px; text-align: center">{{t.photoHint}}</span>
+</div>
+<div style="flex: 1 1 380px; display: flex; flex-direction: column; gap: 16px">
+<div><label class="lbl" for="fn">{{t.fullName}}</label><input class="inp" id="fn" type="text"></div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap">
+<div style="flex: 1 1 200px"><label class="lbl" for="ph">{{t.phone}}</label><input class="inp" id="ph" type="tel" style="direction: ltr" placeholder="+20"></div>
+<div style="flex: 1 1 200px"><label class="lbl" for="ml">{{t.contactEmail}}</label><input class="inp" id="ml" type="email" style="direction: ltr"></div>
+</div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap">
+<div style="flex: 1 1 200px"><label class="lbl" for="li">LinkedIn</label><input class="inp" id="li" type="url" style="direction: ltr" placeholder="linkedin.com/in/"></div>
+<div style="flex: 1 1 200px"><label class="lbl" for="gh">GitHub</label><input class="inp" id="gh" type="url" style="direction: ltr" placeholder="github.com/"></div>
+</div>
+<div style="background: #E6EDF8; border-radius: 12px; padding: 14px 16px; font-size: 14px; line-height: 1.7">{{t.payHint}}</div>
+</div>
+</div>
+</sc-if>
+
+<div style="display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-top: 8px; border-top: 1px solid #EFEAE2">
+<button class="btn ghost" onClick="{{prevStep}}">{{t.prev}}</button>
+<button class="btn" onClick="{{nextStep}}" style="min-width: 200px">{{nextLabel}}</button>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isFeed}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 40px; display: flex; flex-direction: column; gap: 24px">
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap">
+<div><h1 style="font-size: 32px; font-weight: 700">{{t.feedTitle}}</h1><p class="muted" style="margin-top: 6px; font-size: 16px">{{t.feedSub}}</p></div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap">
+<div class="card" style="padding: 12px 18px; display: flex; flex-direction: column"><span class="muted" style="font-size: 12px">{{t.quota}}</span><span style="font-weight: 700; font-size: 20px">{{quotaVal}}</span></div>
+<div class="card" style="padding: 12px 18px; display: flex; flex-direction: column"><span class="muted" style="font-size: 12px">{{t.earned}}</span><span style="font-weight: 700; font-size: 20px">1,450 EGP</span></div>
+</div>
+</div>
+<div style="display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start">
+<div style="flex: 1.3 1 480px; display: flex; flex-direction: column; gap: 16px; min-width: 0">
+<div class="card" style="padding: 24px; display: flex; flex-direction: column; gap: 16px; border: 2px solid #485982">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap"><span class="chip bad">{{t.liveBadge}}</span><span style="font-weight: 700; color: #B42318; direction: ltr">{{t.timer}}</span></div>
+<h2 style="font-size: 22px; font-weight: 700">{{t.taskTitle}}</h2>
+<div style="display: flex; gap: 8px; flex-wrap: wrap"><span class="chip progress">{{t.taskTrack}}</span><span class="chip queued">{{t.taskClient}}</span></div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px">
+<div style="background: #F6F2EF; border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column"><span class="muted" style="font-size: 12px">{{t.taskPay}}</span><span style="font-weight: 700; font-size: 20px">400 EGP</span></div>
+<div style="background: #F6F2EF; border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column"><span class="muted" style="font-size: 12px">{{t.taskDur}}</span><span style="font-weight: 700; font-size: 20px">{{t.taskDurVal}}</span></div>
+<div style="background: #F6F2EF; border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column"><span class="muted" style="font-size: 12px">{{t.taskType}}</span><span style="font-weight: 700; font-size: 20px">{{t.taskTypeVal}}</span></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px"><span style="font-weight: 700">{{t.taskBrief}}</span><span class="muted" style="font-size: 14px; line-height: 1.8">{{t.taskBriefTxt}}</span></div>
+<div style="display: flex; flex-direction: column; gap: 8px"><span style="font-weight: 700">{{t.taskReq}}</span>
+<sc-for list="{{reqs}}" as="r" hint-placeholder-count="3"><div style="display: flex; gap: 8px; font-size: 14px; line-height: 1.7"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0B6B3A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 3px"><path d="M4 12l5 5L20 6"></path></svg><span>{{r}}</span></div></sc-for>
+</div>
+<div style="background: #FFF1CC; color: #5E3900; border-radius: 12px; padding: 14px 16px; font-size: 14px; line-height: 1.8">{{t.lateRule}}</div>
+<button class="btn" onClick="{{openAccept}}">{{t.acceptBtn}}</button>
+</div>
+</div>
+<div style="flex: 1 1 320px; display: flex; flex-direction: column; gap: 16px; min-width: 0">
+<div class="card" style="padding: 22px; display: flex; flex-direction: column; gap: 12px">
+<h2 style="font-size: 17px; font-weight: 700">{{t.howTitle}}</h2>
+<sc-for list="{{how}}" as="h" hint-placeholder-count="4"><div style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: none; width: 26px; height: 26px; border-radius: 99px; background: #E6EDF8; color: #242944; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center">{{h.n}}</span><span style="font-size: 14px; line-height: 1.7">{{h.text}}</span></div></sc-for>
+</div>
+<div class="card" style="padding: 22px; display: flex; flex-direction: column; gap: 12px">
+<h2 style="font-size: 17px; font-weight: 700">{{t.channels}}</h2>
+<div style="display: flex; gap: 10px; align-items: center; font-size: 14px"><span class="chip done">{{t.chanEmail}}</span><span class="muted">{{t.chanEmailTxt}}</span></div>
+<div style="display: flex; gap: 10px; align-items: center; font-size: 14px"><span class="chip progress">{{t.chanWeb}}</span><span class="muted">{{t.chanWebTxt}}</span></div>
+</div>
+</div>
+</div>
+</div>
+
+<sc-if value="{{modalAccept}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; background: #242944B3; display: flex; align-items: center; justify-content: center; padding: 24px; z-index: 10">
+<div class="card" style="max-width: 520px; width: 100%; padding: 32px; display: flex; flex-direction: column; gap: 16px">
+<h2 style="font-size: 24px; font-weight: 700">{{t.modalTitle}}</h2>
+<p class="muted" style="font-size: 15px; line-height: 1.8">{{t.modalBody}}</p>
+<div style="background: #FDE7E4; color: #7A1A12; border-radius: 12px; padding: 14px 16px; font-size: 14px; line-height: 1.8">{{t.modalWarn}}</div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap"><button class="btn" onClick="{{confirmAccept}}">{{t.modalYes}}</button><button class="btn ghost" onClick="{{closeModal}}">{{t.modalNo}}</button></div>
+</div>
+</div>
+</sc-if>
+</sc-if>
+
+<sc-if value="{{isMine}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 40px; display: flex; flex-direction: column; gap: 24px">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap">
+<div><span class="chip bad" style="margin-bottom: 10px">{{t.accepted}}</span><h1 style="font-size: 30px; font-weight: 700; margin-top: 8px">{{t.taskTitle}}</h1><p class="muted" style="margin-top: 6px; font-size: 15px">{{t.taskClient}} · {{t.taskTrack}}</p></div>
+<div class="card" style="padding: 16px 22px; display: flex; flex-direction: column; align-items: flex-start"><span class="muted" style="font-size: 12px">{{t.timeLeft}}</span><span style="font-weight: 700; font-size: 26px; direction: ltr">{{t.timerLeft}}</span></div>
+</div>
+<div style="display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start">
+<div class="card" style="flex: 1.4 1 480px; padding: 24px; display: flex; flex-direction: column; gap: 18px; min-width: 0">
+<h2 style="font-size: 19px; font-weight: 700">{{t.submitTitle}}</h2>
+<div class="upl" style="min-height: 140px">{{t.dropFiles}}</div>
+<div><label class="lbl" for="sn">{{t.submitNotes}}</label><textarea class="inp" id="sn" rows="3" placeholder="{{t.submitNotesPh}}"></textarea></div>
+<button class="btn" onClick="{{submitTask}}">{{t.submitBtn}}</button>
+</div>
+<div style="flex: 1 1 320px; display: flex; flex-direction: column; gap: 16px; min-width: 0">
+<div class="card" style="padding: 22px; display: flex; flex-direction: column; gap: 12px">
+<h2 style="font-size: 17px; font-weight: 700">{{t.deadlines}}</h2>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; font-size: 14px; gap: 8px"><span>{{t.dl1}}</span><span class="chip done">400 EGP</span></div>
+<div style="display: flex; justify-content: space-between; font-size: 14px; gap: 8px"><span>{{t.dl2}}</span><span class="chip review">320 EGP</span></div>
+<div style="display: flex; justify-content: space-between; font-size: 14px; gap: 8px"><span>{{t.dl3}}</span><span class="chip bad">{{t.dl3v}}</span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isWallet}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 40px; display: flex; flex-direction: column; gap: 24px">
+<div><h1 style="font-size: 32px; font-weight: 700">{{t.walletTitle}}</h1><p class="muted" style="margin-top: 6px; font-size: 16px">{{t.walletSub}}</p></div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px">
+<div style="border-radius: 18px; padding: 24px; background: linear-gradient(135deg, #485982, #242944); color: #fff; display: flex; flex-direction: column; gap: 8px"><span style="font-size: 14px; opacity: 0.85">{{t.balance}}</span><span style="font-size: 36px; font-weight: 700">1,450 EGP</span><span style="font-size: 13px; opacity: 0.85">{{t.walletVia}}</span></div>
+<div class="card" style="padding: 24px; display: flex; flex-direction: column; gap: 8px"><span class="muted" style="font-size: 14px">{{t.pending}}</span><span style="font-size: 32px; font-weight: 700">400 EGP</span><span class="muted" style="font-size: 13px">{{t.pendingNote}}</span></div>
+<div class="card" style="padding: 24px; display: flex; flex-direction: column; gap: 8px"><span class="muted" style="font-size: 14px">{{t.quota}}</span><span style="font-size: 32px; font-weight: 700">{{quotaVal}}</span><div style="height: 8px; border-radius: 99px; background: #E6EDF8"><div style="width: {{quotaPct}}; height: 8px; border-radius: 99px; background: #485982"></div></div></div>
+</div>
+<div style="display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start">
+<div class="card" style="flex: 1.5 1 480px; padding: 24px; display: flex; flex-direction: column; min-width: 0">
+<h2 style="font-size: 19px; font-weight: 700; margin-bottom: 8px">{{t.history}}</h2>
+<sc-for list="{{txns}}" as="x" hint-placeholder-count="4">
+<div style="display: flex; align-items: center; gap: 12px; padding: 14px 0; border-top: 1px solid #EFEAE2; flex-wrap: wrap"><div style="flex: 1 1 220px; display: flex; flex-direction: column"><span style="font-weight: 600; font-size: 15px">{{x.title}}</span><span class="muted" style="font-size: 13px">{{x.date}}</span></div><span style="font-weight: 700">{{x.amount}}</span><span class="chip {{x.cls}}">{{x.status}}</span></div>
+</sc-for>
+</div>
+<div style="flex: 1 1 300px; display: flex; flex-direction: column; gap: 16px; min-width: 0">
+<div class="card" style="padding: 22px; display: flex; flex-direction: column; gap: 12px">
+<h2 style="font-size: 17px; font-weight: 700">{{t.payMethod}}</h2>
+<div style="display: flex; gap: 12px; align-items: center; border: 1.5px solid #485982; background: #E6EDF8; border-radius: 14px; padding: 14px"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#242944" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"></rect><path d="M3 10h18M16 15h2"></path></svg><div style="display: flex; flex-direction: column"><span style="font-weight: 700; font-size: 14px">{{t.walletName}}</span><span class="muted" style="font-size: 13px; direction: ltr; text-align: start">01x xxxx 4821</span></div></div>
+<button class="btn ghost">{{t.changeMethod}}</button>
+</div>
+<div class="card" style="padding: 22px; display: flex; flex-direction: column; gap: 10px; background: #FFF9E8; border-color: #F2D98A">
+<h2 style="font-size: 17px; font-weight: 700">{{t.limitTitle}}</h2>
+<p style="font-size: 14px; line-height: 1.8; color: #5E3900">{{t.limitTxt}}</p>
+</div>
+</div>
+</div>
+</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1360,"height":940}}'>
+class Component extends DCLogic {
+state = {
+lang: 'ar', screen: 'onboard', step: 1, track: 1, skills: [0, 2, 3], modal: false, accepted: false, submitted: false
+};
+renderVals() {
+const st = this.state;
+const ar = st.lang === 'ar';
+const S = {
+brand: ['العالمية', 'Al-Alamia'], brandSub: ['منصة الفريلانسرز', 'Freelancer platform'],
+langBtn: ['English', 'عربي'], msgs: ['الرسائل', 'Messages'],
+obTitle: ['سجّل كفريلانسر في العالمية', 'Join Al-Alamia as a freelancer'], obSub: ['3 خطوات بسيطة وتبدأ تستلم مهام مدفوعة في تخصصك.', 'Three simple steps and you start receiving paid tasks in your track.'],
+s1: ['تخصصك', 'Your track'], s2: ['أعمالك', 'Your work'], s3: ['بياناتك', 'Your details'],
+track: ['اختر تخصصك (Track)', 'Choose your track'], jobTitle: ['المسمى الوظيفي', 'Job title'], jobPh: ['مثال: Digital Marketing Specialist', 'e.g. Digital Marketing Specialist'],
+about: ['نبذة عنك (About)', 'About you'], aboutPh: ['لخّص خبراتك وتعليمك وإنجازاتك — زي السي في بالظبط.', 'Summarize your experience, education and achievements, like a CV.'],
+skills: ['مهاراتك', 'Your skills'], skillsHint: ['اختر من قائمة المهارات المعتمدة عندنا.', 'Pick from our approved skills list.'],
+worksHint: ['ارفع 3 أعمال تمثّلك. لكل عمل: 3 صور وعنوان وتفاصيل، ورابط لو متاح.', 'Upload 3 pieces that represent you. Each needs 3 images, a title, details and a link if available.'],
+addImg: ['+ أضف صورة', '+ Add image'], workTitle: ['عنوان العمل', 'Work title'], workLink: ['رابط العمل (اختياري)', 'Work link (optional)'], workDesc: ['تفاصيل العمل', 'Work details'],
+addPhoto: ['+ صورتك الشخصية', '+ Your photo'], photoHint: ['صورة واضحة بوجهك', 'A clear photo of your face'],
+fullName: ['الاسم بالكامل', 'Full name'], phone: ['رقم التليفون', 'Phone number'], contactEmail: ['إيميل التواصل', 'Contact email'],
+payHint: ['هتحدد المحفظة أو البطاقة اللي هتستلم عليها فلوسك من صفحة المحفظة بعد التسجيل.', 'You will set the wallet or card to receive your payouts from the Wallet page after signing up.'],
+prev: ['السابق', 'Previous'], next: ['التالي', 'Next'], finish: ['إنهاء التسجيل', 'Finish sign-up'],
+navFeed: ['المهام المتاحة', 'Open tasks'], navMine: ['مهمتي الحالية', 'My task'], navWallet: ['المحفظة', 'Wallet'],
+feedTitle: ['مهمة جديدة في تخصصك', 'A new task in your track'], feedSub: ['المهمة وصلت لكل المسجلين في نفس اللحظة. أول واحد يقبلها ياخدها.', 'The task reached everyone in your track at the same instant. First to accept gets it.'],
+quota: ['مهامك هذا الشهر', 'Your tasks this month'], earned: ['إجمالي الأرباح', 'Total earned'],
+liveBadge: ['مهمة حية · أول من يقبل', 'Live task · first to accept'], timer: ['00:00:42', '00:00:42'],
+taskTitle: ['فيديو ريلز لمنتجات متجر عطور', 'Reels video for a perfume store'], taskTrack: ['Digital Marketing', 'Digital Marketing'], taskClient: ['عميل: متجر عطور أونلاين', 'Client: online perfume store'],
+taskPay: ['مكافأة المهمة', 'Task payout'], taskDur: ['مدة التسليم', 'Delivery time'], taskDurVal: ['يومين', '2 days'], taskType: ['نوع التسليم', 'Deliverable'], taskTypeVal: ['فيديو', 'Video'],
+taskBrief: ['وصف المهمة', 'Task brief'], taskBriefTxt: ['إنتاج فيديو ريلز مدته 30 ثانية يعرض 3 عطور بإيقاع سريع، مع نص ترويجي وموسيقى مناسبة. المحتوى هيتنشر على صفحات العميل.', 'Produce a 30-second Reels video showcasing 3 perfumes with a fast rhythm, a promo caption and fitting music. It will be published on the client pages.'],
+taskReq: ['المطلوب منك', 'What we need from you'], r1: ['فيديو عمودي 9:16 بجودة 1080p', 'Vertical 9:16 video in 1080p'], r2: ['كابشن بالعربي + 5 هاشتاجات', 'Arabic caption + 5 hashtags'], r3: ['ملف مفتوح (Source) مع الفيديو النهائي', 'Open source file with the final video'],
+lateRule: ['لو عدّى وقت المهمة: بنديك يوم إضافي بخصم 20% من مكافأة المهمة. ولو عدّى كمان: حسابك يتوقف شهر كامل.', 'If the task runs late: you get one extra day with a 20% payout cut. Miss that too and your account is paused for a full month.'],
+acceptBtn: ['اقبل المهمة', 'Accept task'],
+howTitle: ['إزاي بتشتغل المهام؟', 'How tasks work'], h1: ['المهمة بتتبعت لكل الفريلانسرز في تخصصك في نفس اللحظة.', 'The task is sent to every freelancer in your track at the same moment.'], h2: ['أول واحد يقبل ياخدها، والباقي بتتقفل عندهم.', 'The first to accept gets it; it closes for everyone else.'], h3: ['سلّم الشغل في الميعاد من صفحة مهمتي.', 'Deliver on time from the My task page.'], h4: ['بعد مراجعة الأدمن بتوصلك فلوسك على محفظتك.', 'After admin review, your payout lands in your wallet.'],
+channels: ['بتوصلك على', 'You are notified via'], chanEmail: ['إيميل', 'Email'], chanEmailTxt: ['رسالة فورية لكل مهمة', 'Instant message per task'], chanWeb: ['الموقع', 'Website'], chanWebTxt: ['أيقونة الرسائل + بوست تفصيلي', 'Message icon + detailed post'],
+modalTitle: ['تأكيد قبول المهمة', 'Confirm task acceptance'], modalBody: ['بقبولك المهمة، أنت بتلتزم بتسليمها في المدة المحددة: يومين.', 'By accepting, you commit to deliver within the stated time: 2 days.'],
+modalWarn: ['تنبيه مهم: التأخير بيخصم 20% عن يوم إضافي واحد، وبعده بيتم إيقاف حسابك شهر كامل. أنت متأكد إنك تقدر تلتزم؟', 'Important: lateness costs 20% for one extra day, after which your account is paused for a month. Sure you can commit?'],
+modalYes: ['أيوه، أقبل وألتزم', 'Yes, I accept and commit'], modalNo: ['لسه، رجوع', 'Not yet, go back'],
+accepted: ['المهمة بتاعتك', 'Your task'], timeLeft: ['الوقت المتبقي', 'Time left'], timerLeft: ['47:58:10', '47:58:10'],
+submitTitle: ['سلّم شغلك', 'Submit your work'], dropFiles: ['اسحب الملفات هنا أو اضغط للرفع', 'Drag files here or click to upload'], submitNotes: ['ملاحظات للمراجعة', 'Notes for the reviewer'], submitNotesPh: ['أي تفاصيل تساعد الفريق في المراجعة…', 'Anything that helps the team review…'], submitBtn: ['إرسال للمراجعة', 'Send for review'],
+deadlines: ['المواعيد والخصومات', 'Deadlines and deductions'], dl1: ['خلال يومين', 'Within 2 days'], dl2: ['اليوم الإضافي (−20%)', 'Extra day (−20%)'], dl3: ['بعد ذلك', 'After that'], dl3v: ['إيقاف شهر', '1-month pause'],
+walletTitle: ['المحفظة', 'Wallet'], walletSub: ['أرباحك من المهام المعتمدة، وبتتحوّل تلقائيًا بعد مراجعة الأدمن.', 'Your earnings from approved tasks, paid out automatically after admin review.'],
+balance: ['الرصيد المحوّل', 'Paid out so far'], walletVia: ['اتحوّل على محفظتك المسجّلة', 'Sent to your registered wallet'], pending: ['قيد المراجعة', 'Under review'], pendingNote: ['هتتحوّل بعد اعتماد الأدمن', 'Paid after admin approval'],
+history: ['سجل المدفوعات', 'Payment history'], payMethod: ['وسيلة الاستلام', 'Payout method'], walletName: ['محفظة إلكترونية', 'Mobile wallet'], changeMethod: ['تغيير الوسيلة', 'Change method'],
+limitTitle: ['حد المهام الشهري', 'Monthly task limit'], limitTxt: ['الحد الأقصى 10 مهام مقبولة لكل فريلانسر في الشهر.', 'Each freelancer can accept up to 10 tasks per month.'], subSoon: ['الاشتراكات قريبًا', 'Subscriptions coming soon'],
+tx1: ['مهمة: تصميم بوستات إطلاق', 'Task: Launch post designs'], tx2: ['مهمة: تحليل بيانات مبيعات', 'Task: Sales data analysis'], tx3: ['مهمة: فيديو ريلز لمتجر عطور', 'Task: Reels for a perfume store'], tx4: ['مهمة: صفحة هبوط', 'Task: Landing page'],
+paid: ['تم التحويل', 'Paid'], review: ['قيد المراجعة', 'Under review']
+};
+const t = {}; Object.keys(S).forEach((k) => { t[k] = S[k][ar ? 0 : 1]; });
+const sc = st.screen;
+const go = (s) => () => this.setState({ screen: s });
+const trl = ['Digital Marketing', 'UI / UX', 'Data Analysis', ar ? 'تطوير ويب' : 'Web Dev', ar ? 'مونتاج فيديو' : 'Video Editing', ar ? 'كتابة محتوى' : 'Copywriting'];
+const tracks = trl.map((l, i) => ({ label: l, sel: st.track === i ? 'sel' : '', pick: () => this.setState({ track: i }) }));
+const skl = ['Canva', 'Figma', 'Premiere Pro', 'SEO', ar ? 'إعلانات ممولة' : 'Paid Ads', 'Excel', 'React', ar ? 'تصوير' : 'Photography'];
+const skills = skl.map((l, i) => ({ label: l, sel: st.skills.indexOf(i) >= 0 ? 'sel' : '', pick: () => this.setState({ skills: st.skills.indexOf(i) >= 0 ? st.skills.filter((x) => x !== i) : st.skills.concat([i]) }) }));
+const stepNames = ['s1', 's2', 's3'];
+const steps = stepNames.map((k, i) => {
+const on = st.step >= i + 1;
+return { n: i + 1, label: t[k], dot: on ? 'background:#485982;color:#fff' : 'background:#EFEAE2;color:#4A5568', txt: on ? 'color:#242944' : 'color:#4A5568' };
+});
+const works = [1, 2, 3].map((n) => ({ id: 'w' + n, title: (ar ? 'العمل ' : 'Work ') + n, badge: n === 1 ? (ar ? 'مطلوب' : 'Required') : (ar ? 'مطلوب' : 'Required') }));
+const quota = st.submitted ? 3 : 2;
+const txns = [
+{ title: t.tx1, date: ar ? '12 أكتوبر 2026' : 'Oct 12, 2026', amount: '500 EGP', cls: 'done', status: t.paid },
+{ title: t.tx2, date: ar ? '4 أكتوبر 2026' : 'Oct 4, 2026', amount: '550 EGP', cls: 'done', status: t.paid },
+{ title: t.tx3, date: ar ? 'اليوم' : 'Today', amount: '400 EGP', cls: 'review', status: t.review },
+{ title: t.tx4, date: ar ? '21 سبتمبر 2026' : 'Sep 21, 2026', amount: '400 EGP', cls: 'done', status: t.paid }
+];
+return {
+t, dir: ar ? 'rtl' : 'ltr',
+isOnboard: sc === 'onboard', isFeed: sc === 'feed', isMine: sc === 'mine', isWallet: sc === 'wallet', inApp: sc !== 'onboard',
+navFeed: sc === 'feed' ? 'sel' : '', navMine: sc === 'mine' ? 'sel' : '', navWallet: sc === 'wallet' ? 'sel' : '',
+toFeed: go('feed'), toMine: go('mine'), toWallet: go('wallet'),
+toggleLang: () => this.setState({ lang: ar ? 'en' : 'ar' }),
+steps, ob1: st.step === 1, ob2: st.step === 2, ob3: st.step === 3,
+tracks, skills, works,
+nextLabel: st.step === 3 ? t.finish : t.next,
+prevStep: () => this.setState({ step: Math.max(1, st.step - 1) }),
+nextStep: () => (st.step === 3 ? this.setState({ screen: 'feed' }) : this.setState({ step: st.step + 1 })),
+reqs: [t.r1, t.r2, t.r3],
+how: [{ n: 1, text: t.h1 }, { n: 2, text: t.h2 }, { n: 3, text: t.h3 }, { n: 4, text: t.h4 }],
+quotaVal: quota + ' / 10', quotaPct: (quota * 10) + '%',
+modalAccept: st.modal, openAccept: () => this.setState({ modal: true }), closeModal: () => this.setState({ modal: false }),
+confirmAccept: () => this.setState({ modal: false, accepted: true, screen: 'mine' }),
+submitTask: () => this.setState({ submitted: true, screen: 'wallet' }),
+txns
+};
+}
+}
+</script>
+</body>
+</html>

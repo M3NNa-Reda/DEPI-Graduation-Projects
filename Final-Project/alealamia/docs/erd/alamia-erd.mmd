@@ -1,0 +1,475 @@
+erDiagram
+
+    %% ============ MODULE 1: IDENTITY & USERS ============
+
+    ApplicationUser {
+        string Id PK
+        string UserName
+        string Email
+        string PasswordHash
+        string PhoneNumber
+        string FirstName
+        string LastName
+        bool IsActive
+        datetime CreatedAt
+        datetime UpdatedAt "nullable"
+    }
+
+    ApplicationRole {
+        string Id PK
+        string Name
+        string NormalizedName
+    }
+
+    UserRole {
+        string UserId PK,FK
+        string RoleId PK,FK
+    }
+
+    ClientProfile {
+        int Id PK
+        string UserId FK "unique"
+        string BusinessName "nullable"
+        string BusinessType "nullable"
+        string WebsiteUrl "nullable"
+        datetime CreatedAt
+    }
+
+    FreelancerProfile {
+        int Id PK
+        string UserId FK "unique"
+        int TrackId FK
+        string Bio "nullable"
+        int ProfileImageFileId FK "nullable"
+        int ApprovalStatus
+        bool IsAvailable
+        datetime CreatedAt
+        datetime UpdatedAt "nullable"
+    }
+
+    FreelancerBlock {
+        int Id PK
+        int FreelancerProfileId FK
+        int TaskId FK "nullable"
+        string Reason
+        datetime StartedAt
+        datetime EndsAt
+        string CreatedByUserId FK
+        datetime CreatedAt
+    }
+
+    RefreshToken {
+        int Id PK
+        string UserId FK
+        string TokenHash
+        datetime ExpiresAt
+        datetime CreatedAt
+        datetime RevokedAt "nullable"
+        string ReplacedByTokenHash "nullable"
+    }
+
+    ApplicationUser ||--o{ RefreshToken : owns
+    ApplicationUser ||--o{ UserRole : has
+    ApplicationRole ||--o{ UserRole : assigned
+    ApplicationUser ||--o| ClientProfile : has
+    ApplicationUser ||--o| FreelancerProfile : has
+    FreelancerProfile ||--o{ FreelancerBlock : receives
+
+    %% ============ MODULE 2: TRACKS & SKILLS ============
+
+    Track {
+        int Id PK
+        string Name
+        string Description "nullable"
+        bool IsActive
+        datetime CreatedAt
+    }
+
+    Skill {
+        int Id PK
+        string Name
+        string Description "nullable"
+        bool IsActive
+    }
+
+    TrackSkill {
+        int TrackId PK,FK
+        int SkillId PK,FK
+    }
+
+    FreelancerSkill {
+        int FreelancerProfileId PK,FK
+        int SkillId PK,FK
+        int ProficiencyLevel
+        datetime AddedAt
+    }
+
+    Track ||--o{ FreelancerProfile : categorizes
+    File o|--o{ FreelancerProfile : profile_image
+    Track ||--o{ TrackSkill : includes
+    Skill ||--o{ TrackSkill : belongs_to
+    FreelancerProfile ||--o{ FreelancerSkill : has
+    Skill ||--o{ FreelancerSkill : assigned_to
+
+    %% ============ MODULE 3: PORTFOLIO ============
+
+    PortfolioItem {
+        int Id PK
+        int FreelancerProfileId FK
+        string Title
+        string Description
+        string ProjectUrl "nullable"
+        bool IsPublished
+        datetime CreatedAt
+        datetime UpdatedAt "nullable"
+    }
+
+    PortfolioItemFile {
+        int PortfolioItemId PK,FK
+        int FileId PK,FK
+        int DisplayOrder
+    }
+
+    FreelancerProfile ||--o{ PortfolioItem : showcases
+    PortfolioItem ||--|{ PortfolioItemFile : contains
+    File ||--o{ PortfolioItemFile : attached
+
+    %% ============ MODULE 4: SERVICES & PROJECTS ============
+
+    Service {
+        int Id PK
+        string Name
+        string Description
+        bool IsActive
+        datetime CreatedAt
+        datetime UpdatedAt "nullable"
+    }
+
+    Project {
+        int Id PK
+        int ClientProfileId FK
+        string Title
+        string Description
+        bool HasCustomization
+        int Status
+        decimal FinalPrice "nullable"
+        string Currency
+        datetime CreatedAt
+        datetime UpdatedAt "nullable"
+    }
+
+    ProjectService {
+        int Id PK
+        int ProjectId FK
+        int ServiceId FK
+        string CustomizationDetails "nullable"
+        datetime CreatedAt
+    }
+
+    ProjectStatusHistory {
+        int Id PK
+        int ProjectId FK
+        int OldStatus "nullable"
+        int NewStatus
+        string ChangedByUserId FK
+        string Notes "nullable"
+        datetime ChangedAt
+    }
+
+    ClientProfile ||--o{ Project : creates
+    Project ||--|{ ProjectService : requests
+    Service ||--o{ ProjectService : selected_in
+    Project ||--o{ ProjectStatusHistory : tracks
+    ApplicationUser ||--o{ ProjectStatusHistory : changes
+
+    %% ============ MODULE 5: MEETINGS ============
+
+    Meeting {
+        int Id PK
+        int ProjectId FK
+        int ClientProfileId FK
+        datetime ProposedAt
+        int Status
+        string AdminNotes "nullable"
+        string ReviewedByUserId FK "nullable"
+        datetime ReviewedAt "nullable"
+        datetime CreatedAt
+    }
+
+    Project ||--o{ Meeting : has
+    ClientProfile ||--o{ Meeting : requests
+    ApplicationUser o|--o{ Meeting : reviews
+
+    %% ============ MODULE 6: TASK MANAGEMENT ============
+
+    Task {
+        int Id PK
+        int ProjectId FK
+        int TrackId FK
+        string Title
+        string Description
+        int Status
+        decimal RewardAmount
+        int ActualDurationDays "nullable"
+        datetime PublishedDeadline
+        datetime ExtensionDeadline "nullable"
+        int AssignedFreelancerProfileId FK "nullable"
+        byte[] RowVersion
+        string CreatedByUserId FK
+        datetime CreatedAt
+        datetime UpdatedAt "nullable"
+    }
+
+    TaskRequiredSkill {
+        int TaskId PK,FK
+        int SkillId PK,FK
+    }
+
+    TaskOffer {
+        int Id PK
+        int TaskId FK
+        int FreelancerProfileId FK
+        int Status
+        datetime SentAt
+        datetime RespondedAt "nullable"
+    }
+
+    TaskStatusHistory {
+        int Id PK
+        int TaskId FK
+        int OldStatus "nullable"
+        int NewStatus
+        string ChangedByUserId FK
+        string Notes "nullable"
+        datetime ChangedAt
+    }
+
+    TaskReassignment {
+        int Id PK
+        int TaskId FK
+        int PreviousFreelancerId FK "nullable"
+        int NewFreelancerId FK "nullable"
+        string Reason
+        string ReassignedByUserId FK
+        datetime ReassignedAt
+    }
+
+    TaskFile {
+        int TaskId PK,FK
+        int FileId PK,FK
+        datetime AddedAt
+    }
+
+    Project ||--o{ Task : contains
+    Track ||--o{ Task : categorizes
+    FreelancerProfile o|--o{ Task : assigned_to
+    ApplicationUser ||--o{ Task : creates
+    Task ||--o{ TaskRequiredSkill : requires
+    Skill ||--o{ TaskRequiredSkill : required_for
+    Task ||--o{ TaskOffer : receives
+    FreelancerProfile ||--o{ TaskOffer : receives
+    Task ||--o{ TaskStatusHistory : tracks
+    ApplicationUser ||--o{ TaskStatusHistory : changes
+    Task ||--o{ TaskReassignment : reassignment_history
+    FreelancerProfile o|--o{ TaskReassignment : previous_freelancer
+    FreelancerProfile o|--o{ TaskReassignment : new_freelancer
+    ApplicationUser ||--o{ TaskReassignment : performs
+    Task ||--o{ TaskFile : contains
+    File ||--o{ TaskFile : attached
+    Task ||--o{ FreelancerBlock : may_cause
+
+    %% ============ MODULE 7: SUBMISSIONS & REVIEWS ============
+
+    TaskSubmission {
+        int Id PK
+        int TaskId FK
+        int FreelancerProfileId FK
+        string SubmissionNotes "nullable"
+        datetime SubmittedAt
+        int Status
+    }
+
+    TaskReview {
+        int Id PK
+        int TaskSubmissionId FK
+        string ReviewedByUserId FK
+        int Decision
+        string Feedback "nullable"
+        datetime ReviewedAt
+    }
+
+    TaskRevision {
+        int Id PK
+        int TaskId FK
+        int TaskReviewId FK
+        string RevisionNotes
+        datetime NewDeadline
+        int Status
+        datetime CreatedAt
+        datetime CompletedAt "nullable"
+    }
+
+    SubmissionFile {
+        int TaskSubmissionId PK,FK
+        int FileId PK,FK
+        datetime UploadedAt
+    }
+
+    Task ||--o{ TaskSubmission : receives
+    FreelancerProfile ||--o{ TaskSubmission : submits
+    TaskSubmission ||--o{ TaskReview : reviewed
+    ApplicationUser ||--o{ TaskReview : reviews
+    Task ||--o{ TaskRevision : has
+    TaskReview ||--o{ TaskRevision : requests
+    TaskSubmission ||--o{ SubmissionFile : includes
+    File ||--o{ SubmissionFile : attached
+
+    %% ============ MODULE 8: FREELANCER FINANCE ============
+
+    FreelancerLedgerEntry {
+        int Id PK
+        int FreelancerProfileId FK
+        int TaskId FK "nullable"
+        int EntryType
+        decimal Amount
+        string Reason
+        datetime CreatedAt
+        string CreatedByUserId FK "nullable"
+    }
+
+    FreelancerProfile ||--o{ FreelancerLedgerEntry : has
+    Task o|--o{ FreelancerLedgerEntry : generates
+    ApplicationUser o|--o{ FreelancerLedgerEntry : records
+
+    %% ============ MODULE 9: MARKETING PACKAGES ============
+
+    MarketingPackage {
+        int Id PK
+        string Name
+        string Description "nullable"
+        int DurationMonths
+        decimal DefaultPrice
+        bool IsActive
+        datetime CreatedAt
+        datetime UpdatedAt "nullable"
+    }
+
+    MarketingPackageItem {
+        int Id PK
+        int MarketingPackageId FK
+        string Name
+        string Description "nullable"
+        int DefaultQuantity
+        bool IsActive
+    }
+
+    ProjectMarketingPackage {
+        int Id PK
+        int ProjectId FK
+        int MarketingPackageId FK
+        decimal PriceAtPurchase
+        datetime StartDate
+        datetime EndDate
+        int Status
+        datetime CreatedAt
+    }
+
+    ProjectMarketingPackageItem {
+        int Id PK
+        int ProjectMarketingPackageId FK
+        int OriginalPackageItemId FK "nullable"
+        string NameSnapshot
+        string DescriptionSnapshot "nullable"
+        int Quantity
+    }
+
+    MarketingPackage ||--o{ MarketingPackageItem : defines
+    Project ||--o{ ProjectMarketingPackage : purchases
+    MarketingPackage ||--o{ ProjectMarketingPackage : subscribed_to
+    ProjectMarketingPackage ||--|{ ProjectMarketingPackageItem : snapshots
+    MarketingPackageItem o|--o{ ProjectMarketingPackageItem : source_item
+
+    %% ============ MODULE 10: SHARED FILES ============
+
+    File {
+        int Id PK
+        string OriginalFileName
+        string StoredFileName
+        string FileUrl
+        string ContentType
+        long SizeInBytes
+        string UploadedByUserId FK
+        datetime UploadedAt
+    }
+
+    ApplicationUser ||--o{ File : uploads
+
+    ProjectFile {
+        int ProjectId PK,FK
+        int FileId PK,FK
+        datetime AddedAt
+    }
+
+    Project ||--o{ ProjectFile : contains
+    File ||--o{ ProjectFile : attached
+
+    %% ============ MODULE 11: SUPPORT ============
+
+    SupportTicket {
+        int Id PK
+        string CreatedByUserId FK
+        string Subject
+        int Status
+        int Priority
+        datetime CreatedAt
+        datetime ClosedAt "nullable"
+    }
+
+    SupportMessage {
+        int Id PK
+        int SupportTicketId FK
+        string SenderUserId FK
+        string MessageText
+        datetime SentAt
+    }
+
+    SupportMessageFile {
+        int SupportMessageId PK,FK
+        int FileId PK,FK
+    }
+
+    ApplicationUser ||--o{ SupportTicket : opens
+    SupportTicket ||--|{ SupportMessage : contains
+    ApplicationUser ||--o{ SupportMessage : sends
+    SupportMessage ||--o{ SupportMessageFile : includes
+    File ||--o{ SupportMessageFile : attached
+
+    %% ============ MODULE 12: NOTIFICATIONS ============
+
+    Notification {
+        int Id PK
+        string UserId FK
+        string Title
+        string Message
+        int Type
+        string RelatedEntityType "nullable"
+        int RelatedEntityId "nullable"
+        bool IsRead
+        datetime CreatedAt
+        datetime ReadAt "nullable"
+    }
+
+    EmailNotificationLog {
+        int Id PK
+        string UserId FK "nullable"
+        string RecipientEmail
+        string Subject
+        string NotificationType
+        int Status
+        string ErrorMessage "nullable"
+        datetime CreatedAt
+        datetime SentAt "nullable"
+    }
+
+    ApplicationUser ||--o{ Notification : receives
+    ApplicationUser o|--o{ EmailNotificationLog : receives
