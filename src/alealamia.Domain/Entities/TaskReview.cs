@@ -16,7 +16,9 @@ namespace alealamia.Domain.Entities
         public TaskSubmission TaskSubmission { get; set; } = null!;
         //       not founded
         //public ApplicationUser ReviewedBy { get; set; } = null!;
-
-        public ICollection<TaskRevision> Revisions { get; set; } = new List<TaskRevision>();
+        // مش not founded هوا مش شايفها عشان هيا في ال Infrastructure لاير
+        // الحل اننا مش بنعمل nav prop 
+        // وبنحدد الريلاشن في ال configuration بس
+        public ICollection<TaskRevision> TaskRevisions { get; set; } = new List<TaskRevision>();
     }
 }

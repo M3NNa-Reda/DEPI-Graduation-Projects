@@ -16,7 +16,7 @@ namespace alealamia.Domain.Entities
         public Task Task { get; set; } = null!;
         public FreelancerProfile FreelancerProfile { get; set; } = null!;
 
-        public ICollection<TaskReview> Reviews { get; set; } = new List<TaskReview>();
-        public ICollection<SubmissionFile> Files { get; set; } = new List<SubmissionFile>();
+        public ICollection<TaskReview> TaskReviews { get; set; } = new List<TaskReview>();
+        public ICollection<SubmissionFile> SubmissionFiles { get; set; } = new List<SubmissionFile>();
     }
 }

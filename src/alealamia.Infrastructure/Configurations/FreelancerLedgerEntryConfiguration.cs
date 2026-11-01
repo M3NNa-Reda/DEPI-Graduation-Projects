@@ -29,17 +29,17 @@ namespace alealamia.Infrastructure.Configurations
                 .IsRequired();
 
             builder.HasOne<FreelancerProfile>()
-                .WithMany()
+                .WithMany(x=>x.FreelancerLedgerEntries)
                 .HasForeignKey(t => t.FreelancerProfileId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne<Domain.Entities.Task>()
-                .WithMany()
+            builder.HasOne(x=>x.Task)
+                .WithMany(x=>x.FreelancerLedgerEntries)
                 .HasForeignKey(t => t.TaskId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne<ApplicationUser>()
-                .WithMany()
+                .WithMany(x=>x.FreelancerLedgerEntries)
                 .HasForeignKey(t => t.CreatedByUserId)
                 .OnDelete(DeleteBehavior.Restrict);
         }

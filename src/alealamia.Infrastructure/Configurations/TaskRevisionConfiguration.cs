@@ -26,13 +26,13 @@ namespace alealamia.Infrastructure.Configurations
             builder.Property(t => t.CreatedAt)
                 .IsRequired();
 
-            builder.HasOne<Domain.Entities.Task>()
-              .WithMany()
+            builder.HasOne(x=>x.Task)
+              .WithMany(x=>x.TaskRevisions)
               .HasForeignKey(t => t.TaskId)
               .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne<TaskReview>()
-                .WithMany()
+                .WithMany(x=>x.TaskRevisions)
                 .HasForeignKey(t => t.TaskReviewId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
