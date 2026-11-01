@@ -20,6 +20,10 @@ namespace alealamia.Domain.Entities
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public ICollection<FreelancerBlock> FreelancerBlocks { get; set; } = new HashSet<FreelancerBlock>();
+        public ICollection<TaskRevision> TaskRevisions { get; set; } = new List<TaskRevision>();
+        public ICollection<TaskSubmission> TaskSubmissions { get; set; } = new List<TaskSubmission>();
+        public ICollection<FreelancerLedgerEntry> FreelancerLedgerEntries { get; set; } = new List<FreelancerLedgerEntry>();
+
 
     }
 }

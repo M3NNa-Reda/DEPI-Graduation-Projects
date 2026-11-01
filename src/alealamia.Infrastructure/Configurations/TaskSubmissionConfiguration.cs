@@ -16,13 +16,13 @@ namespace alealamia.Infrastructure.Configurations
             builder.Property(t => t.Status)
                     .IsRequired();
 
-            builder.HasOne<Domain.Entities.Task>()
-                    .WithMany()
+            builder.HasOne(x=>x.Task)
+                    .WithMany(x=>x.TaskSubmissions)
                     .HasForeignKey(t => t.TaskId)
                     .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne<FreelancerProfile>()
-                    .WithMany()
+            builder.HasOne(x=>x.FreelancerProfile)
+                    .WithMany(x=>x.TaskSubmissions)
                     .HasForeignKey(t => t.FreelancerProfileId)
                     .OnDelete(DeleteBehavior.Restrict);
         }

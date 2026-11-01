@@ -9,6 +9,7 @@ namespace alealamia.Domain.Entities
         public int Id { get; set; }
         public int FreelancerProfileId { get; set; } //FK
         public int? TaskId { get; set; } //FK
+        public string Reason { get; set; } = string.Empty;
         public DateTime StartedAt { get; set; }
         public DateTime EndsAt { get; set; }
         public string CreatedByUserId { get; set; } = string.Empty;//FK Admin

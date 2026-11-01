@@ -21,6 +21,9 @@ namespace alealamia.Domain.Entities
         public ICollection<FreelancerBlock> FreelancerBlocks { get; set; } = new List<FreelancerBlock>();
         public ICollection<FreelancerSkill> FreelancerSkills { get; set; } = new List<FreelancerSkill>();
         public ICollection<PortfolioItem> PortfolioItems { get; set; } = new List<PortfolioItem>();
+        public ICollection<TaskSubmission> TaskSubmissions { get; set; } = new List<TaskSubmission>();
+        public ICollection<FreelancerLedgerEntry> FreelancerLedgerEntries { get; set; } = new List<FreelancerLedgerEntry>();
+
 
 
     }

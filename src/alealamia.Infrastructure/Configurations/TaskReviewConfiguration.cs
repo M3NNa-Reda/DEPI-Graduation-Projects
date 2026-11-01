@@ -23,13 +23,13 @@ namespace alealamia.Infrastructure.Configurations
             builder.Property(t => t.ReviewedAt)
                    .IsRequired();
 
-            builder.HasOne<TaskSubmission>()
-                    .WithMany()
+            builder.HasOne(x=>x.TaskSubmission)
+                    .WithMany(x=>x.TaskReviews)
                     .HasForeignKey(t => t.TaskSubmissionId)
                     .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne<ApplicationUser>()
-                    .WithMany()
+                    .WithMany(x=>x.TaskReviews)
                     .HasForeignKey(t => t.ReviewedByUserId)
                     .OnDelete(DeleteBehavior.Restrict);
         }

@@ -16,5 +16,7 @@ namespace alealamia.Infrastructure.Identity.Entities
         public ClientProfile ClientProfile { get; set; } = null!;
         public FreelancerProfile FreelancerProfile { get; set; } = null!;
         public ICollection<FreelancerBlock> FreelancerBlocks { get; set; } = new List<FreelancerBlock>();
+        public ICollection<TaskReview> TaskReviews { get; set; } = new List<TaskReview>();
+        public ICollection<FreelancerLedgerEntry> FreelancerLedgerEntries { get; set; } = new List<FreelancerLedgerEntry>();
     }
 }
