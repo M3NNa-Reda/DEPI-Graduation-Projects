@@ -1,4 +1,6 @@
-﻿namespace EasyShop.Application.Services
+﻿using EasyShop.Application.DTOs.Catalog;
+
+namespace EasyShop.Application.Services
 {
     public class ProductService : IProductService
     {
@@ -34,6 +36,36 @@
                 .FindByConditionAsync(v => v.ProductId == productId && v.IsActive);
 
             return variants.OrderBy(v => v.Price).ToList();
+        }
+
+        public async Task<Dictionary<int, ProductCardDto>> GetProductCardsAsync()
+        {
+            var images = await _unitOfWork.Products.GetPrimaryImageUrlsAsync();
+            var variants = await _unitOfWork.ProductVariants.FindByConditionAsync(v => v.IsActive);
+
+            var cards = variants
+                .GroupBy(v => v.ProductId)
+                .ToDictionary(g => g.Key, g => new ProductCardDto
+                {
+                    ProductId = g.Key,
+                    FromPrice = g.Min(v => v.Price),
+                    InStock = g.Any(v => v.StockQuantity > 0),
+                    ImageUrl = images.GetValueOrDefault(g.Key)
+                });
+
+            // A product can have a picture before it has any variant on sale.
+            foreach (var (productId, imageUrl) in images)
+            {
+                if (!cards.ContainsKey(productId))
+                    cards[productId] = new ProductCardDto { ProductId = productId, ImageUrl = imageUrl };
+            }
+
+            return cards;
+        }
+
+        public async Task<IReadOnlyList<string>> GetImageUrlsAsync(int productId)
+        {
+            return await _unitOfWork.Products.GetImageUrlsAsync(productId);
         }
 
         public async Task AddProductAsync(Product product)

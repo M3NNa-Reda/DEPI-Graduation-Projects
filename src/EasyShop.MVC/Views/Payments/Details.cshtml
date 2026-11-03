@@ -42,7 +42,7 @@
             <dd class="col-sm-9">@payment.PaymentMethod</dd>
 
             <dt class="col-sm-3">Amount</dt>
-            <dd class="col-sm-9">@payment.Amount.ToString("N2")</dd>
+            <dd class="col-sm-9">@payment.Amount.ToEgp()</dd>
 
             <dt class="col-sm-3">Status</dt>
             <dd class="col-sm-9"><span class="badge @PaymentBadge(payment.Status)">@payment.Status</span></dd>
@@ -95,7 +95,7 @@ else
                         <tr>
                             <td>@transaction.Id</td>
                             <td>@transaction.Status</td>
-                            <td class="text-end">@transaction.Amount.ToString("N2")</td>
+                            <td class="text-end">@transaction.Amount.ToEgp()</td>
                             <td>@transaction.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
                         </tr>
                     }

@@ -4,6 +4,9 @@ namespace EasyShop.Application.Services
 {
     public class OrderService : IOrderService
     {
+        // Flat shipping fee in EGP, applied to every order.
+        public const decimal FlatShippingFee = 70m;
+
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICouponService _couponService;
         private readonly IPaymentService _paymentService ;
@@ -90,7 +93,7 @@ namespace EasyShop.Application.Services
                     throw new InvalidOperationException("Invalid coupon discount.");
             }
 
-            decimal shipping = 70m;
+            decimal shipping = FlatShippingFee;
             decimal totalAmount = (subtotal + shipping) - discount;
             var order = new Order
             {

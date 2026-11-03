@@ -48,14 +48,14 @@ else
                             }
                             else
                             {
-                                @coupon.DiscountValue.ToString("0.00")
+                                @coupon.DiscountValue.ToEgp()
                             }
                             @if (coupon.MaximumDiscountAmount.HasValue)
                             {
-                                <div class="small text-muted">max @coupon.MaximumDiscountAmount.Value.ToString("0.00")</div>
+                                <div class="small text-muted">max @coupon.MaximumDiscountAmount.Value.ToEgp()</div>
                             }
                         </td>
-                        <td>@(coupon.MinimumOrderAmount.HasValue ? coupon.MinimumOrderAmount.Value.ToString("0.00") : "-")</td>
+                        <td>@coupon.MinimumOrderAmount.ToEgp()</td>
                         <td>@coupon.UsedCount / @(coupon.UsageLimit.HasValue ? coupon.UsageLimit.Value.ToString() : "∞")</td>
                         <td class="text-nowrap">@coupon.StartDate.ToString("yyyy-MM-dd") → @coupon.ExpirationDate.ToString("yyyy-MM-dd")</td>
                         <td>
