@@ -38,6 +38,24 @@ public class ProductServiceTests
     }
 
     [Fact]
+    public async Task SetPrimaryImage_trims_the_link_and_saves_once()
+    {
+        await _service.SetPrimaryImageAsync(10, "  https://example.com/a.jpg  ");
+
+        _products.Verify(r => r.SetPrimaryImageAsync(10, "https://example.com/a.jpg"), Times.Once);
+        _uow.Verify(u => u.CompleteAsync(), Times.Once);
+    }
+
+    [Fact]
+    public async Task SetPrimaryImage_passes_null_through_so_the_picture_can_be_removed()
+    {
+        await _service.SetPrimaryImageAsync(10, null);
+
+        _products.Verify(r => r.SetPrimaryImageAsync(10, null), Times.Once);
+        _uow.Verify(u => u.CompleteAsync(), Times.Once);
+    }
+
+    [Fact]
     public async Task ActiveVariants_are_empty_for_an_inactive_product()
     {
         _products.Setup(r => r.GetByIdAsync(10)).ReturnsAsync(new Product { Id = 10, IsActive = false });

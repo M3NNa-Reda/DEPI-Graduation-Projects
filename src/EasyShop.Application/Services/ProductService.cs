@@ -68,6 +68,17 @@ namespace EasyShop.Application.Services
             return await _unitOfWork.Products.GetImageUrlsAsync(productId);
         }
 
+        public async Task<string?> GetPrimaryImageUrlAsync(int productId)
+        {
+            return await _unitOfWork.Products.GetPrimaryImageUrlAsync(productId);
+        }
+
+        public async Task SetPrimaryImageAsync(int productId, string? imageUrl)
+        {
+            await _unitOfWork.Products.SetPrimaryImageAsync(productId, imageUrl?.Trim());
+            await _unitOfWork.CompleteAsync();
+        }
+
         public async Task AddProductAsync(Product product)
         {
             await _unitOfWork.Products.AddAsync(product);

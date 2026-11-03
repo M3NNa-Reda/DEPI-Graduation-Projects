@@ -47,6 +47,14 @@
                     </div>
                 </div>
 
+                <div class="mb-3">
+                    <label asp-for="ImageUrl" class="form-label"></label>
+                    <input asp-for="ImageUrl" class="form-control" placeholder="https://..." data-image-input />
+                    <div class="form-text">Link to the main product picture. Leave empty to remove it.</div>
+                    <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                    <img data-image-preview src="@Model.ImageUrl" alt="" class="img-thumbnail mt-2 @(string.IsNullOrEmpty(Model.ImageUrl) ? "d-none" : "")" style="max-height: 160px;" />
+                </div>
+
                 <div class="form-check mb-1">
                     <input asp-for="IsActive" class="form-check-input" />
                     <label asp-for="IsActive" class="form-check-label"></label>
@@ -62,4 +70,16 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            var input = document.querySelector("[data-image-input]");
+            var preview = document.querySelector("[data-image-preview]");
+            if (!input || !preview) return;
+            input.addEventListener("input", function () {
+                var value = input.value.trim();
+                preview.classList.toggle("d-none", value === "");
+                if (value !== "") preview.src = value;
+            });
+        })();
+    </script>
 }

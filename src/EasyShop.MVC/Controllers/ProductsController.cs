@@ -89,6 +89,7 @@ public class ProductsController : Controller
         };
 
         await _productService.AddProductAsync(product);
+        await _productService.SetPrimaryImageAsync(product.Id, model.ImageUrl);
 
         TempData["Success"] = $"Product \"{product.Name}\" was created.";
         return RedirectToAction(nameof(Index));
@@ -113,7 +114,8 @@ public class ProductsController : Controller
             Slug = product.Slug,
             BrandId = product.BrandId,
             CategoryId = product.CategoryId,
-            IsActive = product.IsActive
+            IsActive = product.IsActive,
+            ImageUrl = await _productService.GetPrimaryImageUrlAsync(id)
         });
     }
 
@@ -148,6 +150,7 @@ public class ProductsController : Controller
         product.UpdatedAt = DateTime.UtcNow;
 
         await _productService.UpdateProductAsync(product);
+        await _productService.SetPrimaryImageAsync(product.Id, model.ImageUrl);
 
         TempData["Success"] = $"Product \"{product.Name}\" was updated.";
         return RedirectToAction(nameof(Index));
