@@ -10,6 +10,8 @@ namespace EasyShop.Application.Interfaces.Services
         Task<IEnumerable<ProductVariant>> GetActiveVariantsAsync(int productId);
         Task<Dictionary<int, ProductCardDto>> GetProductCardsAsync();
         Task<IReadOnlyList<string>> GetImageUrlsAsync(int productId);
+        Task<string?> GetPrimaryImageUrlAsync(int productId);
+        Task SetPrimaryImageAsync(int productId, string? imageUrl);
         Task AddProductAsync(Product product);
         Task UpdateProductAsync(Product product);
         Task DeleteProductAsync(Product product);

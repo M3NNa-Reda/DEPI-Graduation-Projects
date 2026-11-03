@@ -22,6 +22,11 @@ public class ProductFormViewModel
     [Display(Name = "Category")]
     public int? CategoryId { get; set; }
 
+    [Display(Name = "Image URL")]
+    [StringLength(500)]
+    [Url(ErrorMessage = "Enter a full link that starts with http:// or https://")]
+    public string? ImageUrl { get; set; }
+
     [Display(Name = "Active")]
     public bool IsActive { get; set; } = true;
 }
