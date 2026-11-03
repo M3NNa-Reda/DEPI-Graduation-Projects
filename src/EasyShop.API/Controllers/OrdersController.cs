@@ -1,7 +1,10 @@
-﻿namespace EasyShop.API.Controllers
+﻿using EasyShop.Domain.Constants;
+
+namespace EasyShop.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class OrdersController : ControllerBase
     {
         private readonly IOrderService _orderService;
@@ -35,29 +38,29 @@
         public async Task<IActionResult> CancelOrder(int id)
         {
             int userId = User.GetUserId();
-            var orders = _orderService.CancelOrderAsync(userId, id);
+            await _orderService.CancelOrderAsync(userId, id);
             return NoContent();
         }
         [HttpGet("admin/recent")]
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = RoleNames.Admin)]
         public async Task<ActionResult<IEnumerable<OrderSummaryDto>>> GetRecentOrders([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             var orders = await _orderService.GetRecentOrdersAsync(page, pageSize);
             return Ok(orders);
         }
         [HttpGet("admin/{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = RoleNames.Admin)]
         public async Task<ActionResult<OrderDetailsDto>> GetOrderByIdForAdmin(int id)
         {
             var order= await _orderService.GetOrderByIdForAdminAsync(id);
             return Ok(order);
         }
         [HttpPut("admin/{id}/status")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = RoleNames.Admin)]
         public async Task<IActionResult> UpdateOrderStatus(int id, [FromBody] UpdateOrderStatusDto dto)
         {
             int adminId = User.GetUserId();
-            var task = _orderService.UpdateOrderStatusAsync(adminId, id, dto);
+            await _orderService.UpdateOrderStatusAsync(adminId, id, dto);
             return NoContent();
         }
     }

@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+## Environment specific settings (keep real connection strings and passwords out of git)
+src/EasyShop.API/appsettings.Production.json
+src/EasyShop.API/appsettings.*.local.json
