@@ -185,6 +185,13 @@ public class HomeController : Controller
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult HttpStatus(int code)
+    {
+        Response.StatusCode = code;
+        return code == 404 ? View("NotFound") : View("Error", new ErrorViewModel { RequestId = HttpContext.TraceIdentifier });
+    }
+
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
