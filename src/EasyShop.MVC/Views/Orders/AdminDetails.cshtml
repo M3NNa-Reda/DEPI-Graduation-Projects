@@ -10,6 +10,8 @@
     <a asp-action="RecentOrders" class="btn btn-outline-secondary">Back to Recent Orders</a>
 </div>
 
+<partial name="_Alerts" />
+
 <div class="row g-3 mb-4">
     <div class="col-md-6">
         <div class="card shadow-sm h-100">
@@ -17,7 +19,7 @@
                 <h5 class="card-title">Order Information</h5>
                 <p class="mb-1"><strong>Date:</strong> @Model.CreatedAt.ToString("MMM dd, yyyy HH:mm")</p>
                 <p class="mb-1"><strong>Current Status:</strong> <span class="badge bg-primary">@Model.Status</span></p>
-                <p class="mb-1"><strong>Total Amount:</strong> @Model.TotalAmount.ToString("C")</p>
+                <p class="mb-1"><strong>Total Amount:</strong> @Model.TotalAmount.ToEgp()</p>
                 <p class="mb-0"><strong>Shipping Address:</strong> @Model.ShippingAddress</p>
             </div>
         </div>
@@ -61,13 +63,34 @@
                     {
                         <tr>
                             <td>@item.ProductName</td>
-                            <td>@item.UnitPrice.ToString("C")</td>
+                            <td>@item.UnitPrice.ToEgp()</td>
                             <td>@item.Quantity</td>
-                            <td class="text-end">@item.TotalPrice.ToString("C")</td>
+                            <td class="text-end">@item.TotalPrice.ToEgp()</td>
                         </tr>
                     }
                 }
             </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="text-end text-muted">Subtotal</td>
+                    <td class="text-end">@Model.Subtotal.ToEgp()</td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="text-end text-muted">Shipping</td>
+                    <td class="text-end">@Model.ShippingFee.ToEgp()</td>
+                </tr>
+                @if (Model.DiscountAmount > 0)
+                {
+                    <tr>
+                        <td colspan="3" class="text-end text-muted">Discount@(string.IsNullOrEmpty(Model.CouponCode) ? "" : $" ({Model.CouponCode})")</td>
+                        <td class="text-end text-success">-@Model.DiscountAmount.ToEgp()</td>
+                    </tr>
+                }
+                <tr class="fw-bold">
+                    <td colspan="3" class="text-end">Total</td>
+                    <td class="text-end">@Model.TotalAmount.ToEgp()</td>
+                </tr>
+            </tfoot>
         </table>
     </div>
 </div>

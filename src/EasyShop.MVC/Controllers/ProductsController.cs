@@ -32,6 +32,8 @@ public class ProductsController : Controller
         ViewBag.BrandNames = (await _brandService.GetAllBrandsAsync()).ToDictionary(b => b.Id, b => b.Name);
         ViewBag.CategoryNames = (await _categoryService.GetAllCategoriesAsync()).ToDictionary(c => c.Id, c => c.Name);
 
+        ViewBag.Cards = await _productService.GetProductCardsAsync();
+
         return View(products);
     }
 
@@ -53,6 +55,7 @@ public class ProductsController : Controller
 
         await LoadLookupNamesAsync(product);
         ViewBag.Variants = await _productService.GetActiveVariantsAsync(id);
+        ViewBag.Images = await _productService.GetImageUrlsAsync(id);
         return View(product);
     }
 
