@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore EasyShop.slnx
+
+      - name: Build
+        run: dotnet build EasyShop.slnx --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test EasyShop.slnx --configuration Release --no-build --verbosity normal
+
+  publish:
+    needs: build-and-test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Publish the web app
+        run: dotnet publish src/EasyShop.API/EasyShop.API.csproj --configuration Release --output ./publish
+
+      - name: Upload the published files
+        uses: actions/upload-artifact@v4
+        with:
+          name: easyshop-web
+          path: ./publish
