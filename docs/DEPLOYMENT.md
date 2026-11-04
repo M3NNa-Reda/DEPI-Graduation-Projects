@@ -46,7 +46,18 @@ From Visual Studio, use **Publish** and import the publish profile that the host
 dotnet publish src/EasyShop.API/EasyShop.API.csproj --configuration Release --output ./publish
 ```
 
-Every push to `master` also runs the CI workflow, which builds, runs the tests and attaches the published files as a downloadable artifact. Download it from the workflow run if you prefer not to build locally.
+Every push to `master` runs the CI workflow, which builds the solution and runs the tests.
+
+### Automatic deployment
+
+The same workflow can publish the site after the tests pass, so a merged pull request goes live by itself.
+
+1. In the hosting panel, open the site's **Deploy** page and note the FTP server, login and password.
+2. In the GitHub repository open **Settings > Secrets and variables > Actions** and add three repository secrets: `FTP_SERVER`, `FTP_USERNAME` and `FTP_PASSWORD`.
+3. On the **Variables** tab add `DEPLOY_ENABLED` with the value `true`.
+4. Merge any pull request into `master`, or re-run the latest workflow. The **deploy** job puts `app_offline.htm` on the site, uploads the changed files over FTPS, then removes `app_offline.htm`.
+
+The upload never deletes files it did not create, so `appsettings.Production.json` and the pictures admins upload (`wwwroot/uploads`) survive every deployment. Remove `DEPLOY_ENABLED` to switch automatic deployment off.
 
 ## 4. Check that it works
 
@@ -62,3 +73,4 @@ Every push to `master` also runs the CI workflow, which builds, runs the tests a
 | Login does nothing | HTTPS is not enabled yet, so the secure cookie is dropped. |
 | `429 Too Many Requests` on login | The rate limit allows 10 attempts a minute per address. Wait a minute. |
 | No administrator account | `Seed:AdminEmail` or `Seed:AdminPassword` is missing. Add them and restart the site. |
+| Pictures disappear after a deployment | Something deleted the `wwwroot/uploads` folder on the server, for example a Visual Studio publish with "Remove additional files at destination" ticked. Leave that option off. |

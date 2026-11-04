@@ -11,7 +11,7 @@
             return await _context.Set<Product>()
                 .Where(p => p.CategoryId == categoryId)
                 .ToListAsync();
-       }
+        }
 
         public async Task<Dictionary<int, string>> GetPrimaryImageUrlsAsync()
         {
@@ -74,5 +74,6 @@
 
             primary.ImageUrl = imageUrl;
             primary.IsPrimary = true;
+        }
     }
 }

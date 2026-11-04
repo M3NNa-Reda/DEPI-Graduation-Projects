@@ -1,6 +1,7 @@
 ﻿using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
+using EasyShop.MVC.Services;
 
 namespace EasyShop.MVC;
 
@@ -11,6 +12,7 @@ public static class DependencyInjection
     public static IServiceCollection AddClientServices(this IServiceCollection services)
     {
         services.AddControllersWithViews();
+        services.AddScoped<IProductImageStorage, ProductImageStorage>();
 
         services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options =>
@@ -74,6 +76,8 @@ public static class DependencyInjection
     public static WebApplication AddClientPipeline(this WebApplication app)
     {
         app.UseRateLimiter();
+        // Serves pictures that admins upload while the site is running; MapStaticAssets only knows build-time files.
+        app.UseStaticFiles();
         app.MapStaticAssets();
         app.MapControllerRoute(
                 name: "default",

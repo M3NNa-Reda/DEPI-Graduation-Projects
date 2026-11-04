@@ -12,6 +12,10 @@ namespace EasyShop.Application.Interfaces.Services
         Task<IReadOnlyList<string>> GetImageUrlsAsync(int productId);
         Task<string?> GetPrimaryImageUrlAsync(int productId);
         Task SetPrimaryImageAsync(int productId, string? imageUrl);
+        Task<IReadOnlyList<ProductVariant>> GetVariantsAsync(int productId);
+        Task<ProductVariant?> GetVariantByIdAsync(int id);
+        Task AddVariantAsync(ProductVariant variant);
+        Task UpdateVariantAsync(ProductVariant variant);
         Task AddProductAsync(Product product);
         Task UpdateProductAsync(Product product);
         Task DeleteProductAsync(Product product);

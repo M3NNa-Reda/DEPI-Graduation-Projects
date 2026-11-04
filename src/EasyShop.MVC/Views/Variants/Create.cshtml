@@ -1,0 +1,26 @@
+@model VariantFormViewModel
+@{
+    var product = (Product)ViewBag.Product;
+    ViewData["Title"] = "New option";
+}
+
+<h1 class="h3 mb-1">New option</h1>
+<p class="text-muted">@product.Name</p>
+
+<div class="row">
+    <div class="col-lg-7">
+        <form asp-action="Create" method="post" class="card shadow-sm">
+            <div class="card-body">
+                <partial name="_VariantFields" model="Model" />
+            </div>
+            <div class="card-footer d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a asp-action="Index" asp-route-productId="@Model.ProductId" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

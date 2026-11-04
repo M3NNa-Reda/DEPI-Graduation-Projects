@@ -117,6 +117,7 @@ else
                             <td>@product.CreatedAt.ToString("yyyy-MM-dd")</td>
                             <td class="text-end text-nowrap">
                                 <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-sm btn-outline-secondary">Details</a>
+                                <a asp-controller="Variants" asp-action="Index" asp-route-productId="@product.Id" class="btn btn-sm btn-outline-secondary">Options</a>
                                 <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-sm btn-outline-primary">Edit</a>
                                 <a asp-action="Delete" asp-route-id="@product.Id" class="btn btn-sm btn-outline-danger">Deactivate</a>
                             </td>
