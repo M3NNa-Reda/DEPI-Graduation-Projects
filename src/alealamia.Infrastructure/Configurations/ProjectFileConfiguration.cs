@@ -14,13 +14,15 @@ namespace alealamia.Infrastructure.Configurations
                 .HasColumnType("datetime2")
                 .IsRequired();
 
-            // builder.HasOne<Project>()
-            //     .WithMany()
-            //     .HasForeignKey(x => x.ProjectId);
+            builder.HasOne(x => x.Project)
+                .WithMany(x => x.ProjectFiles)
+                .HasForeignKey(x => x.ProjectId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(x => x.File)
                 .WithMany(x => x.ProjectFiles)
-                .HasForeignKey(x => x.FileId);
+                .HasForeignKey(x => x.FileId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

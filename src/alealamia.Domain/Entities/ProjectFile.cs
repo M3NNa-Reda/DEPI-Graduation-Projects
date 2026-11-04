@@ -10,7 +10,7 @@ namespace alealamia.Domain.Entities
         public int FileId { get; set; } // PK, FK
         public DateTime AddedAt { get; set; } = DateTime.UtcNow;
 
-        //public Project Project { get; set; } = null!;
+        public Project Project { get; set; } = null!;
         public File File { get; set; } = null!;
     }
 }

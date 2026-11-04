@@ -20,6 +20,7 @@ namespace alealamia.Infrastructure.Identity.Entities
         public ICollection<FreelancerLedgerEntry> FreelancerLedgerEntries { get; set; } = new List<FreelancerLedgerEntry>();
         public ICollection<TaskStatusHistory> TaskStatusHistories { get; set; } = new List<TaskStatusHistory>();
         public ICollection<TaskReassignment> TaskReassignments { get; set; } = new List<TaskReassignment>();
+        public ICollection<SupportMessage> SupportMessages { get; set; } = new List<SupportMessage>();
         public ICollection<Domain.Entities.Task> Tasks { get; set; } = new List<Domain.Entities.Task>();
     }
 }

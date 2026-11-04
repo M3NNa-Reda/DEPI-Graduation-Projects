@@ -46,7 +46,7 @@ namespace alealamia.Infrastructure.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -133,7 +133,7 @@ namespace alealamia.Infrastructure.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles", (string)null);
+                    b.ToTable("UserRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -1146,7 +1146,8 @@ namespace alealamia.Infrastructure.Migrations
 
                     b.HasIndex("FreelancerProfileId");
 
-                    b.HasIndex("TaskId");
+                    b.HasIndex("TaskId", "FreelancerProfileId")
+                        .IsUnique();
 
                     b.ToTable("TaskOffers");
                 });
@@ -1480,7 +1481,7 @@ namespace alealamia.Infrastructure.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1570,7 +1571,7 @@ namespace alealamia.Infrastructure.Migrations
                     b.HasOne("alealamia.Domain.Entities.FreelancerProfile", "FreelancerProfile")
                         .WithMany("FreelancerBlocks")
                         .HasForeignKey("FreelancerProfileId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("alealamia.Domain.Entities.Task", "Task")
@@ -1732,10 +1733,18 @@ namespace alealamia.Infrastructure.Migrations
                     b.HasOne("alealamia.Domain.Entities.File", "File")
                         .WithMany("ProjectFiles")
                         .HasForeignKey("FileId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("alealamia.Domain.Entities.Project", "Project")
+                        .WithMany("ProjectFiles")
+                        .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("File");
+
+                    b.Navigation("Project");
                 });
 
             modelBuilder.Entity("alealamia.Domain.Entities.ProjectMarketingPackage", b =>
@@ -1833,15 +1842,15 @@ namespace alealamia.Infrastructure.Migrations
             modelBuilder.Entity("alealamia.Domain.Entities.SupportMessage", b =>
                 {
                     b.HasOne("alealamia.Infrastructure.Identity.Entities.ApplicationUser", null)
-                        .WithMany()
+                        .WithMany("SupportMessages")
                         .HasForeignKey("SenderUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("alealamia.Domain.Entities.SupportTicket", "SupportTicket")
                         .WithMany("SupportMessages")
                         .HasForeignKey("SupportTicketId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("SupportTicket");
@@ -2138,6 +2147,8 @@ namespace alealamia.Infrastructure.Migrations
 
                     b.Navigation("Meetings");
 
+                    b.Navigation("ProjectFiles");
+
                     b.Navigation("ProjectServices");
 
                     b.Navigation("StatusHistory");
@@ -2227,6 +2238,8 @@ namespace alealamia.Infrastructure.Migrations
 
                     b.Navigation("FreelancerProfile")
                         .IsRequired();
+
+                    b.Navigation("SupportMessages");
 
                     b.Navigation("TaskReassignments");
 

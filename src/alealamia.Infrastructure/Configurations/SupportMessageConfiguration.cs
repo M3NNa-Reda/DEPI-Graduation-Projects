@@ -28,11 +28,13 @@ namespace alealamia.Infrastructure.Configurations
 
             builder.HasOne(x => x.SupportTicket)
                 .WithMany(x => x.SupportMessages)
-                .HasForeignKey(x => x.SupportTicketId);
+                .HasForeignKey(x => x.SupportTicketId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne<ApplicationUser>()
-                .WithMany()
-                .HasForeignKey(x => x.SenderUserId);
+                .WithMany(x => x.SupportMessages)
+                .HasForeignKey(x => x.SenderUserId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
