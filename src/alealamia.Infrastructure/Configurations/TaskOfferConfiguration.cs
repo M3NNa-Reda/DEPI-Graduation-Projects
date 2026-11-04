@@ -28,6 +28,7 @@ namespace alealamia.Infrastructure.Configurations
                 .HasConversion<int>();
             builder.Property(x => x.SentAt)
                 .HasDefaultValueSql("GETUTCDATE()");
+            builder.HasIndex(x => new { x.TaskId, x.FreelancerProfileId }).IsUnique();
         }
     }
 }

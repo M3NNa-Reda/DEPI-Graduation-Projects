@@ -19,7 +19,7 @@ namespace alealamia.Infrastructure.Configurations
             builder.HasOne(x=>x.FreelancerProfile)
                 .WithMany(x => x.FreelancerBlocks)
                 .HasForeignKey(x => x.FreelancerProfileId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Property(x => x.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
             builder.Property(x => x.StartedAt).HasDefaultValueSql("GETUTCDATE()");
