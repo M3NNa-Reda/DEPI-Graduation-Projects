@@ -28,7 +28,7 @@ namespace alealamia.Infrastructure.Configurations
             builder.Property(t => t.CreatedAt)
                 .IsRequired();
 
-            builder.HasOne<FreelancerProfile>()
+            builder.HasOne(x=>x.FreelancerProfile)
                 .WithMany(x=>x.FreelancerLedgerEntries)
                 .HasForeignKey(t => t.FreelancerProfileId)
                 .OnDelete(DeleteBehavior.Restrict);

@@ -18,5 +18,8 @@ namespace alealamia.Infrastructure.Identity.Entities
         public ICollection<FreelancerBlock> FreelancerBlocks { get; set; } = new List<FreelancerBlock>();
         public ICollection<TaskReview> TaskReviews { get; set; } = new List<TaskReview>();
         public ICollection<FreelancerLedgerEntry> FreelancerLedgerEntries { get; set; } = new List<FreelancerLedgerEntry>();
+        public ICollection<TaskStatusHistory> TaskStatusHistories { get; set; } = new List<TaskStatusHistory>();
+        public ICollection<TaskReassignment> TaskReassignments { get; set; } = new List<TaskReassignment>();
+        public ICollection<Domain.Entities.Task> Tasks { get; set; } = new List<Domain.Entities.Task>();
     }
 }
