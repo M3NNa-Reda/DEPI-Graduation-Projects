@@ -5,8 +5,8 @@ using EasyShop.Domain.Entities;
 namespace EasyShop.API.Helpers.Extensions
 {
     /// <summary>
-    /// Applies pending EF Core migrations and seeds the catalog (brands, categories and
-    /// products with images, options and variants) with realistic sample data, plus the
+    /// Applies pending EF Core migrations and seeds a showcase catalog of men's and women's accessories
+    /// (brands, categories and products with colour and size options and variants), plus the
     /// application roles and, optionally, an admin account taken from configuration.
     /// Seeding is idempotent: each block is skipped when its data already exists.
     /// </summary>
@@ -113,30 +113,16 @@ namespace EasyShop.API.Helpers.Extensions
             await context.SaveChangesAsync(cancellationToken);
         }
 
-        // ----------------------------- Brands (20) -----------------------------
+        // ------------------------------- Brands (5) -------------------------------
+        // Fictional brands, so the showcase store does not use anyone's trademark.
 
         private static readonly (string Name, string Description)[] BrandSeed =
         {
-            ("NovaTech", "Consumer electronics and smart devices engineered for everyday performance."),
-            ("Lumen", "Premium audio and imaging gear for creators and enthusiasts."),
-            ("Aurora", "Modern lifestyle technology focused on clean design and usability."),
-            ("Vertex", "High-performance computing and gaming hardware."),
-            ("Zenith", "Innovative gadgets that push the limits of everyday tech."),
-            ("Orbit", "Reliable devices for work, travel and everything in between."),
-            ("Nimbus", "Everyday essentials built around comfort and simplicity."),
-            ("Quartz", "Precision home appliances for a smarter household."),
-            ("Helios", "Outdoor and lighting products powered to go the distance."),
-            ("Pulse", "Active gear and audio made to keep you moving."),
-            ("Kinetic", "Performance sports equipment for every level of athlete."),
-            ("Cobalt", "Durable kitchen and home goods built to last."),
-            ("Ember", "Warm, honest products for cooking and self-care."),
-            ("Atlas", "Bold, dependable goods for home and adventure."),
-            ("Nirvana Living", "Refined home and lifestyle pieces for comfortable living."),
-            ("Verve", "Contemporary fashion with a confident, modern edge."),
-            ("Solstice", "Timeless wardrobe staples and gentle skincare."),
-            ("Foundry", "Craft goods and pantry staples made the traditional way."),
-            ("Meridian", "Books, tools and gear for curious, capable people."),
-            ("Halo", "Friendly, well-made products for family and pets.")
+            ("Nile Atelier", "Leather bags, wallets and belts made to last."),
+            ("Sahara Gold", "Everyday jewelry and bracelets with a warm, golden finish."),
+            ("Cairo Time", "Watches that pair clean design with dependable movements."),
+            ("Luxor Optics", "Sunglasses with UV400 lenses in classic and modern shapes."),
+            ("Oasis Studio", "Scarves, wraps and belts in soft, easy-to-style fabrics.")
         };
 
         private static async Task SeedBrandsAsync(AppDbContext context, CancellationToken cancellationToken)
@@ -154,7 +140,6 @@ namespace EasyShop.API.Helpers.Extensions
                 {
                     Name = b.Name,
                     Description = b.Description,
-                    LogoUrl = $"https://picsum.photos/seed/{BuildSlug(b.Name)}/200/200",
                     IsActive = true,
                     CreatedAt = now.AddDays(-random.Next(60, 400))
                 })
@@ -164,30 +149,22 @@ namespace EasyShop.API.Helpers.Extensions
             await context.SaveChangesAsync(cancellationToken);
         }
 
-        // -------------------- Categories (20 = 10 roots + 10 children) --------------------
+        // -------------------- Categories (2 roots + 10 children) --------------------
 
         private static readonly CategorySeed[] CategorySeedData =
         {
-            new("Electronics", null, "Phones, computers, audio and cameras for modern life."),
-            new("Home & Kitchen", null, "Everything you need for a well-run, comfortable home."),
-            new("Fashion", null, "Clothing and footwear for every season and occasion."),
-            new("Sports & Outdoors", null, "Gear for training, exploring and the great outdoors."),
-            new("Beauty & Personal Care", null, "Skincare, grooming and wellness essentials."),
-            new("Grocery", null, "Pantry staples, drinks and everyday food."),
-            new("Books & Media", null, "Books, guides and gifts for readers and learners."),
-            new("Toys & Games", null, "Fun, safe and educational picks for all ages."),
-            new("Automotive", null, "Accessories and gadgets for your vehicle."),
-            new("Pet Supplies", null, "Food, toys and comfort for your pets."),
-            new("Smartphones", "Electronics", "Flagship and budget phones from leading brands."),
-            new("Laptops", "Electronics", "Ultrabooks, creator machines and gaming rigs."),
-            new("Audio", "Electronics", "Headphones, earbuds and speakers with rich sound."),
-            new("Cameras", "Electronics", "Mirrorless, action and vlogging cameras."),
-            new("Men's Clothing", "Fashion", "Jackets, shirts, knitwear and denim for men."),
-            new("Women's Clothing", "Fashion", "Dresses, knitwear and denim for women."),
-            new("Shoes", "Fashion", "Sneakers, formal shoes and outdoor footwear."),
-            new("Kitchenware", "Home & Kitchen", "Cookware, appliances and dining essentials."),
-            new("Fitness Equipment", "Sports & Outdoors", "Home gym and training equipment."),
-            new("Skin Care", "Beauty & Personal Care", "Serums, creams and treatments for healthy skin.")
+            new("Women", null, "Accessories for her."),
+            new("Men", null, "Accessories for him."),
+            new("Women's Bags", "Women", "Totes, crossbody bags and clutches."),
+            new("Women's Jewelry", "Women", "Earrings, necklaces, rings and bracelets."),
+            new("Women's Watches", "Women", "Elegant watches for every day."),
+            new("Women's Sunglasses", "Women", "Cat-eye, round and oversized frames."),
+            new("Scarves & Wraps", "Women", "Silk scarves and soft wraps."),
+            new("Men's Watches", "Men", "Chronographs, dress and field watches."),
+            new("Men's Belts", "Men", "Leather and reversible belts."),
+            new("Men's Wallets", "Men", "Bifold wallets, card holders and organizers."),
+            new("Men's Sunglasses", "Men", "Aviator and wayfarer frames."),
+            new("Men's Bracelets", "Men", "Leather and steel bracelets.")
         };
 
         private static async Task SeedCategoriesAsync(AppDbContext context, CancellationToken cancellationToken)
@@ -234,113 +211,74 @@ namespace EasyShop.API.Helpers.Extensions
             await context.SaveChangesAsync(cancellationToken);
         }
 
-        // ----------------------------- Products (50) -----------------------------
+        // ----------------------------- Products (25) -----------------------------
+        // Prices are in EGP.
 
         private static readonly ProductSeed[] ProductSeedData =
         {
-            // Smartphones
-            new("Nova X5 Pro 5G Smartphone", "Smartphones", "NovaTech", 899.99m),
-            new("Aurora Edge 12 Smartphone", "Smartphones", "Aurora", 749.00m),
-            new("Vertex Pixel View 8", "Smartphones", "Vertex", 649.50m),
-            new("Zenith Fold Mini", "Smartphones", "Zenith", 1099.00m),
-            new("Orbit Lite 4G Smartphone", "Smartphones", "Orbit", 249.99m),
+            // Women's Bags
+            new("Leather Tote Bag", "Women's Bags", "Nile Atelier", 1850m),
+            new("Leather Crossbody Bag", "Women's Bags", "Nile Atelier", 1350m),
+            new("Mini Evening Clutch", "Women's Bags", "Nile Atelier", 950m),
 
-            // Laptops
-            new("Nova Book Air 14 Ultrabook", "Laptops", "NovaTech", 1249.00m),
-            new("Lumen Pro 16 Creator Laptop", "Laptops", "Lumen", 1899.00m),
-            new("Vertex Gaming Rig G7", "Laptops", "Vertex", 1599.99m),
-            new("Quartz Slim 13 Laptop", "Laptops", "Quartz", 999.00m),
+            // Women's Jewelry
+            new("Pearl Drop Earrings", "Women's Jewelry", "Sahara Gold", 780m),
+            new("Layered Chain Necklace", "Women's Jewelry", "Sahara Gold", 1150m),
+            new("Stackable Ring Set", "Women's Jewelry", "Sahara Gold", 640m),
+            new("Charm Bracelet", "Women's Jewelry", "Sahara Gold", 890m),
 
-            // Audio
-            new("Pulse Beat Wireless Earbuds", "Audio", "Pulse", 129.99m),
-            new("Nimbus Noise-Cancel Headphones", "Audio", "Nimbus", 279.00m),
-            new("Helios Soundbar 300W", "Audio", "Helios", 349.50m),
-            new("Kinetic Bluetooth Speaker Mini", "Audio", "Kinetic", 59.99m),
+            // Women's Watches
+            new("Mesh Strap Watch", "Women's Watches", "Cairo Time", 2450m),
+            new("Minimal Ladies Watch", "Women's Watches", "Cairo Time", 1990m),
 
-            // Cameras
-            new("Orbit Mirrorless Camera M50", "Cameras", "Orbit", 899.00m),
-            new("Lumen Action Cam 4K", "Cameras", "Lumen", 299.99m),
+            // Women's Sunglasses
+            new("Cat-Eye Sunglasses", "Women's Sunglasses", "Luxor Optics", 720m),
+            new("Oversized Round Sunglasses", "Women's Sunglasses", "Luxor Optics", 680m),
 
-            // Kitchenware / Home & Kitchen
-            new("Cobalt Stainless Cookware Set", "Kitchenware", "Cobalt", 199.00m),
-            new("Ember Non-Stick Frying Pan 28cm", "Kitchenware", "Ember", 39.99m),
-            new("Atlas Ceramic Dinner Plates (Set of 6)", "Kitchenware", "Atlas", 54.50m),
-            new("Nirvana Living Espresso Machine", "Kitchenware", "Nirvana Living", 429.00m),
-            new("Meridian Stand Mixer 6L", "Kitchenware", "Meridian", 259.00m),
-            new("Quartz Air Purifier HEPA H13", "Home & Kitchen", "Quartz", 219.00m),
-            new("Lumen Smart LED Desk Lamp", "Home & Kitchen", "Lumen", 45.99m),
-            new("Cobalt Robotic Vacuum Cleaner", "Home & Kitchen", "Cobalt", 329.00m),
+            // Scarves & Wraps
+            new("Printed Silk Scarf", "Scarves & Wraps", "Oasis Studio", 540m),
+            new("Cashmere-Blend Wrap", "Scarves & Wraps", "Oasis Studio", 1250m),
 
-            // Men's Clothing
-            new("Foundry Classic Denim Jacket", "Men's Clothing", "Foundry", 89.00m),
-            new("Verve Slim-Fit Oxford Shirt", "Men's Clothing", "Verve", 45.50m),
-            new("Solstice Merino Wool Sweater", "Men's Clothing", "Solstice", 79.00m),
+            // Men's Watches
+            new("Chronograph Steel Watch", "Men's Watches", "Cairo Time", 3250m),
+            new("Classic Leather Strap Watch", "Men's Watches", "Cairo Time", 2150m),
+            new("Field Watch with Canvas Strap", "Men's Watches", "Cairo Time", 1650m),
 
-            // Women's Clothing
-            new("Aurora Summer Floral Dress", "Women's Clothing", "Aurora", 69.99m),
-            new("Nirvana Living Cashmere Cardigan", "Women's Clothing", "Nirvana Living", 129.00m),
-            new("Verve High-Waist Skinny Jeans", "Women's Clothing", "Verve", 59.00m),
+            // Men's Belts
+            new("Full-Grain Leather Belt", "Men's Belts", "Nile Atelier", 690m),
+            new("Reversible Dress Belt", "Men's Belts", "Oasis Studio", 560m),
 
-            // Shoes
-            new("Kinetic Runner Pro Sneakers", "Shoes", "Kinetic", 119.99m),
-            new("Meridian Leather Oxford Shoes", "Shoes", "Meridian", 149.00m),
-            new("Pulse Trail Hiking Boots", "Shoes", "Pulse", 139.50m),
+            // Men's Wallets
+            new("Bifold Leather Wallet", "Men's Wallets", "Nile Atelier", 820m),
+            new("Slim Card Holder", "Men's Wallets", "Nile Atelier", 460m),
+            new("Travel Organizer Wallet", "Men's Wallets", "Nile Atelier", 990m),
 
-            // Fitness Equipment / Sports
-            new("Atlas Adjustable Dumbbell Set 20kg", "Fitness Equipment", "Atlas", 189.00m),
-            new("Pulse Yoga Mat Premium 6mm", "Fitness Equipment", "Pulse", 39.00m),
-            new("Kinetic Carbon Road Bike Helmet", "Fitness Equipment", "Kinetic", 89.99m),
-            new("Helios Camping Lantern Rechargeable", "Sports & Outdoors", "Helios", 34.99m),
+            // Men's Sunglasses
+            new("Aviator Sunglasses", "Men's Sunglasses", "Luxor Optics", 750m),
+            new("Wayfarer Sunglasses", "Men's Sunglasses", "Luxor Optics", 690m),
 
-            // Skin Care
-            new("Halo Vitamin C Brightening Serum", "Skin Care", "Halo", 29.99m),
-            new("Solstice Hydrating Face Cream 50ml", "Skin Care", "Solstice", 24.50m),
-            new("Ember Argan Oil Hair Mask", "Skin Care", "Ember", 19.99m),
-
-            // Grocery
-            new("Foundry Organic Arabica Coffee Beans 1kg", "Grocery", "Foundry", 22.90m),
-            new("Cobalt Extra Virgin Olive Oil 1L", "Grocery", "Cobalt", 15.75m),
-            new("Nimbus Himalayan Pink Salt 500g", "Grocery", "Nimbus", 6.99m),
-
-            // Books & Media
-            new("Meridian The Art of Clean Code (Hardcover)", "Books & Media", "Meridian", 32.00m),
-            new("Orbit Astronomy 2026 Wall Calendar", "Books & Media", "Orbit", 14.99m),
-
-            // Toys & Games
-            new("Zenith Build-It Robot Kit", "Toys & Games", "Zenith", 59.99m),
-            new("Halo Wooden Puzzle Set", "Toys & Games", "Halo", 24.99m),
-
-            // Automotive
-            new("Vertex Dash Cam 2K Pro", "Automotive", "Vertex", 129.00m),
-            new("Kinetic Car Phone Mount Magnetic", "Automotive", "Kinetic", 19.99m),
-
-            // Pet Supplies
-            new("Atlas Premium Dog Food 12kg", "Pet Supplies", "Atlas", 54.99m),
-            new("Nimbus Cat Scratching Post", "Pet Supplies", "Nimbus", 39.00m)
+            // Men's Bracelets
+            new("Braided Leather Bracelet", "Men's Bracelets", "Sahara Gold", 420m),
+            new("Steel Cuff Bracelet", "Men's Bracelets", "Sahara Gold", 580m)
         };
 
-        // Options applied per category. Products in unlisted categories get a single default variant.
+        // Options applied per category. Categories not listed get a single default variant.
         private static readonly Dictionary<string, (string Name, string[] Values)[]> CategoryOptions = new()
         {
-            ["Smartphones"] = new[] { ("Color", new[] { "Midnight Black", "Silver", "Ocean Blue" }) },
-            ["Laptops"] = new[] { ("Color", new[] { "Space Gray", "Silver" }) },
-            ["Audio"] = new[] { ("Color", new[] { "Black", "White" }) },
-            ["Cameras"] = new[] { ("Color", new[] { "Black" }) },
-            ["Men's Clothing"] = new[]
+            ["Women's Bags"] = new[] { ("Color", new[] { "Black", "Tan", "Burgundy" }) },
+            ["Women's Jewelry"] = new[] { ("Finish", new[] { "Gold", "Silver" }) },
+            ["Women's Watches"] = new[] { ("Color", new[] { "Silver", "Rose Gold" }) },
+            ["Women's Sunglasses"] = new[] { ("Color", new[] { "Black", "Tortoise" }) },
+            ["Scarves & Wraps"] = new[] { ("Color", new[] { "Ivory", "Navy", "Rose" }) },
+            ["Men's Watches"] = new[] { ("Color", new[] { "Black", "Silver" }) },
+            ["Men's Belts"] = new[]
             {
-                ("Color", new[] { "Navy", "Charcoal" }),
-                ("Size", new[] { "S", "M", "L" })
+                ("Color", new[] { "Black", "Brown" }),
+                ("Size", new[] { "90 cm", "100 cm", "110 cm" })
             },
-            ["Women's Clothing"] = new[]
-            {
-                ("Color", new[] { "Black", "Beige" }),
-                ("Size", new[] { "XS", "S", "M" })
-            },
-            ["Shoes"] = new[]
-            {
-                ("Color", new[] { "Black", "White" }),
-                ("Size", new[] { "40", "41", "42" })
-            }
+            ["Men's Wallets"] = new[] { ("Color", new[] { "Black", "Brown" }) },
+            ["Men's Sunglasses"] = new[] { ("Color", new[] { "Black", "Tortoise" }) },
+            ["Men's Bracelets"] = new[] { ("Color", new[] { "Black", "Brown" }) }
         };
 
         private static async Task SeedProductsAsync(AppDbContext context, CancellationToken cancellationToken)
@@ -373,7 +311,7 @@ namespace EasyShop.API.Helpers.Extensions
                 }
 
                 var createdAt = now.AddDays(-random.Next(0, 180)).AddHours(-random.Next(0, 24));
-                var isActive = random.NextDouble() > 0.15;
+                var isActive = true;
 
                 var product = new Product
                 {
@@ -387,7 +325,6 @@ namespace EasyShop.API.Helpers.Extensions
                     UpdatedAt = random.NextDouble() > 0.5 ? createdAt.AddDays(random.Next(1, 30)) : null
                 };
 
-                AddImages(product, random);
                 AddOptionsAndVariants(product, seed.Price, sequence, random);
 
                 products.Add(product);
@@ -396,22 +333,6 @@ namespace EasyShop.API.Helpers.Extensions
 
             context.Products.AddRange(products);
             await context.SaveChangesAsync(cancellationToken);
-        }
-
-        private static void AddImages(Product product, Random random)
-        {
-            var imageCount = random.Next(2, 5); // 2..4 images
-            var slug = product.Slug;
-
-            for (var i = 0; i < imageCount; i++)
-            {
-                product.ProductImages.Add(new ProductImage
-                {
-                    ImageUrl = $"https://picsum.photos/seed/{slug}-{i + 1}/800/800",
-                    IsPrimary = i == 0,
-                    DisplayOrder = i
-                });
-            }
         }
 
         private static void AddOptionsAndVariants(Product product, decimal basePrice, int sequence, Random random)
@@ -463,20 +384,17 @@ namespace EasyShop.API.Helpers.Extensions
 
         private static ProductVariant CreateVariant(Product product, string sku, decimal basePrice, Random random)
         {
-            // Small per-variant price variation keeps the data from looking perfectly uniform.
-            var price = decimal.Round(basePrice * (0.97m + (decimal)random.NextDouble() * 0.08m), 2);
-
-            // ~60% of variants advertise a higher "compare at" price.
-            var compareAtPrice = random.NextDouble() < 0.6
-                ? decimal.Round(price * (1.15m + (decimal)random.NextDouble() * 0.25m), 2)
+            // About a third of the variants show a crossed-out higher price, rounded to a clean 10 EGP.
+            var compareAtPrice = random.NextDouble() < 0.3
+                ? Math.Round(basePrice * 1.2m / 10m) * 10m
                 : 0m;
 
             return new ProductVariant
             {
                 SKU = sku,
-                Price = price,
+                Price = basePrice,
                 CompareAtPrice = compareAtPrice,
-                StockQuantity = random.Next(0, 400),
+                StockQuantity = random.Next(5, 60),
                 IsActive = product.IsActive,
                 CreatedAt = product.CreatedAt,
                 UpdatedAt = product.UpdatedAt ?? product.CreatedAt
@@ -543,9 +461,9 @@ namespace EasyShop.API.Helpers.Extensions
 
         private static string BuildDescription(string name, string brand, string category)
         {
-            return $"{name} from {brand} blends dependable quality with a clean, modern design. " +
-                   $"A standout choice in our {category} range, tested for everyday use and backed by " +
-                   $"the EasyShop satisfaction guarantee. Ships fast with easy 30-day returns.";
+            return $"{name} by {brand}, from our {category} collection. " +
+                   "Designed for everyday wear and easy to gift. " +
+                   "Ships within two working days with free returns for 14 days.";
         }
 
         private sealed record CategorySeed(string Name, string? Parent, string Description);
