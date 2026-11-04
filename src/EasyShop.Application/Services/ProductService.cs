@@ -79,6 +79,66 @@ namespace EasyShop.Application.Services
             await _unitOfWork.CompleteAsync();
         }
 
+        public async Task<IReadOnlyList<ProductVariant>> GetVariantsAsync(int productId)
+        {
+            var variants = await _unitOfWork.ProductVariants.FindByConditionAsync(v => v.ProductId == productId);
+            return variants.OrderBy(v => v.Price).ToList();
+        }
+
+        public async Task<ProductVariant?> GetVariantByIdAsync(int id)
+        {
+            return await _unitOfWork.ProductVariants.GetByIdAsync(id);
+        }
+
+        public async Task AddVariantAsync(ProductVariant variant)
+        {
+            var product = await _unitOfWork.Products.GetByIdAsync(variant.ProductId)
+                ?? throw new ArgumentException("The product was not found.");
+
+            await EnsureVariantIsValidAsync(variant);
+
+            variant.SKU = variant.SKU.Trim();
+            variant.IsActive = variant.IsActive && product.IsActive;
+            variant.CreatedAt = DateTime.UtcNow;
+            variant.UpdatedAt = DateTime.UtcNow;
+
+            await _unitOfWork.ProductVariants.AddAsync(variant);
+            await _unitOfWork.CompleteAsync();
+        }
+
+        public async Task UpdateVariantAsync(ProductVariant variant)
+        {
+            await EnsureVariantIsValidAsync(variant);
+
+            variant.SKU = variant.SKU.Trim();
+            variant.UpdatedAt = DateTime.UtcNow;
+
+            _unitOfWork.ProductVariants.Update(variant);
+            await _unitOfWork.CompleteAsync();
+        }
+
+        private async Task EnsureVariantIsValidAsync(ProductVariant variant)
+        {
+            if (string.IsNullOrWhiteSpace(variant.SKU))
+                throw new ArgumentException("The SKU is required.");
+
+            if (variant.Price <= 0)
+                throw new ArgumentException("The price must be greater than zero.");
+
+            if (variant.CompareAtPrice < 0 || (variant.CompareAtPrice > 0 && variant.CompareAtPrice < variant.Price))
+                throw new ArgumentException("The original price must be empty or higher than the price.");
+
+            if (variant.StockQuantity < 0)
+                throw new ArgumentException("The stock cannot be negative.");
+
+            var sku = variant.SKU.Trim();
+            var duplicates = await _unitOfWork.ProductVariants
+                .FindByConditionAsync(v => v.SKU == sku && v.Id != variant.Id);
+
+            if (duplicates.Any())
+                throw new ArgumentException($"The SKU \"{sku}\" is already used by another option.");
+        }
+
         public async Task AddProductAsync(Product product)
         {
             await _unitOfWork.Products.AddAsync(product);

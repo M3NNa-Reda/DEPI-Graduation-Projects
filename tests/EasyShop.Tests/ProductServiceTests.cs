@@ -56,6 +56,54 @@ public class ProductServiceTests
     }
 
     [Fact]
+    public async Task AddVariant_rejects_a_sku_that_another_option_already_uses()
+    {
+        _products.Setup(r => r.GetByIdAsync(10)).ReturnsAsync(new Product { Id = 10, IsActive = true });
+        _variants.Setup(r => r.FindByConditionAsync(It.IsAny<System.Linq.Expressions.Expression<Func<ProductVariant, bool>>>()))
+            .ReturnsAsync(new[] { new ProductVariant { Id = 5, SKU = "TEE-M" } });
+
+        var variant = new ProductVariant { ProductId = 10, SKU = "TEE-M", Price = 100m, StockQuantity = 3 };
+
+        await Assert.ThrowsAsync<ArgumentException>(() => _service.AddVariantAsync(variant));
+        _uow.Verify(u => u.CompleteAsync(), Times.Never);
+    }
+
+    [Theory]
+    [InlineData(0, 0, 5)]
+    [InlineData(100, 50, 5)]
+    [InlineData(100, 0, -1)]
+    public async Task AddVariant_rejects_invalid_price_original_price_or_stock(double price, double compareAt, int stock)
+    {
+        _products.Setup(r => r.GetByIdAsync(10)).ReturnsAsync(new Product { Id = 10, IsActive = true });
+        _variants.Setup(r => r.FindByConditionAsync(It.IsAny<System.Linq.Expressions.Expression<Func<ProductVariant, bool>>>()))
+            .ReturnsAsync(Array.Empty<ProductVariant>());
+
+        var variant = new ProductVariant
+        {
+            ProductId = 10, SKU = "TEE-L", Price = (decimal)price, CompareAtPrice = (decimal)compareAt, StockQuantity = stock
+        };
+
+        await Assert.ThrowsAsync<ArgumentException>(() => _service.AddVariantAsync(variant));
+    }
+
+    [Fact]
+    public async Task AddVariant_saves_a_trimmed_sku_and_keeps_it_hidden_for_an_inactive_product()
+    {
+        _products.Setup(r => r.GetByIdAsync(10)).ReturnsAsync(new Product { Id = 10, IsActive = false });
+        _variants.Setup(r => r.FindByConditionAsync(It.IsAny<System.Linq.Expressions.Expression<Func<ProductVariant, bool>>>()))
+            .ReturnsAsync(Array.Empty<ProductVariant>());
+
+        var variant = new ProductVariant { ProductId = 10, SKU = "  TEE-XL  ", Price = 250m, StockQuantity = 8, IsActive = true };
+
+        await _service.AddVariantAsync(variant);
+
+        Assert.Equal("TEE-XL", variant.SKU);
+        Assert.False(variant.IsActive);
+        _variants.Verify(r => r.AddAsync(variant), Times.Once);
+        _uow.Verify(u => u.CompleteAsync(), Times.Once);
+    }
+
+    [Fact]
     public async Task ActiveVariants_are_empty_for_an_inactive_product()
     {
         _products.Setup(r => r.GetByIdAsync(10)).ReturnsAsync(new Product { Id = 10, IsActive = false });
