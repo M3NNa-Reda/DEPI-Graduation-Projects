@@ -1842,15 +1842,15 @@ namespace alealamia.Infrastructure.Migrations
             modelBuilder.Entity("alealamia.Domain.Entities.SupportMessage", b =>
                 {
                     b.HasOne("alealamia.Infrastructure.Identity.Entities.ApplicationUser", null)
-                        .WithMany()
+                        .WithMany("SupportMessages")
                         .HasForeignKey("SenderUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("alealamia.Domain.Entities.SupportTicket", "SupportTicket")
                         .WithMany("SupportMessages")
                         .HasForeignKey("SupportTicketId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("SupportTicket");
@@ -2238,6 +2238,8 @@ namespace alealamia.Infrastructure.Migrations
 
                     b.Navigation("FreelancerProfile")
                         .IsRequired();
+
+                    b.Navigation("SupportMessages");
 
                     b.Navigation("TaskReassignments");
 

@@ -526,13 +526,13 @@ namespace alealamia.Infrastructure.Migrations
                         column: x => x.SupportTicketId,
                         principalTable: "SupportTickets",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_SupportMessages_Users_SenderUserId",
                         column: x => x.SenderUserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
