@@ -12,6 +12,7 @@ namespace alealamia.Domain.Entities
         public bool IsActive { get; set; }
         public ICollection<TrackSkill> TrackSkills { get; set; } = new List<TrackSkill>();
         public ICollection<FreelancerSkill> FreelancerSkills { get; set; } = new List<FreelancerSkill>();
+        public ICollection<TaskRequiredSkill> TaskRequiredSkills { get; set; } = new List<TaskRequiredSkill>();
 
     }
 }

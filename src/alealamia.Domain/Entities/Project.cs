@@ -20,4 +20,6 @@ public class Project
     public ICollection<ProjectStatusHistory> StatusHistory { get; set; } = new List<ProjectStatusHistory>();
     public ICollection<Meeting> Meetings { get; set; } = new List<Meeting>();
     public ICollection<ProjectMarketingPackage> MarketingPackages { get; set; } = new List<ProjectMarketingPackage>();
+    public ICollection<Task> Tasks { get; set; } = new List<Task>();
+
 }

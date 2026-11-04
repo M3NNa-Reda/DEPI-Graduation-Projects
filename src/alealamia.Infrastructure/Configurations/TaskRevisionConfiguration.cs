@@ -31,7 +31,7 @@ namespace alealamia.Infrastructure.Configurations
               .HasForeignKey(t => t.TaskId)
               .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne<TaskReview>()
+            builder.HasOne(x=>x.TaskReview)
                 .WithMany(x=>x.TaskRevisions)
                 .HasForeignKey(t => t.TaskReviewId)
                 .OnDelete(DeleteBehavior.Restrict);

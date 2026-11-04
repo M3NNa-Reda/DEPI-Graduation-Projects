@@ -23,6 +23,14 @@ namespace alealamia.Domain.Entities
         public ICollection<TaskRevision> TaskRevisions { get; set; } = new List<TaskRevision>();
         public ICollection<TaskSubmission> TaskSubmissions { get; set; } = new List<TaskSubmission>();
         public ICollection<FreelancerLedgerEntry> FreelancerLedgerEntries { get; set; } = new List<FreelancerLedgerEntry>();
+        public ICollection<TaskRequiredSkill> TaskRequiredSkills { get; set; } = new List<TaskRequiredSkill>();
+        public Project Project { get; set; } = null!;
+        public Track Track { get; set; } = null!;
+        public FreelancerProfile? FreelancerProfile { get; set; }
+        public ICollection<TaskOffer> TaskOffers { get; set; } = new List<TaskOffer>();
+        public ICollection<TaskStatusHistory> TaskStatusHistories { get; set; } = new List<TaskStatusHistory>();
+        public ICollection<TaskReassignment> TaskReassignments { get; set; }= new List<TaskReassignment>();
+        public ICollection<TaskFile> TaskFiles { get; set; } = new List<TaskFile>();
 
 
     }

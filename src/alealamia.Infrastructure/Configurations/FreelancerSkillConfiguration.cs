@@ -22,9 +22,7 @@ namespace alealamia.Infrastructure.Configurations
                 .HasForeignKey(x => x.SkillId)
                 .OnDelete(DeleteBehavior.Restrict);
             builder.Property(x => x.ProficiencyLevel)
-                .HasConversion<string>()
-                .HasMaxLength(30)
-                .HasDefaultValue(ProficiencyLevel.Beginner);
+                .HasConversion<int>();
             builder.Property(x => x.AddedAt)
                 .HasDefaultValueSql("GETUTCDATE()");
         }

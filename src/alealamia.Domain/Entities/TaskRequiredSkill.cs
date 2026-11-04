@@ -8,5 +8,7 @@ namespace alealamia.Domain.Entities
     {
         public int TaskId { get; set; } //pk , fk
         public int SkillId { get; set; } //pk , fk
+        public Task Task { get; set; } = null!;
+        public Skill Skill { get; set; } = null!;
     }
 }

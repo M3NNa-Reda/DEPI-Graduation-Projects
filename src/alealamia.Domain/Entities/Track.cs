@@ -13,5 +13,7 @@ namespace alealamia.Domain.Entities
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public ICollection<FreelancerProfile> FreelancerProfiles { get; set; } = new HashSet<FreelancerProfile>();
         public ICollection<TrackSkill> TrackSkills { get; set; } = new List<TrackSkill>();
+        public ICollection<Task> Tasks { get; set; } = new List<Task>();
+
     }
 }
