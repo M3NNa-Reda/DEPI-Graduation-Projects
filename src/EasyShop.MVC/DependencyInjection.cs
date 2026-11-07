@@ -1,4 +1,4 @@
-﻿using System.Threading.RateLimiting;
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using EasyShop.MVC.Services;
@@ -13,6 +13,8 @@ public static class DependencyInjection
     {
         services.AddControllersWithViews();
         services.AddScoped<IProductImageStorage, ProductImageStorage>();
+        services.AddSingleton(TimeProvider.System);
+        services.AddSingleton<LoginAttemptTracker>();
 
         services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options =>
@@ -71,6 +73,30 @@ public static class DependencyInjection
         });
 
         return services;
+    }
+
+    // Browser-side protections that cost nothing: no MIME sniffing, no framing (clickjacking),
+    // no leaking full URLs in the Referer header, no unneeded device features, and a policy
+    // that blocks plugins and form posts to other sites. Inline scripts are still allowed
+    // because a few pages use them.
+    public static WebApplication UseSecurityHeaders(this WebApplication app)
+    {
+        app.Use(async (context, next) =>
+        {
+            var headers = context.Response.Headers;
+            headers["X-Content-Type-Options"] = "nosniff";
+            headers["X-Frame-Options"] = "DENY";
+            headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
+            headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=(), payment=()";
+            headers["Content-Security-Policy"] =
+                "default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; " +
+                "script-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'; " +
+                "form-action 'self'; frame-ancestors 'none'";
+
+            await next();
+        });
+
+        return app;
     }
 
     public static WebApplication AddClientPipeline(this WebApplication app)

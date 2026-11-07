@@ -1,7 +1,8 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using EasyShop.Application.DTOs.Auth;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using EasyShop.MVC.Services;
 using Microsoft.AspNetCore.RateLimiting;
 
 namespace EasyShop.MVC.Controllers;
@@ -9,10 +10,12 @@ namespace EasyShop.MVC.Controllers;
 public class AuthController : Controller
 {
     private readonly IAuthService _authService;
+    private readonly LoginAttemptTracker _loginAttempts;
 
-    public AuthController(IAuthService authService)
+    public AuthController(IAuthService authService, LoginAttemptTracker loginAttempts)
     {
         _authService = authService;
+        _loginAttempts = loginAttempts;
     }
 
     // GET: /Auth/Login
@@ -38,13 +41,22 @@ public class AuthController : Controller
             return View(model);
         }
 
+        if (_loginAttempts.IsLocked(model.Email, out var retryAfter))
+        {
+            int minutes = (int)Math.Ceiling(retryAfter.TotalMinutes);
+            ModelState.AddModelError(string.Empty, $"Too many failed attempts. Try again in {minutes} minute(s).");
+            return View(model);
+        }
+
         var result = await _authService.LoginAsync(model.Email, model.Password);
         if (!result.Succeeded)
         {
+            _loginAttempts.RecordFailure(model.Email);
             ModelState.AddModelError(string.Empty, result.Error!);
             return View(model);
         }
 
+        _loginAttempts.Reset(model.Email);
         await SignInAsync(result.User!, model.RememberMe);
         return RedirectToLocal(model.ReturnUrl);
     }

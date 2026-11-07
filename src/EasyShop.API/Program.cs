@@ -56,6 +56,7 @@ namespace EasyShop.API
             //    app.UseSwaggerUI();
             //}
 
+            app.UseSecurityHeaders();
             app.UseHttpsRedirection();
             app.UseRouting();
             // Determines which endpoint will handle the request

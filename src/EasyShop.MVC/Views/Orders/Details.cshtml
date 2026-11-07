@@ -1,11 +1,11 @@
 ﻿@model OrderDetailsDto
 
 @{
-	ViewData["Title"] = $"Order #{Model.Id}";
+	ViewData["Title"] = $"Order {Model.OrderNumber ?? "#" + Model.Id}";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-	<h1 class="h3 mb-0">Order Details <span class="text-muted">#@Model.Id</span></h1>
+	<h1 class="h3 mb-0">Order Details <span class="text-muted">@(Model.OrderNumber ?? "#" + Model.Id)</span></h1>
 	<div class="d-flex gap-2">
 		@if (Model.Status == OrderStatus.Pending)
 		{
