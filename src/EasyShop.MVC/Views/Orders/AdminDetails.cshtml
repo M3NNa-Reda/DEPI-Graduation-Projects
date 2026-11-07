@@ -2,11 +2,11 @@
 
 
 @{
-    ViewData["Title"] = $"Admin Order #{Model.Id}";
+    ViewData["Title"] = $"Admin Order {Model.OrderNumber ?? "#" + Model.Id}";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="h3 mb-0">Admin Order View <span class="text-muted">#@Model.Id</span></h1>
+    <h1 class="h3 mb-0">Admin Order View <span class="text-muted">@(Model.OrderNumber ?? "#" + Model.Id)</span></h1>
     <a asp-action="RecentOrders" class="btn btn-outline-secondary">Back to Recent Orders</a>
 </div>
 

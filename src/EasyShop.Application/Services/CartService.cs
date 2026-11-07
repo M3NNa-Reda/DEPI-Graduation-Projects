@@ -1,4 +1,4 @@
-﻿using EasyShop.Application.DTOs.Cart;
+using EasyShop.Application.DTOs.Cart;
 
 namespace EasyShop.Application.Services
 {
@@ -42,8 +42,7 @@ namespace EasyShop.Application.Services
 
         public async Task AddToCartAsync(int userId, AddToCartDto dto)
         {
-            if (dto.Quantity <= 0)
-                throw new ArgumentException("Quantity must be greater than zero.");
+            EnsureQuantityIsValid(dto.Quantity);
 
             var variant = await GetPurchasableVariantAsync(dto.ProductVariantId);
             var cart = await GetOrCreateCartAsync(userId);
@@ -51,7 +50,11 @@ namespace EasyShop.Application.Services
             var existingItem = cart.CartItems
                 .FirstOrDefault(i => i.ProductVariantId == dto.ProductVariantId);
 
-            var requestedQuantity = (existingItem?.Quantity ?? 0) + dto.Quantity;
+            // long so that a huge quantity cannot wrap around to a small or negative number.
+            long requestedTotal = (long)(existingItem?.Quantity ?? 0) + dto.Quantity;
+            EnsureQuantityIsValid(requestedTotal);
+
+            var requestedQuantity = (int)requestedTotal;
             EnsureStockIsEnough(variant, requestedQuantity);
 
             if (existingItem != null)
@@ -74,8 +77,7 @@ namespace EasyShop.Application.Services
 
         public async Task<bool> UpdateCartItemAsync(int userId, int productVariantId, int quantity)
         {
-            if (quantity <= 0)
-                throw new ArgumentException("Quantity must be greater than zero.");
+            EnsureQuantityIsValid(quantity);
 
             var cart = await GetExistingCartAsync(userId);
             var item = FindItem(cart, productVariantId);
@@ -158,6 +160,15 @@ namespace EasyShop.Application.Services
                 throw new ArgumentException("This product is no longer available.");
 
             return variant;
+        }
+
+        private static void EnsureQuantityIsValid(long quantity)
+        {
+            if (quantity <= 0)
+                throw new ArgumentException("Quantity must be greater than zero.");
+
+            if (quantity > AddToCartDto.MaxQuantityPerItem)
+                throw new ArgumentException($"You can order at most {AddToCartDto.MaxQuantityPerItem} of the same item.");
         }
 
         private static void EnsureStockIsEnough(ProductVariant variant, int quantity)

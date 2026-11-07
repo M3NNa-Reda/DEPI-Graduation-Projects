@@ -1,4 +1,4 @@
-﻿
+
 using EasyShop.Application.Services;
 
 namespace EasyShop.MVC.Controllers
@@ -140,6 +140,15 @@ namespace EasyShop.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateStatus(int id, UpdateOrderStatusDto dto)
         {
+            if (!ModelState.IsValid)
+            {
+                TempData["Error"] = ModelState.Values
+                    .SelectMany(entry => entry.Errors)
+                    .Select(error => error.ErrorMessage)
+                    .FirstOrDefault(message => !string.IsNullOrEmpty(message)) ?? "Invalid status.";
+                return RedirectToAction(nameof(AdminDetails), new { id });
+            }
+
             int adminId = User.GetUserId();
 
             try

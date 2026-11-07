@@ -39,7 +39,7 @@ else
                         <td>
                             <form asp-action="Update" method="post" class="d-flex gap-2">
                                 <input type="hidden" name="productVariantId" value="@item.ProductVariantId" />
-                                <input type="number" name="quantity" value="@item.Quantity" min="1" class="form-control form-control-sm" />
+                                <input type="number" name="quantity" value="@item.Quantity" min="1" max="99" class="form-control form-control-sm" />
                                 <button type="submit" class="btn btn-sm btn-outline-primary">Update</button>
                             </form>
                         </td>

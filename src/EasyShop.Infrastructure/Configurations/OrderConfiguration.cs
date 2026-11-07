@@ -26,6 +26,13 @@
             builder.Property(o => o.TotalAmount)
                 .HasPrecision(18, 2);
 
+            builder.Property(o => o.OrderNumber)
+                .HasMaxLength(20);
+
+            builder.HasIndex(o => o.OrderNumber)
+                .IsUnique()
+                .HasFilter("[OrderNumber] IS NOT NULL");
+
             builder.Property(o => o.CreatedAt)
                 .HasDefaultValueSql("GETUTCDATE()");
 

@@ -41,6 +41,53 @@ public class CartServiceTests
             _service.AddToCartAsync(7, new AddToCartDto { ProductVariantId = 1, Quantity = quantity }));
     }
 
+    [Theory]
+    [InlineData(100)]
+    [InlineData(int.MaxValue)]
+    public async Task AddToCart_rejects_more_than_the_per_item_limit(int quantity)
+    {
+        GivenSellableVariant(stock: 1000);
+
+        await Assert.ThrowsAsync<ArgumentException>(() =>
+            _service.AddToCartAsync(7, new AddToCartDto { ProductVariantId = 1, Quantity = quantity }));
+    }
+
+    [Fact]
+    public async Task AddToCart_does_not_overflow_when_added_to_an_existing_quantity()
+    {
+        GivenSellableVariant(stock: 1000);
+        var cart = new Cart { Id = 1, UserId = 7, CartItems = new List<CartItem> { new() { ProductVariantId = 1, Quantity = 50 } } };
+        GivenCart(cart);
+
+        await Assert.ThrowsAsync<ArgumentException>(() =>
+            _service.AddToCartAsync(7, new AddToCartDto { ProductVariantId = 1, Quantity = int.MaxValue }));
+
+        Assert.Equal(50, cart.CartItems.Single().Quantity);
+    }
+
+    [Fact]
+    public async Task AddToCart_rejects_a_total_above_the_per_item_limit()
+    {
+        GivenSellableVariant(stock: 1000);
+        GivenCart(new Cart { Id = 1, UserId = 7, CartItems = new List<CartItem> { new() { ProductVariantId = 1, Quantity = 90 } } });
+
+        await Assert.ThrowsAsync<ArgumentException>(() =>
+            _service.AddToCartAsync(7, new AddToCartDto { ProductVariantId = 1, Quantity = 10 }));
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    [InlineData(100)]
+    [InlineData(int.MaxValue)]
+    public async Task UpdateCartItem_rejects_a_quantity_outside_the_allowed_range(int quantity)
+    {
+        GivenSellableVariant(stock: 1000);
+        GivenCart(new Cart { Id = 1, UserId = 7, CartItems = new List<CartItem> { new() { ProductVariantId = 1, Quantity = 1 } } });
+
+        await Assert.ThrowsAsync<ArgumentException>(() => _service.UpdateCartItemAsync(7, 1, quantity));
+    }
+
     [Fact]
     public async Task AddToCart_rejects_an_inactive_variant()
     {

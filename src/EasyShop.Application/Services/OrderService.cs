@@ -99,6 +99,7 @@ namespace EasyShop.Application.Services
             {
                 UserId = userId,
                 Status = OrderStatus.Pending,
+                OrderNumber = OrderNumberGenerator.Next(),
                 Subtotal = subtotal,
                 DiscountAmount = discount,
                 ShippingFee = shipping,
@@ -186,6 +187,7 @@ namespace EasyShop.Application.Services
             return new OrderDetailsDto
             {
                 Id = order.Id,
+                OrderNumber = order.OrderNumber,
                 Status = order.Status,
                 Subtotal = order.Subtotal,
                 DiscountAmount = order.DiscountAmount,
@@ -264,6 +266,7 @@ namespace EasyShop.Application.Services
             return orders.Select(order => new OrderSummaryDto
             {
                 Id = order.Id,
+                OrderNumber = order.OrderNumber,
                 Status = order.Status,
                 TotalAmount = order.TotalAmount,
                 CreatedAt = order.CreatedAt,
@@ -293,6 +296,7 @@ namespace EasyShop.Application.Services
             return new OrderDetailsDto
             {
                 Id = order.Id,
+                OrderNumber = order.OrderNumber,
                 Status = order.Status,
                 Subtotal = order.Subtotal,
                 DiscountAmount = order.DiscountAmount,
@@ -324,6 +328,7 @@ namespace EasyShop.Application.Services
             return orders.Select(order => new OrderSummaryDto
             {
                 Id = order.Id,
+                OrderNumber = order.OrderNumber,
                 Status = order.Status,
                 TotalAmount = order.TotalAmount,
                 CreatedAt = order.CreatedAt,
@@ -346,6 +351,7 @@ namespace EasyShop.Application.Services
             return new OrderDetailsDto
             {
                 Id = order.Id,
+                OrderNumber = order.OrderNumber,
                 Status = order.Status,
                 Subtotal = order.Subtotal,
                 DiscountAmount = order.DiscountAmount,
