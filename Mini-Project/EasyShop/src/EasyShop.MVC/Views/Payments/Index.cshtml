@@ -72,7 +72,7 @@ else
                                 <a asp-controller="Orders" asp-action="AdminDetails" asp-route-id="@payment.OrderId">#@payment.OrderId</a>
                             </td>
                             <td>@payment.PaymentMethod</td>
-                            <td class="text-end">@payment.Amount.ToString("N2")</td>
+                            <td class="text-end">@payment.Amount.ToEgp()</td>
                             <td><span class="badge @PaymentBadge(payment.Status)">@payment.Status</span></td>
                             <td>@payment.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
                             <td>@(payment.PaidAt?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>

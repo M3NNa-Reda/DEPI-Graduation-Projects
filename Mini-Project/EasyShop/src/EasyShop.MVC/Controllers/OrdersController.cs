@@ -1,4 +1,4 @@
-﻿
+
 using EasyShop.Application.Services;
 
 namespace EasyShop.MVC.Controllers
@@ -8,18 +8,28 @@ namespace EasyShop.MVC.Controllers
     {
         private readonly IOrderService _orderService;
         private readonly IAddressService _addressService;
+        private readonly ICartService _cartService;
 
-        public OrdersController(IOrderService orderService, IAddressService addressService)
+        public OrdersController(IOrderService orderService, IAddressService addressService, ICartService cartService)
         {
             _orderService = orderService;
             _addressService = addressService;
+            _cartService = cartService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Create()
         {
             int userId = User.GetUserId();
-            await PopulateAddressesSelectList(userId);
+
+            var cart = await _cartService.GetCartAsync(userId);
+            if (!cart.Items.Any())
+            {
+                TempData["Error"] = "Your cart is empty. Add something before checking out.";
+                return RedirectToAction("Index", "Cart");
+            }
+
+            await PopulateCheckoutAsync(userId);
             return View(new CreateOrderRequestDto());
         }
 
@@ -31,13 +41,14 @@ namespace EasyShop.MVC.Controllers
 
             if (!ModelState.IsValid)
             {
-                await PopulateAddressesSelectList(userId);
+                await PopulateCheckoutAsync(userId);
                 return View(dto);
             }
 
             try
             {
                 var result = await _orderService.CreateOrderAsync(userId, dto);
+                TempData["Success"] = "Your order has been placed.";
                 return RedirectToAction(nameof(Details), new { id = result.Id });
             }
             catch (Exception ex) when (ex is InvalidOperationException or KeyNotFoundException)
@@ -45,16 +56,17 @@ namespace EasyShop.MVC.Controllers
                 // Business rule failures (invalid coupon, empty cart, not enough stock...)
                 // are shown on the form instead of crashing the request.
                 ModelState.AddModelError(string.Empty, ex.Message);
-                await PopulateAddressesSelectList(userId);
+                await PopulateCheckoutAsync(userId);
                 return View(dto);
             }
         }
 
-        private async Task PopulateAddressesSelectList(int userId)
+        private async Task PopulateCheckoutAsync(int userId)
         {
             var addresses = await _addressService.GetAddressesByUserIdAsync(userId);
 
             ViewBag.Addresses = new SelectList(addresses, "Id", "FullAddress");
+            ViewBag.Cart = await _cartService.GetCartAsync(userId);
         }
         [HttpGet]
         public async Task<IActionResult> MyOrders()
@@ -84,7 +96,21 @@ namespace EasyShop.MVC.Controllers
         public async Task<IActionResult> Cancel(int id)
         {
             int userId = User.GetUserId();
-            await _orderService.CancelOrderAsync(userId, id);
+
+            try
+            {
+                await _orderService.CancelOrderAsync(userId, id);
+                TempData["Success"] = "The order has been cancelled.";
+            }
+            catch (Exception ex) when (ex is InvalidOperationException or KeyNotFoundException)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction(nameof(Details), new { id });
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
 
             return RedirectToAction(nameof(MyOrders));
         }
@@ -114,8 +140,26 @@ namespace EasyShop.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateStatus(int id, UpdateOrderStatusDto dto)
         {
+            if (!ModelState.IsValid)
+            {
+                TempData["Error"] = ModelState.Values
+                    .SelectMany(entry => entry.Errors)
+                    .Select(error => error.ErrorMessage)
+                    .FirstOrDefault(message => !string.IsNullOrEmpty(message)) ?? "Invalid status.";
+                return RedirectToAction(nameof(AdminDetails), new { id });
+            }
+
             int adminId = User.GetUserId();
-            await _orderService.UpdateOrderStatusAsync(adminId, id, dto);
+
+            try
+            {
+                await _orderService.UpdateOrderStatusAsync(adminId, id, dto);
+                TempData["Success"] = "The order status has been updated.";
+            }
+            catch (Exception ex) when (ex is InvalidOperationException or KeyNotFoundException or ArgumentException)
+            {
+                TempData["Error"] = ex.Message;
+            }
 
             return RedirectToAction(nameof(AdminDetails), new { id });
         }

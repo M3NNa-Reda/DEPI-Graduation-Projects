@@ -29,9 +29,9 @@ else
                     @foreach (var order in Model)
                     {
                         <tr>
-                            <td class="fw-bold">#@order.Id</td>
+                            <td class="fw-bold">@(order.OrderNumber ?? "#" + order.Id)</td>
                             <td>@order.CreatedAt.ToString("MMM dd, yyyy HH:mm")</td>
-                            <td>@order.TotalAmount.ToString("C")</td>
+                            <td>@order.TotalAmount.ToEgp()</td>
                             <td>@order.TotalItems</td>
                             <td>
                                 <span class="badge bg-secondary">@order.Status</span>

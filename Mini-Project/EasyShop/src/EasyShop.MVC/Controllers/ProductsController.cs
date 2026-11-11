@@ -1,20 +1,27 @@
+using EasyShop.MVC.Services;
+
 namespace EasyShop.MVC.Controllers;
 
 [Authorize(Roles = RoleNames.Admin)]
 public class ProductsController : Controller
 {
+    private const long MaxRequestBytes = 4 * 1024 * 1024;
+
     private readonly IProductService _productService;
     private readonly ICategoryService _categoryService;
     private readonly IBrandService _brandService;
+    private readonly IProductImageStorage _imageStorage;
 
     public ProductsController(
         IProductService productService,
         ICategoryService categoryService,
-        IBrandService brandService)
+        IBrandService brandService,
+        IProductImageStorage imageStorage)
     {
         _productService = productService;
         _categoryService = categoryService;
         _brandService = brandService;
+        _imageStorage = imageStorage;
     }
 
     // GET: /Products
@@ -31,6 +38,8 @@ public class ProductsController : Controller
 
         ViewBag.BrandNames = (await _brandService.GetAllBrandsAsync()).ToDictionary(b => b.Id, b => b.Name);
         ViewBag.CategoryNames = (await _categoryService.GetAllCategoriesAsync()).ToDictionary(c => c.Id, c => c.Name);
+
+        ViewBag.Cards = await _productService.GetProductCardsAsync();
 
         return View(products);
     }
@@ -53,6 +62,7 @@ public class ProductsController : Controller
 
         await LoadLookupNamesAsync(product);
         ViewBag.Variants = await _productService.GetActiveVariantsAsync(id);
+        ViewBag.Images = await _productService.GetImageUrlsAsync(id);
         return View(product);
     }
 
@@ -66,8 +76,11 @@ public class ProductsController : Controller
     // POST: /Products/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [RequestSizeLimit(MaxRequestBytes)]
     public async Task<IActionResult> Create(ProductFormViewModel model)
     {
+        var imageUrl = ModelState.IsValid ? await ResolveImageAsync(model) : null;
+
         if (!ModelState.IsValid)
         {
             await PopulateDropdownsAsync(model.BrandId, model.CategoryId);
@@ -86,8 +99,9 @@ public class ProductsController : Controller
         };
 
         await _productService.AddProductAsync(product);
+        await _productService.SetPrimaryImageAsync(product.Id, imageUrl);
 
-        TempData["Success"] = $"Product \"{product.Name}\" was created.";
+        TempData["Success"] = $"Product \"{product.Name}\" was created. Add its options (price and stock) so customers can buy it.";
         return RedirectToAction(nameof(Index));
     }
 
@@ -110,19 +124,23 @@ public class ProductsController : Controller
             Slug = product.Slug,
             BrandId = product.BrandId,
             CategoryId = product.CategoryId,
-            IsActive = product.IsActive
+            IsActive = product.IsActive,
+            ImageUrl = await _productService.GetPrimaryImageUrlAsync(id)
         });
     }
 
     // POST: /Products/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [RequestSizeLimit(MaxRequestBytes)]
     public async Task<IActionResult> Edit(int id, ProductFormViewModel model)
     {
         if (id != model.Id)
         {
             return NotFound();
         }
+
+        var imageUrl = ModelState.IsValid ? await ResolveImageAsync(model) : null;
 
         if (!ModelState.IsValid)
         {
@@ -144,7 +162,16 @@ public class ProductsController : Controller
         product.IsActive = model.IsActive;
         product.UpdatedAt = DateTime.UtcNow;
 
+        var previousImageUrl = await _productService.GetPrimaryImageUrlAsync(id);
+
         await _productService.UpdateProductAsync(product);
+        await _productService.SetPrimaryImageAsync(product.Id, imageUrl);
+
+        // The old file is only deleted once the new picture is saved, so a failure never leaves the product without one.
+        if (previousImageUrl != imageUrl)
+        {
+            _imageStorage.DeleteIfStored(previousImageUrl);
+        }
 
         TempData["Success"] = $"Product \"{product.Name}\" was updated.";
         return RedirectToAction(nameof(Index));
@@ -178,6 +205,37 @@ public class ProductsController : Controller
 
         TempData["Success"] = $"Product \"{product.Name}\" was deactivated and is now hidden from customers.";
         return RedirectToAction(nameof(Index));
+    }
+
+    // Decides which picture the product ends up with: an uploaded file wins over a typed link,
+    // and an empty link removes the picture. Problems are reported on the form, not thrown.
+    private async Task<string?> ResolveImageAsync(ProductFormViewModel model)
+    {
+        if (model.ImageFile is { Length: > 0 })
+        {
+            try
+            {
+                return await _imageStorage.SaveAsync(model.ImageFile);
+            }
+            catch (ArgumentException ex)
+            {
+                ModelState.AddModelError(nameof(model.ImageFile), ex.Message);
+                return null;
+            }
+        }
+
+        if (string.IsNullOrWhiteSpace(model.ImageUrl))
+        {
+            return null;
+        }
+
+        if (!_imageStorage.IsAcceptedUrl(model.ImageUrl.Trim()))
+        {
+            ModelState.AddModelError(nameof(model.ImageUrl), "Enter a link that starts with http:// or https://, or upload a picture.");
+            return null;
+        }
+
+        return model.ImageUrl.Trim();
     }
 
     private async Task PopulateDropdownsAsync(int? brandId = null, int? categoryId = null)

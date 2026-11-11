@@ -6,4 +6,7 @@
     <Project Path="src/EasyShop.Infrastructure/EasyShop.Infrastructure.csproj" />
     <Project Path="src/EasyShop.MVC/EasyShop.MVC.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/EasyShop.Tests/EasyShop.Tests.csproj" />
+  </Folder>
 </Solution>

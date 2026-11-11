@@ -3,6 +3,8 @@
     public class Order
     {
         public int Id { get; set; }
+        // Public, non-sequential reference shown to customers instead of the database id.
+        public string? OrderNumber { get; set; }
         public OrderStatus Status { get; set; }
         public decimal Subtotal { get; set; }
         public decimal DiscountAmount { get; set; }

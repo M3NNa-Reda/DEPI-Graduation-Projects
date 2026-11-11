@@ -1,9 +1,14 @@
-﻿@model CreateOrderRequestDto
+﻿@using EasyShop.Application.Services
+@using EasyShop.Application.DTOs.Cart
+@model CreateOrderRequestDto
 @{
-    ViewData["Title"] = "New Order";
+    ViewData["Title"] = "Checkout";
+    var cart = (CartDto?)ViewBag.Cart ?? new CartDto();
 }
 
-<h1 class="h3 mb-3">Create New Order</h1>
+<h1 class="h3 mb-3">Checkout</h1>
+
+<partial name="_Alerts" />
 
 <div class="row">
     <div class="col-lg-7">
@@ -38,10 +43,38 @@
                 </div>
             </div>
             <div class="card-footer d-flex gap-2">
-                <button type="submit" class="btn btn-primary">Create Order</button>
-                <a asp-action="MyOrders" class="btn btn-outline-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Place order</button>
+                <a asp-controller="Cart" asp-action="Index" class="btn btn-outline-secondary">Back to cart</a>
             </div>
         </form>
+    </div>
+
+    <div class="col-lg-5 mt-4 mt-lg-0">
+        <div class="card shadow-sm">
+            <div class="card-header fw-semibold">Order summary</div>
+            <ul class="list-group list-group-flush">
+                @foreach (var item in cart.Items)
+                {
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>@item.ProductName <span class="text-muted">x @item.Quantity</span></span>
+                        <span>@item.TotalPrice.ToEgp()</span>
+                    </li>
+                }
+                <li class="list-group-item d-flex justify-content-between">
+                    <span class="text-muted">Subtotal</span>
+                    <span>@cart.Subtotal.ToEgp()</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <span class="text-muted">Shipping</span>
+                    <span>@OrderService.FlatShippingFee.ToEgp()</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between fw-bold">
+                    <span>Total before discount</span>
+                    <span>@((cart.Subtotal + OrderService.FlatShippingFee).ToEgp())</span>
+                </li>
+            </ul>
+            <div class="card-footer small text-muted">A valid coupon code is applied when you place the order.</div>
+        </div>
     </div>
 </div>
 

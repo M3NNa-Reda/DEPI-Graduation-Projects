@@ -4,6 +4,7 @@
     public class OrderDetailsDto
     {
         public int Id { get; set; }
+        public string? OrderNumber { get; set; }
         public OrderStatus Status { get; set; }
         public decimal Subtotal { get; set; }
         public decimal DiscountAmount { get; set; }

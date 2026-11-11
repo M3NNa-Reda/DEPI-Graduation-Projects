@@ -9,6 +9,8 @@
     <a asp-action="Create" class="btn btn-primary">Create New Order</a>
 </div>
 
+<partial name="_Alerts" />
+
 @if (Model == null || !Model.Any())
 {
     <div class="alert alert-info shadow-sm">You haven't placed any orders yet.</div>
@@ -32,12 +34,12 @@ else
                     @foreach (var order in Model)
                     {
                         <tr>
-                            <td class="fw-bold">#@order.Id</td>
+                            <td class="fw-bold">@(order.OrderNumber ?? "#" + order.Id)</td>
                             <td>@order.CreatedAt.ToString("MMM dd, yyyy HH:mm")</td>
-                            <td>@order.TotalAmount.ToString("C")</td>
+                            <td>@order.TotalAmount.ToEgp()</td>
                             <td>@order.TotalItems</td>
                             <td>
-                                <span class="badge bg-secondary">@order.Status</span>
+                                <span class="badge @(order.Status == OrderStatus.Cancelled ? "bg-danger" : order.Status == OrderStatus.Delivered ? "bg-success" : "bg-secondary")">@order.Status</span>
                             </td>
                             <td class="text-end">
                                 <a asp-action="Details" asp-route-id="@order.Id" class="btn btn-sm btn-outline-primary">Details</a>

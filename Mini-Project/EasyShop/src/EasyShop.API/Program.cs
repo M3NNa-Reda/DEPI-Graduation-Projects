@@ -43,7 +43,12 @@ namespace EasyShop.API
             builder.Services.AddClientServices();
 
             var app = builder.Build();
-            app.UseExceptionHandler("/error");
+            if (!app.Environment.IsDevelopment())
+            {
+                app.UseHsts();
+            }
+            app.UseExceptionHandler("/Home/Error");
+            app.UseStatusCodePagesWithReExecute("/Home/HttpStatus", "?code={0}");
             //catches exceptions thrown in the following middlewares so it must come early
             //if (app.Environment.IsDevelopment())
             //{
@@ -51,6 +56,7 @@ namespace EasyShop.API
             //    app.UseSwaggerUI();
             //}
 
+            app.UseSecurityHeaders();
             app.UseHttpsRedirection();
             app.UseRouting();
             // Determines which endpoint will handle the request
@@ -61,6 +67,8 @@ namespace EasyShop.API
 
             app.AddClientPipeline();
             app.MapControllers();
+            // Lightweight probe for the host and uptime checks. It does not touch the database.
+            app.MapGet("/health", () => Results.Ok(new { status = "ok" })).AllowAnonymous();
 
             await app.MigrateDatabaseAsync();
 
